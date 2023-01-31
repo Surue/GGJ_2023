@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: M_ProtoGrid_17
+  m_Name: M_ProtoGrid_17 1
   m_Shader: {fileID: -6465566751694194690, guid: 098ccd774e8753947b63751cd9b0a56e, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -54,7 +54,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - Boolean_0eafa482eff94a28b35bf16c613d91cf: 0
+    - Boolean_0eafa482eff94a28b35bf16c613d91cf: 1
     - Boolean_4ab46abd98824840ad288956590714b7: 0
     - Boolean_7e6d29e5e65841dead75911f9e0dc049: 0
     - Boolean_e480d159d08d46a5bdcfb88cd26cab43: 0
@@ -62,7 +62,7 @@ Material:
     - Vector1_1: 2
     - Vector1_2b86831e4ea5440c9be179b3d385a820: 2
     - Vector1_43edc993bcfc49b2a9009d2d41b3db48: 0.99
-    - Vector1_8c7ee47a811749bea3603e1db1feca16: 1.2
+    - Vector1_8c7ee47a811749bea3603e1db1feca16: 3
     - Vector1_8e2439f7354045a1b8e60483f62b3bd7: 1
     - Vector1_c6314feeee774511a1126bfc28bec311: 0
     - Vector1_c6314feeee774511a1126bfc28bec311_1: 0
@@ -71,9 +71,9 @@ Material:
     - _BUILTIN_QueueOffset: 0
     m_Colors:
     - Color_0d0db932ceca43669cdbbf811e5ec6df: {r: 0.028301895, g: 0.027901396, b: 0.027901396, a: 0}
-    - Color_a1820c702c334315b08860d90b891942: {r: 0.1602754, g: 0.1602754, b: 0.1602754, a: 0}
-    - Color_dce5cc796db748e687528717bc9c37d4: {r: 0.9150943, g: 0.9150943, b: 0.9150943, a: 0}
-    - Color_dce5cc796db748e687528717bc9c37d4_1: {r: 0.11320586, g: 0.11320586, b: 0.11320586, a: 0}
+    - Color_a1820c702c334315b08860d90b891942: {r: 0.07546214, g: 0.07546214, b: 0.07546214, a: 0}
+    - Color_dce5cc796db748e687528717bc9c37d4: {r: 0.9622641, g: 0.9622641, b: 0.9622641, a: 0}
+    - Color_dce5cc796db748e687528717bc9c37d4_1: {r: 0.113201804, g: 0.113201804, b: 0.113201804, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &2498287165901087001
 MonoBehaviour:
