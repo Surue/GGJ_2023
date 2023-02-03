@@ -5971,6 +5971,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 831432179}
     m_Modifications:
+    - target: {fileID: 6359309897482650565, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
+      propertyPath: playerType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6359309897482650585, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
       propertyPath: m_Name
       value: BoardSlot (7)
@@ -6323,6 +6327,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 831432179}
     m_Modifications:
+    - target: {fileID: 6359309897482650565, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
+      propertyPath: playerType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6359309897482650585, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
       propertyPath: m_Name
       value: BoardSlot (4)
@@ -8200,6 +8208,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 831432179}
     m_Modifications:
+    - target: {fileID: 6359309897482650565, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
+      propertyPath: playerType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6359309897482650585, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
       propertyPath: m_Name
       value: BoardSlot (5)
@@ -8847,6 +8859,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 831432179}
     m_Modifications:
+    - target: {fileID: 6359309897482650565, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
+      propertyPath: playerType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6359309897482650585, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
       propertyPath: m_Name
       value: BoardSlot (6)
@@ -8909,6 +8925,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 301323367}
     m_Modifications:
+    - target: {fileID: 6359309897482650565, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
+      propertyPath: playerType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6359309897482650585, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
       propertyPath: m_Name
       value: BoardSlot (2)
@@ -8971,6 +8991,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 301323367}
     m_Modifications:
+    - target: {fileID: 6359309897482650565, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
+      propertyPath: playerType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6359309897482650585, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
       propertyPath: m_Name
       value: BoardSlot
@@ -9294,6 +9318,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 301323367}
     m_Modifications:
+    - target: {fileID: 6359309897482650565, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
+      propertyPath: playerType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6359309897482650585, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
       propertyPath: m_Name
       value: BoardSlot (3)
@@ -10260,6 +10288,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 301323367}
     m_Modifications:
+    - target: {fileID: 6359309897482650565, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
+      propertyPath: playerType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6359309897482650585, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
       propertyPath: m_Name
       value: BoardSlot (1)
