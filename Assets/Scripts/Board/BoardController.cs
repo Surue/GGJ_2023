@@ -8,6 +8,8 @@ public class BoardController : MonoBehaviour
     [Header("PARAMETERS")]
     public bool containCard = false;
     public GameObject highlight;
+    [SerializeField] private EPlayerType playerType;
+    public EPlayerType PlayerType => playerType;
 
     [Header ("DEBUG COLLIDER")]
     public float arrowSize = 0.5f;

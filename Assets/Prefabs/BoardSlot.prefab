@@ -335,7 +335,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   containCard: 0
-  highlight: {fileID: 0}
+  highlight: {fileID: 1939839579}
+  _playerType: 0
   arrowSize: 0.5
   slotSize: {x: 0, y: 0, z: 0}
   facingCard: {fileID: 6359309897717281299}

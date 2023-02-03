@@ -59,15 +59,14 @@ public class HumanPlayer : Player
                 break;
         }
     }
-    
-    public void FreeState()
+
+    private void FreeState()
     {
-        //CHECK LES CARTES EN MAIN
+        // Check if player hover card in hands
         if (CheckRaycastHit() == "Card")
         {
             if (cardController == null)
             {
-                //R�cup�re le controller et le visuel de la carte override
                 cardController = _hit.transform.GetComponent<CardController>();
                 cardController.CardStateSwitch(CardController.CardState.isOverride);
             }
@@ -82,45 +81,43 @@ public class HumanPlayer : Player
             cardController = null;
         }
 
-        if (Input.GetMouseButtonDown(0) & cardController != null)
+        // Check if player select card in hands
+        if (Input.GetMouseButtonDown(0) && cardController != null)
         {
-            //Si le joueur clic sur une card dans la main qui est interactible passe dans la zone de selection (en attente d'�tre pos�e)
             if (cardController.isInteractible)
             {
                 cardController.CardStateSwitch(CardController.CardState.isWaiting);
                 cardController.PlayAnimationCard("ActiveAnim");
                 currentHandState = HandState.cardSelectedInHand;
 
-                // [TEST] pour draw line
                 _cardTransform = _hit.transform.GetComponent<Transform>();
             }
         }
 
-        //CHECK LES CARTES SUR LE PLATEAU
+        // Check if hover slots
         if (CheckRaycastHit() == "Slot")
         {
             _boardController = _hit.transform.GetComponent<BoardController>();
 
-            if (_boardController.containCard is true)
+            if (_boardController.containCard is not true) return;
+            
+            _slotCardController = _boardController.cardController;
+
+            // Check if player click on a slot
+            if (Input.GetMouseButtonDown(0) && _slotCardController.isInteractible && _slotCardController.boardController.PlayerType == EPlayerType.Human)
             {
-                _slotCardController = _boardController.cardController;
+                _slotCardController.moveToPositon = _slotCardController.transform.localPosition + Vector3.up * 0.25f;
+                _slotCardController.CardStateSwitch(CardController.CardState.isSelected);
+                _slotCardController.PlayAnimationCard("ActiveAnim");
+                currentHandState = HandState.cardSelectedOnBoard;
 
-                //Si le joueur clic sur un slot qui contient un carte qui est interactible celle ci est est s�l�ctionn�
-                if (Input.GetMouseButtonDown(0) & _slotCardController.isInteractible)
-                {
-                    _slotCardController.moveToPositon = _slotCardController.transform.localPosition + Vector3.up * 0.25f;
-                    _slotCardController.CardStateSwitch(CardController.CardState.isSelected);
-                    _slotCardController.PlayAnimationCard("ActiveAnim");
-                    currentHandState = HandState.cardSelectedOnBoard;
-
-                    // [TEST] pour draw line
-                    _cardTransform = _hit.transform.GetComponent<Transform>();
-                }
+                // [TEST] pour draw line
+                _cardTransform = _hit.transform.GetComponent<Transform>();
             }
         }
     }
 
-    public void CardInvokeOnDesk()
+    private void CardInvokeOnDesk()
     {
         if (CheckRaycastHit() == "Slot")
         {
@@ -128,9 +125,8 @@ public class HumanPlayer : Player
             _boardSlot = _hit.transform.gameObject;
             _boardController = _hit.transform.GetComponent<BoardController>();
 
-            if (_boardController.containCard is false)
+            if (!_boardController.containCard && _boardController.PlayerType == EPlayerType.Human)
             {
-                // [TEST LINE] pour draw line si le joueur peut poser une carte
                 DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorDisplacement);
 
                 if (Input.GetMouseButtonDown(0))
@@ -152,7 +148,7 @@ public class HumanPlayer : Player
             }
             else
             {
-                DrawMovementLine(_cardTransform.position, _hit.point, _offsetYCurve, _lineColorNeutral);
+                DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorNeutral);
             }
         }
         else
@@ -166,18 +162,16 @@ public class HumanPlayer : Player
         }
     }
 
-    public void CardSelectedState()
+    private void CardSelectedState()
     {
-        // BOUGER UNE CARTE
+        // Move card to slot
         if (CheckRaycastHit() == "Slot")
         {
-            //R�cup�re le Slot detect� et son controller
             _boardSlot = _hit.transform.gameObject;
             _boardController = _hit.transform.GetComponent<BoardController>();
 
-            if (_boardController.containCard is false)
+            if (_boardController.PlayerType == EPlayerType.Human && !_boardController.containCard) // Drop card on empty board
             {
-                // [TEST LINE] pour draw line si le joueur peut poser une carte
                 DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorDisplacement);
 
                 if (Input.GetMouseButtonDown(0))
@@ -197,14 +191,12 @@ public class HumanPlayer : Player
                     _lineIcon.SetActive(false);
                 }
             }
-
-            // INVERSION DE DEUX CARTES
-            if (_boardController.containCard is true)
+            else if (_boardController.PlayerType == EPlayerType.Human &&_boardController.containCard) // Swap cards
             {
                 _targetCardController = _boardController.cardController;
                 DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve, _lineColorDisplacement);
 
-                if (Input.GetMouseButtonDown(0) & _targetCardController.canMove is true)
+                if (Input.GetMouseButtonDown(0) & _targetCardController.canMove)
                 {
                     //Repasse la main en free
                     currentHandState = HandState.free;
@@ -218,10 +210,13 @@ public class HumanPlayer : Player
 
                     _targetCardController.CardStateSwitch(CardController.CardState.onDesk);
 
-                    //[TEST LINE] Desactiver la line
                     _lineRenderer.enabled = false;
                     _lineIcon.SetActive(false);
                 }
+            }
+            else
+            {
+                DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorNeutral);
             }
         }
         else
@@ -234,8 +229,7 @@ public class HumanPlayer : Player
             DrawMovementLine(_cardTransform.position, _hit.point, _offsetYCurve, _lineColorNeutral);
         }
     }
-
-    //Fonction qui permet de draw une ligne entre deux position avec un Offset en Y
+    
     private void DrawMovementLine(Vector3 startPos, Vector3 endPos, float offsetY, Color lineColor)
     {
         //Modifie la couleur du line Renderer
@@ -245,11 +239,9 @@ public class HumanPlayer : Player
         //Set le nombre de points du line renderer
         _lineRenderer.positionCount = 15;
 
-        //R�cup�re la distance et change le tiling des dots en fonction
         float distanceBetween = Vector3.Distance(startPos, endPos);
         _lineRenderer.material.SetFloat("_Tiling", distanceBetween * _dotPerUnit);
 
-        //R�cup�re le point du milieu et applique un offset
         Vector3 midPoint = (startPos + endPos) / 2;
         midPoint.y += offsetY;
 
@@ -257,7 +249,7 @@ public class HumanPlayer : Player
         _lineIcon.SetActive(true);
         _lineIcon.transform.position = midPoint - Vector3.down * _lineIconOffset;
 
-        //Fonction de courbe de bezier
+        // Bezier's curve
         float t = 0f;
         Vector3 B = new Vector3(0, 0, 0);
         for (int i = 0; i < _lineRenderer.positionCount; i++)
@@ -268,7 +260,7 @@ public class HumanPlayer : Player
         }
     }
 
-    //Fonction qui Raycast depuis la camera vers le pointeur de la souris et renvoie le tag de l'objet avec lequel il collide
+
     private string CheckRaycastHit()
     {
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
