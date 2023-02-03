@@ -264,7 +264,7 @@ GameObject:
   - component: {fileID: 8821135303853838802}
   - component: {fileID: 8821135303853838804}
   m_Layer: 3
-  m_Name: Card
+  m_Name: View
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -512,7 +512,7 @@ GameObject:
   - component: {fileID: 8821135303938986466}
   - component: {fileID: 8821135305099833842}
   m_Layer: 3
-  m_Name: CardContainer
+  m_Name: Card
   m_TagString: Card
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
