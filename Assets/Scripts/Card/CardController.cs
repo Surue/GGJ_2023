@@ -51,6 +51,7 @@ public class CardController : MonoBehaviour
     // --- PRIVATE ---
     //Save Postion
     private Vector3 _deckPosition;
+    private Transform _handSlotTransform;
     //Controllers 
     private CardDisplay _cardDisplay;
     public BoardController boardController;
@@ -141,6 +142,11 @@ public class CardController : MonoBehaviour
         cardAttack = _cardScriptable.initialAttack;
         cardManaCost = _cardScriptable.initialManaCost;
     }
+    
+    public void SetHandSlot(Transform handSlotTransform)
+    {
+        _handSlotTransform = handSlotTransform;
+    }
 
     private void Update()
     {
@@ -209,7 +215,7 @@ public class CardController : MonoBehaviour
             UnHighlightCard();
         }
         //Remet la carte a sa place
-        // TweenMoveCard(_initialPosition, _initialOrientation, 0.18f, MoveType.simpleMoveRotate);
+        TweenMoveCard(_handSlotTransform.position, _handSlotTransform.rotation, 0.18f, MoveType.simpleMoveRotate);
     }
 
     private void IsOverrideState()

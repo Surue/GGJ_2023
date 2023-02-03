@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 [CreateAssetMenu(fileName = "Deck", menuName = "ScriptableObjects/Deck", order = 1)]
 public class DeckScriptable : ScriptableObject
@@ -27,8 +29,9 @@ public class DeckScriptable : ScriptableObject
         return count;
     }
 
-    public void FillList(List<CardController> cardControllers, Transform deckTransform)
+    public void FillList(ref Queue<CardController> refCardList, Transform deckTransform)
     {
+        List<CardController> shuffledCards = new List<CardController>();
         foreach (var pairCardQuantity in _cards)
         {
             for (int i = 0; i < pairCardQuantity.cardQuantity; i++)
@@ -37,8 +40,14 @@ public class DeckScriptable : ScriptableObject
                 var cardController = instance.GetComponent<CardController>();
 
                 cardController.Setup(deckTransform, pairCardQuantity.cardScriptable);
-                cardControllers.Add(cardController);
+                shuffledCards.Add(cardController);
             }
+        }
+
+        shuffledCards = shuffledCards.OrderBy(x => Random.value).ToList();
+        foreach (var cardController in shuffledCards)
+        {
+            refCardList.Enqueue(cardController);
         }
     }
 }

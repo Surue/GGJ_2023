@@ -14,24 +14,43 @@ public class Player : MonoBehaviour
     [SerializeField] protected GameObject _deckObject;
     [SerializeField] protected GameObject _discardObject;
     [SerializeField] protected GameObject _cardParent;
+    [SerializeField] protected List<GameObject> _handSlots;
     
     // Deck
-    protected List<CardController> _cardsInDeck;
+    protected Queue<CardController> _cardsInDeck;
+    protected List<CardController> _cardsInHand;
 
     private void Awake()
     {
         GameManager.Instance.onGameInit += Init;
+
+        _cardsInHand = new List<CardController>();
     }
 
     private void Init()
     {
-        _cardsInDeck = new List<CardController>();
+        _cardsInDeck = new Queue<CardController>();
 
-        _deckScriptable.FillList(_cardsInDeck, _deckObject.transform);
+        _deckScriptable.FillList(ref _cardsInDeck, _deckObject.transform);
 
         foreach (var cardController in _cardsInDeck)
         {
             cardController.transform.parent = _cardParent.transform;
+        }
+        
+        FillHand();
+    }
+
+    protected void FillHand()
+    {
+        var cardToAdd = _maxNumberOfCardInHand - _cardsInHand.Count;
+
+        for (int i = 0; i < cardToAdd; i++)
+        {
+            var card = _cardsInDeck.Dequeue();
+            card.SetHandSlot(_handSlots[i].transform);
+            card.CardStateSwitch(CardController.CardState.inHand);
+            _cardsInHand.Add(card);
         }
     }
 }

@@ -165,6 +165,8 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("[GameManager] InitGame");
         onGameInit?.Invoke();
+
+        _hasFinishedInit = true;
     }
 
     private void StartTurn(EPlayerType playerType)
