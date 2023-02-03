@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(Card))]
+[CustomEditor(typeof(CardScriptable))]
 public class Card_Custom_Editor : Editor
 {
     // SETUP INSPECTOR
@@ -14,36 +14,36 @@ public class Card_Custom_Editor : Editor
     public override void OnInspectorGUI()
     {
         // SETUP DATA
-        Card card = (Card)target;
+        CardScriptable cardScriptable = (CardScriptable)target;
 
         //________SECTION - GENERAL
         //Header Foldout - GENERAL
         EditorGUILayout.Space(smallSpacing);
         EditorGUILayout.LabelField("CARD INFORMATIONS", EditorStyles.boldLabel);
         // General Infos
-        card.cardName = EditorGUILayout.TextField("Name", card.cardName);
-        card.cardDescription = EditorGUILayout.TextField("Description", card.cardDescription);
-        card.initialManaCost = EditorGUILayout.IntField("Mana Cost", card.initialManaCost);
+        cardScriptable.cardName = EditorGUILayout.TextField("Name", cardScriptable.cardName);
+        cardScriptable.cardDescription = EditorGUILayout.TextField("Description", cardScriptable.cardDescription);
+        cardScriptable.initialManaCost = EditorGUILayout.IntField("Mana Cost", cardScriptable.initialManaCost);
         // Type
         EditorGUILayout.Space(smallSpacing);
         EditorGUILayout.LabelField("SPECS", EditorStyles.boldLabel);
-        card.currentAbilty = (Card.SpecialAbilities)EditorGUILayout.EnumPopup("Special Ability", card.currentAbilty);
-        card.currentType = (Card.CardType)EditorGUILayout.EnumPopup("Card Type", card.currentType);
+        cardScriptable.currentAbilty = (CardScriptable.SpecialAbilities)EditorGUILayout.EnumPopup("Special Ability", cardScriptable.currentAbilty);
+        cardScriptable.currentType = (CardScriptable.CardType)EditorGUILayout.EnumPopup("Card Type", cardScriptable.currentType);
 
         //________SECTION - CHARACTER CARAC
         //Header Foldout - CHARACTER
-        if (card.currentType == Card.CardType.Character)
+        if (cardScriptable.currentType == CardScriptable.CardType.Character)
         {
-            card.initialHealth = EditorGUILayout.IntField("Health", card.initialHealth);
-            card.initialAttack = EditorGUILayout.IntField("Attack", card.initialAttack);
-            card.attackType = (Card.AttackType)EditorGUILayout.EnumPopup("Attack Type", card.attackType);
-            if (card.attackType == Card.AttackType.Melee)
+            cardScriptable.initialHealth = EditorGUILayout.IntField("Health", cardScriptable.initialHealth);
+            cardScriptable.initialAttack = EditorGUILayout.IntField("Attack", cardScriptable.initialAttack);
+            cardScriptable.attackType = (CardScriptable.AttackType)EditorGUILayout.EnumPopup("Attack Type", cardScriptable.attackType);
+            if (cardScriptable.attackType == CardScriptable.AttackType.Melee)
             {
-                card.attackMeleeSprite = (Sprite)EditorGUILayout.ObjectField("Melee Icon", card.attackMeleeSprite, typeof(Sprite), false, GUILayout.Height(EditorGUIUtility.singleLineHeight));
+                cardScriptable.attackMeleeSprite = (Sprite)EditorGUILayout.ObjectField("Melee Icon", cardScriptable.attackMeleeSprite, typeof(Sprite), false, GUILayout.Height(EditorGUIUtility.singleLineHeight));
             }
             else
             {
-                card.attackDistanceSprite = (Sprite)EditorGUILayout.ObjectField("Distance Icon", card.attackDistanceSprite, typeof(Sprite), false, GUILayout.Height(EditorGUIUtility.singleLineHeight));
+                cardScriptable.attackDistanceSprite = (Sprite)EditorGUILayout.ObjectField("Distance Icon", cardScriptable.attackDistanceSprite, typeof(Sprite), false, GUILayout.Height(EditorGUIUtility.singleLineHeight));
             }
         }
 
@@ -51,10 +51,10 @@ public class Card_Custom_Editor : Editor
         //Header Foldout - VISUAL
         EditorGUILayout.Space(smallSpacing);
         EditorGUILayout.LabelField("VISUAL ELEMENTS", EditorStyles.boldLabel);
-        card.cardSprite = (Sprite)EditorGUILayout.ObjectField("Card Aspect", card.cardSprite, typeof(Sprite), false, GUILayout.Height(EditorGUIUtility.singleLineHeight));
-        card.characterSprite = (Sprite) EditorGUILayout.ObjectField("Main Illu", card.characterSprite, typeof(Sprite), false, GUILayout.Height(EditorGUIUtility.singleLineHeight));
-        card.backgroundElement = (Sprite)EditorGUILayout.ObjectField("Background Element", card.backgroundElement, typeof(Sprite), false, GUILayout.Height(EditorGUIUtility.singleLineHeight));
-        card.backgroundColor = EditorGUILayout.ColorField("Background Color", card.backgroundColor);
+        cardScriptable.cardSprite = (Sprite)EditorGUILayout.ObjectField("Card Aspect", cardScriptable.cardSprite, typeof(Sprite), false, GUILayout.Height(EditorGUIUtility.singleLineHeight));
+        cardScriptable.characterSprite = (Sprite) EditorGUILayout.ObjectField("Main Illu", cardScriptable.characterSprite, typeof(Sprite), false, GUILayout.Height(EditorGUIUtility.singleLineHeight));
+        cardScriptable.backgroundElement = (Sprite)EditorGUILayout.ObjectField("Background Element", cardScriptable.backgroundElement, typeof(Sprite), false, GUILayout.Height(EditorGUIUtility.singleLineHeight));
+        cardScriptable.backgroundColor = EditorGUILayout.ColorField("Background Color", cardScriptable.backgroundColor);
 
         //________SECTION - DEBUG
         //Header Foldout - DEBUG

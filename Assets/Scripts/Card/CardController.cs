@@ -7,7 +7,7 @@ public class CardController : MonoBehaviour
 {   // --- PUBLIC ---
     // ScriptableObject
     public GameObject card;
-    public Card cardSO;
+    public CardScriptable cardScriptableSo;
     [Space]
     //MOVEMENT PARAMETERS
     [Header("MOVEMENT PARAMETERS")]
@@ -79,27 +79,27 @@ public class CardController : MonoBehaviour
     void Start()
     {
         // --- SETUP HIGHLIGHT ---
-        // Récupère le component Animation de la carte
+        // RÃ©cupÃ¨re le component Animation de la carte
         AnimComponent = card.GetComponent<Animation>();
-        // Récupère le SpriteRenderer de l'highlight
+        // RÃ©cupÃ¨re le SpriteRenderer de l'highlight
         highlightRenderer = highlight.GetComponent<SpriteRenderer>();
-        //Lance l'anim d'Idle par défaut
+        //Lance l'anim d'Idle par dÃ©faut
         PlayAnimationCard("IdleAnim");
 
         // --- SETUP DATAS ---
         //Setup des datas de la carte (recup du ScriptableObject)
-        cardHealth = cardSO.initialHealth;
-        cardAttack = cardSO.initialAttack;
-        cardManaCost = cardSO.initialManaCost;
-        //Récupère la class de gestion des visuels de la carte et met à jour l'UI
+        cardHealth = cardScriptableSo.initialHealth;
+        cardAttack = cardScriptableSo.initialAttack;
+        cardManaCost = cardScriptableSo.initialManaCost;
+        //RÃ©cupÃ¨re la class de gestion des visuels de la carte et met Ã  jour l'UI
         cardDisplay = GetComponent<CardDisplay>();
         cardDisplay.UpdateUIStats();
 
         // --- SETUP POSITION / MOVEMENTS (temporaire) ---
-        // Récupère la position et la rotation initiale de l'objet
+        // RÃ©cupÃ¨re la position et la rotation initiale de l'objet
         initialPosition = handPosition.localPosition;
         initialOrientation = handPosition.localRotation;
-        // Récupère la zone de selection
+        // RÃ©cupÃ¨re la zone de selection
         GameObject selectionArea = GameObject.Find("SelectionArea");
         if (selectionArea != null)
         {
@@ -135,7 +135,7 @@ public class CardController : MonoBehaviour
     public void CardStateSwitch(CardState nextCardState)
     {
         currentCardState = nextCardState;
-        //Gère les différents états
+        //GÃ¨re les diffÃ©rents Ã©tats
         switch (currentCardState)
         {
             case CardState.inHand:
@@ -185,27 +185,27 @@ public class CardController : MonoBehaviour
 
     void IsOverrideState()
     {
-        //Déplace la carte 
+        //DÃ©place la carte 
         TweenMoveCard(initialPosition + Vector3.forward * 1f, initialOrientation, 0.3f, MoveType.simpleMove);
     }
 
     void IsWaitingState()
     {
-        //Déplace la carte dans la zone de selection
+        //DÃ©place la carte dans la zone de selection
         TweenMoveCard(selectionAreaTransform.position, selectionAreaTransform.rotation, moveToAreaDuration, MoveType.toSelectionArea);
         CardInteractionCheck();
     }
 
     void OnDeskState()
     {
-        // Désactive le collider de la carte
+        // DÃ©sactive le collider de la carte
         Collider cardCollider = this.GetComponent<Collider>();
         cardCollider.enabled = false;
 
-        //Déplace la carte sur l'emplacement du plateau
+        //DÃ©place la carte sur l'emplacement du plateau
         TweenMoveCard(boardController.transform.localPosition, boardController.transform.localRotation, moveOnDeskDuration, MoveType.onDesk);
 
-        //Enlève le highlight de la carte
+        //EnlÃ¨ve le highlight de la carte
         UnHighlightCard();
 
         //Envoie les infos au Board Controller
@@ -276,7 +276,7 @@ public class CardController : MonoBehaviour
     }
     #endregion
 
-    //Fonction qui gère l'interaction de la carte
+    //Fonction qui gÃ¨re l'interaction de la carte
     public void CardInteractionCheck()
     {
         if (currentCardState is CardState.isWaiting or CardState.isDead)
@@ -289,21 +289,21 @@ public class CardController : MonoBehaviour
         }
     }
 
-    // Fonction qui applique un montant de dégat et update l'UI
+    // Fonction qui applique un montant de dÃ©gat et update l'UI
     public void CardTakeDamage(int damageAmount)
     {
-        //Applique les dégats à la carte et update le visuel
+        //Applique les dÃ©gats Ã  la carte et update le visuel
         cardHealth -= damageAmount;
         cardDisplay.UpdateUIStats();
 
-        //Passe la carte en état "dead" si sa vie passe a 0 ou moins
+        //Passe la carte en Ã©tat "dead" si sa vie passe a 0 ou moins
         if(cardHealth <= 0)
         {
             CardStateSwitch(CardState.isDead);
         }
     }
 
-    // Fonction qui set le slot précédent de la carte sur false et enlève le cardController associé en cas de changement de slot
+    // Fonction qui set le slot prÃ©cÃ©dent de la carte sur false et enlÃ¨ve le cardController associÃ© en cas de changement de slot
     public void UpdatePreviousSlot(BoardController newBoardController)
     {
         previousBoardController = boardController;
@@ -323,7 +323,7 @@ public class CardController : MonoBehaviour
         highlightRenderer.material.DOFloat(highlightAlphaMax, "_Alpha", 0.3f);
     }
 
-    // Fonction qui enlève le highlight de la carte
+    // Fonction qui enlÃ¨ve le highlight de la carte
     public void UnHighlightCard()
     {
         highlightRenderer.material.DOFloat(0, "_Alpha", 0.3f);
@@ -347,7 +347,7 @@ public class CardController : MonoBehaviour
     #endregion
 
     #region ARCHIVES
-    // OBSOLETE --- Fonction qui lerp la carte a une position et une rotation donnée et applique une offset en Y pendant le lerp 
+    // OBSOLETE --- Fonction qui lerp la carte a une position et une rotation donnÃ©e et applique une offset en Y pendant le lerp 
     //public void MoveCard(Vector3 endPosition, Quaternion endRotation, AnimationCurve offsetYCurve, float offsetYMax)
     //{
     //    float progress = (Time.time - startMoveTime) * lerpSpeed;

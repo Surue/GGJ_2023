@@ -21,36 +21,36 @@ public class CardDisplay : MonoBehaviour
     public SpriteRenderer attackType;
 
     private CardController cardController;
-    private Card cardSO;
+    private CardScriptable cardScriptableSo;
 
     // Start is called before the first frame update
     void Start()
     {
-        // Setup récup du Scriptable Object
+        // Setup rÃ©cup du Scriptable Object
         cardController = gameObject.GetComponent<CardController>();
-        cardSO = cardController.cardSO;
+        cardScriptableSo = cardController.cardScriptableSo;
     }
 
     public void UpdateUIStats()
     {
         // Setup Infos
-        nameText.text = cardSO.cardName;
-        descriptionText.text = cardSO.cardDescription;
+        nameText.text = cardScriptableSo.cardName;
+        descriptionText.text = cardScriptableSo.cardDescription;
 
         // Setup Stats
         manaText.text = cardController.cardManaCost.ToString();
 
         // Setup Illu
-        characterArtwork.sprite = cardSO.characterSprite;
-        backgroundElement.sprite = cardSO.backgroundElement;
-        backgroundColor.color = cardSO.backgroundColor;
+        characterArtwork.sprite = cardScriptableSo.characterSprite;
+        backgroundElement.sprite = cardScriptableSo.backgroundElement;
+        backgroundColor.color = cardScriptableSo.backgroundColor;
 
         // Setup Chara Stats
-        if (cardSO.currentType == Card.CardType.Character)
+        if (cardScriptableSo.currentType == CardScriptable.CardType.Character)
         {
             attText.text = cardController.cardAttack.ToString();
             healthText.text = cardController.cardHealth.ToString();
-            if (cardSO.attackType == Card.AttackType.Melee)
+            if (cardScriptableSo.attackType == CardScriptable.AttackType.Melee)
             {
                 // A CHANGER UNE FOIS LE VISUEL FAIT PAR LILIAN
                 //attackType.sprite = cardSO.attackMeleeSprite;
