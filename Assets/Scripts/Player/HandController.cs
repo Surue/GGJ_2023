@@ -39,7 +39,10 @@ public class HandController : MonoBehaviour
 
     public enum HandState
     {
-        free, cardSelectedOnBoard, cardSelectedInHand, waitingTurn
+        free, 
+        cardSelectedOnBoard, 
+        cardSelectedInHand, 
+        waitingTurn
     }
     public HandState currentHandState = HandState.free;
 
@@ -81,7 +84,7 @@ public class HandController : MonoBehaviour
         {
             if (cardController == null)
             {
-                //Récupère le controller et le visuel de la carte override
+                //Rï¿½cupï¿½re le controller et le visuel de la carte override
                 cardController = hit.transform.GetComponent<CardController>();
                 cardController.CardStateSwitch(CardController.CardState.isOverride);
             }
@@ -98,7 +101,7 @@ public class HandController : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0) & cardController != null)
         {
-            //Si le joueur clic sur une card dans la main qui est interactible passe dans la zone de selection (en attente d'être posée)
+            //Si le joueur clic sur une card dans la main qui est interactible passe dans la zone de selection (en attente d'ï¿½tre posï¿½e)
             if (cardController.isInteractible)
             {
                 cardController.CardStateSwitch(CardController.CardState.isWaiting);
@@ -119,7 +122,7 @@ public class HandController : MonoBehaviour
             {
                 slotCardController = boardController.cardController;
 
-                //Si le joueur clic sur un slot qui contient un carte qui est interactible celle ci est est séléctionné
+                //Si le joueur clic sur un slot qui contient un carte qui est interactible celle ci est est sï¿½lï¿½ctionnï¿½
                 if (Input.GetMouseButtonDown(0) & slotCardController.isInteractible)
                 {
                     slotCardController.moveToPositon = slotCardController.transform.localPosition + Vector3.up * 0.25f;
@@ -134,12 +137,12 @@ public class HandController : MonoBehaviour
         }
     }
 
-    //Fonction qui gère l'invocation d'une carte sur le terrain depuis la main
+    //Fonction qui gï¿½re l'invocation d'une carte sur le terrain depuis la main
     public void CardInvokeOnDesk()
     {
         if (CheckRaycastHit() == "Slot")
         {
-            //Récupère le Slot detecté et son controller
+            //Rï¿½cupï¿½re le Slot detectï¿½ et son controller
             boardSlot = hit.transform.gameObject;
             boardController = hit.transform.GetComponent<BoardController>();
 
@@ -152,11 +155,11 @@ public class HandController : MonoBehaviour
                 {
                     //Dit a la carte d'enregistrer son slot actuel
                     cardController.UpdatePreviousSlot(boardController);
-                    //Change l'état de la carte
+                    //Change l'ï¿½tat de la carte
                     cardController.CardStateSwitch(CardController.CardState.onDesk);
                     cardController.PlayAnimationCard("IdleAnim");
 
-                    //Change l'état de la main
+                    //Change l'ï¿½tat de la main
                     cardController = null;
                     currentHandState = HandState.free;
 
@@ -172,7 +175,7 @@ public class HandController : MonoBehaviour
         }
         else
         {
-            //Si il détecte un autre collider il renvoie rien (donc il faut un collider pour le plateau)
+            //Si il dï¿½tecte un autre collider il renvoie rien (donc il faut un collider pour le plateau)
             boardSlot = null;
             boardController = null;
 
@@ -187,7 +190,7 @@ public class HandController : MonoBehaviour
         // BOUGER UNE CARTE
         if (CheckRaycastHit() == "Slot")
         {
-            //Récupère le Slot detecté et son controller
+            //Rï¿½cupï¿½re le Slot detectï¿½ et son controller
             boardSlot = hit.transform.gameObject;
             boardController = hit.transform.GetComponent<BoardController>();
 
@@ -198,13 +201,13 @@ public class HandController : MonoBehaviour
 
                 if (Input.GetMouseButtonDown(0))
                 {
-                    //Change l'état de la main
+                    //Change l'ï¿½tat de la main
                     currentHandState = HandState.free;
 
                     //Dit a la carte d'enregistrer son slot actuel
                     slotCardController.UpdatePreviousSlot(boardController);
 
-                    //Change l'état de la carte
+                    //Change l'ï¿½tat de la carte
                     slotCardController.CardStateSwitch(CardController.CardState.onDesk);
                     slotCardController.PlayAnimationCard("IdleAnim");
 
@@ -225,7 +228,7 @@ public class HandController : MonoBehaviour
                     //Repasse la main en free
                     currentHandState = HandState.free;
 
-                    //Envoie la carte selectionné sur un emplacement déjà pris
+                    //Envoie la carte selectionnï¿½ sur un emplacement dï¿½jï¿½ pris
                     slotCardController.UpdatePreviousSlot(targetCardController.boardController);
                     targetCardController.UpdatePreviousSlot(slotCardController.previousBoardController);
                     targetCardController.moveJumpHeight = 0.15f;
@@ -233,7 +236,7 @@ public class HandController : MonoBehaviour
                     slotCardController.CardStateSwitch(CardController.CardState.onDesk);
                     slotCardController.PlayAnimationCard("IdleAnim");
 
-                    //Envoie la carte visée à l'ancien emplacement de la carte selectionné
+                    //Envoie la carte visï¿½e ï¿½ l'ancien emplacement de la carte selectionnï¿½
 
                     targetCardController.CardStateSwitch(CardController.CardState.onDesk);
 
@@ -245,7 +248,7 @@ public class HandController : MonoBehaviour
         }
         else
         {
-            //Si il détecte un autre collider il renvoie rien (donc il faut un collider pour le plateau)
+            //Si il dï¿½tecte un autre collider il renvoie rien (donc il faut un collider pour le plateau)
             boardSlot = null;
             boardController = null;
 
@@ -275,11 +278,11 @@ public class HandController : MonoBehaviour
         //Set le nombre de points du line renderer
         lineRenderer.positionCount = 15;
 
-        //Récupère la distance et change le tiling des dots en fonction
+        //Rï¿½cupï¿½re la distance et change le tiling des dots en fonction
         float distanceBetween = Vector3.Distance(startPos, endPos);
         lineRenderer.material.SetFloat("_Tiling", distanceBetween * dotPerUnit);
 
-        //Récupère le point du milieu et applique un offset
+        //Rï¿½cupï¿½re le point du milieu et applique un offset
         Vector3 midPoint = (startPos + endPos) / 2;
         midPoint.y += offsetY;
 

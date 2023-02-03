@@ -19,6 +19,16 @@ public class Player : MonoBehaviour
     // Deck
     protected Queue<CardController> _cardsInDeck;
     protected List<CardController> _cardsInHand;
+    
+    
+    public enum HandState
+    {
+        free, 
+        cardSelectedOnBoard, 
+        cardSelectedInHand, 
+        waitingTurn
+    }
+    public HandState currentHandState = HandState.free;
 
     private void Awake()
     {
@@ -26,6 +36,7 @@ public class Player : MonoBehaviour
 
         _cardsInHand = new List<CardController>();
     }
+    
 
     private void Init()
     {
