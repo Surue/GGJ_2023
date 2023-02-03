@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebe44e8955786474cb2d55f7a95311bf, type: 3}
   m_Name: GenericDeck
   m_EditorClassIdentifier: 
-  _cards: []
+  _cards:
+  - cardScriptable: {fileID: 11400000, guid: 913879566f18a2c499be36da0a957aac, type: 2}
+    cardQuantity: 15
+  _cardPrefab: {fileID: 8821135303938986493, guid: 0c733bb333c084042b554b2df2eed85e, type: 3}

@@ -25,7 +25,6 @@ public class GameManager : MonoBehaviour
 {
     private EGameState _gameState = EGameState.Init;
 
-
     public Action onGameInit;
     public Action onHumanTurnStarted;
     public Action onHumanTurnFinished;
@@ -35,21 +34,33 @@ public class GameManager : MonoBehaviour
 
     private EPlayerType _currentPlayer;
     private bool _gameFinished;
-    
+
     // Init state
     private bool _hasFinishedInit;
     private bool _isInitiatingGame;
-    
+
     // Start turn 
     private bool _hasFinishedStartingTurn;
     private bool _isStartingTurn;
-    
+
     // Wait Turn
     private bool _hasFinishedWaiting;
-    
-    private void Start()
+
+    // Singleton
+    private static bool _isInit = false;
+    private static GameManager _instance;
+    public static GameManager Instance
     {
-        
+        get
+        {
+            if (!_isInit)
+            {
+                _instance = FindObjectOfType<GameManager>();
+                _isInit = true;
+            }
+
+            return _instance;
+        }
     }
 
     private void Update()

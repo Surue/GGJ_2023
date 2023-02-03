@@ -7,7 +7,9 @@ public class CardController : MonoBehaviour
 {   // --- PUBLIC ---
     // ScriptableObject
     public GameObject card;
-    public CardScriptable cardScriptableSo;
+    private CardScriptable _cardScriptable;
+    public CardScriptable CardScriptable => _cardScriptable;
+
     [Space]
     //MOVEMENT PARAMETERS
     [Header("MOVEMENT PARAMETERS")]
@@ -48,15 +50,14 @@ public class CardController : MonoBehaviour
 
     // --- PRIVATE ---
     //Save Postion
-    private Vector3 initialPosition;
-    private Quaternion initialOrientation;
+    private Vector3 _deckPosition;
     //Controllers 
-    private CardDisplay cardDisplay;
+    private CardDisplay _cardDisplay;
     public BoardController boardController;
     public BoardController previousBoardController;
     //Highlight
-    private Renderer highlightRenderer;
-    private Vector2 highlightOffset;
+    private Renderer _highlightRenderer;
+    private Vector2 _highlightOffset;
     //MOVEMENT
     //private float thresholdPlacement = 0.005f;
 
@@ -67,38 +68,42 @@ public class CardController : MonoBehaviour
 
     public enum CardState
     {
-        inHand, isOverride, isWaiting, onDesk, isSelected, isDead,
+        inHand, 
+        isOverride, 
+        isWaiting, 
+        onDesk, 
+        isSelected, 
+        isDead,
+        inDeck
     }
     public CardState currentCardState;
     public enum MoveType
     {
-        simpleMove, simpleMoveRotate, onDesk, toSelectionArea, toDesk, moveOverride, 
+        simpleMove, 
+        simpleMoveRotate, 
+        onDesk, 
+        toSelectionArea, 
+        toDesk, 
+        moveOverride, 
     }
     public MoveType lastMoveType;
 
-    void Start()
+    private void Awake()
     {
         // --- SETUP HIGHLIGHT ---
         // Récupère le component Animation de la carte
         AnimComponent = card.GetComponent<Animation>();
         // Récupère le SpriteRenderer de l'highlight
-        highlightRenderer = highlight.GetComponent<SpriteRenderer>();
+        _highlightRenderer = highlight.GetComponent<SpriteRenderer>();
         //Lance l'anim d'Idle par défaut
         PlayAnimationCard("IdleAnim");
 
         // --- SETUP DATAS ---
-        //Setup des datas de la carte (recup du ScriptableObject)
-        cardHealth = cardScriptableSo.initialHealth;
-        cardAttack = cardScriptableSo.initialAttack;
-        cardManaCost = cardScriptableSo.initialManaCost;
         //Récupère la class de gestion des visuels de la carte et met à jour l'UI
-        cardDisplay = GetComponent<CardDisplay>();
-        cardDisplay.UpdateUIStats();
+        _cardDisplay = GetComponent<CardDisplay>();
 
         // --- SETUP POSITION / MOVEMENTS (temporaire) ---
-        // Récupère la position et la rotation initiale de l'objet
-        initialPosition = handPosition.localPosition;
-        initialOrientation = handPosition.localRotation;
+
         // Récupère la zone de selection
         GameObject selectionArea = GameObject.Find("SelectionArea");
         if (selectionArea != null)
@@ -118,18 +123,32 @@ public class CardController : MonoBehaviour
         {
             Debug.LogError("selectionAreaobject is missing, it must be called 'Defausse'");
         }
-
-        // --- SETUP STATE ---
-        CardStateSwitch(CardState.inHand);
     }
 
-    void Update()
+    public void Setup(Transform deckTransform, CardScriptable scriptable)
+    {
+        // --- SETUP STATE ---
+        _cardScriptable = scriptable;
+        _deckPosition = deckTransform.position;
+        transform.position = _deckPosition;
+        transform.rotation = deckTransform.rotation;
+        CardStateSwitch(CardState.inDeck);
+        
+        _cardDisplay.UpdateUIStats();
+        
+        //Setup des datas de la carte (recup du ScriptableObject)
+        cardHealth = _cardScriptable.initialHealth;
+        cardAttack = _cardScriptable.initialAttack;
+        cardManaCost = _cardScriptable.initialManaCost;
+    }
+
+    private void Update()
     {
         isTweening = DOTween.IsTweening(transform);
         //Anim la texture de highlight
-        highlightOffset = highlightRenderer.material.GetTextureOffset("_FadeTex");
-        highlightOffset += highlightAnimSpeed * Time.deltaTime;
-        highlightRenderer.material.SetTextureOffset("_FadeTex", highlightOffset);
+        _highlightOffset = _highlightRenderer.material.GetTextureOffset("_FadeTex");
+        _highlightOffset += highlightAnimSpeed * Time.deltaTime;
+        _highlightRenderer.material.SetTextureOffset("_FadeTex", _highlightOffset);
     }
 
     public void CardStateSwitch(CardState nextCardState)
@@ -138,6 +157,10 @@ public class CardController : MonoBehaviour
         //Gère les différents états
         switch (currentCardState)
         {
+            case CardState.inDeck:
+                InDeck();
+                break;
+            
             case CardState.inHand:
                 InHandState();
                 break;
@@ -168,7 +191,13 @@ public class CardController : MonoBehaviour
     }
 
     #region STATES
-    void InHandState()
+
+    private void InDeck()
+    {
+        
+    }
+    
+    private void InHandState()
     {
         //Highlight la carte de base
         if (isInteractible)
@@ -180,23 +209,23 @@ public class CardController : MonoBehaviour
             UnHighlightCard();
         }
         //Remet la carte a sa place
-        TweenMoveCard(initialPosition, initialOrientation, 0.18f, MoveType.simpleMoveRotate);
+        // TweenMoveCard(_initialPosition, _initialOrientation, 0.18f, MoveType.simpleMoveRotate);
     }
 
-    void IsOverrideState()
+    private void IsOverrideState()
     {
         //Déplace la carte 
-        TweenMoveCard(initialPosition + Vector3.forward * 1f, initialOrientation, 0.3f, MoveType.simpleMove);
+        // TweenMoveCard(_initialPosition + Vector3.forward * 1f, _initialOrientation, 0.3f, MoveType.simpleMove);
     }
 
-    void IsWaitingState()
+    private void IsWaitingState()
     {
         //Déplace la carte dans la zone de selection
         TweenMoveCard(selectionAreaTransform.position, selectionAreaTransform.rotation, moveToAreaDuration, MoveType.toSelectionArea);
         CardInteractionCheck();
     }
 
-    void OnDeskState()
+    private void OnDeskState()
     {
         // Désactive le collider de la carte
         Collider cardCollider = this.GetComponent<Collider>();
@@ -213,14 +242,14 @@ public class CardController : MonoBehaviour
         boardController.cardController = this;
     }
 
-    void IsSelected()
+    private void IsSelected()
     {
         //MoveCard(moveToPositon, boardController.transform.localRotation, offsetYCurve, 0);
         TweenMoveCard(moveToPositon, boardController.transform.localRotation, moveToDeskDuration, MoveType.simpleMove);
         HighlightCard(Color.white);
     }
 
-    void DeadState()
+    private void DeadState()
     {
         DOTween.Kill(transform);
         TweenMoveCard(defausseTransform.localPosition, defausseTransform.localRotation, moveToDefausseDuration, MoveType.simpleMoveRotate);
@@ -294,7 +323,7 @@ public class CardController : MonoBehaviour
     {
         //Applique les dégats à la carte et update le visuel
         cardHealth -= damageAmount;
-        cardDisplay.UpdateUIStats();
+        _cardDisplay.UpdateUIStats();
 
         //Passe la carte en état "dead" si sa vie passe a 0 ou moins
         if(cardHealth <= 0)
@@ -319,14 +348,14 @@ public class CardController : MonoBehaviour
     // Fonction qui Highlight la carte
     public void HighlightCard(Color highlitghtColor)
     {
-        highlightRenderer.material.SetColor("_Color", highlitghtColor);
-        highlightRenderer.material.DOFloat(highlightAlphaMax, "_Alpha", 0.3f);
+        _highlightRenderer.material.SetColor("_Color", highlitghtColor);
+        _highlightRenderer.material.DOFloat(highlightAlphaMax, "_Alpha", 0.3f);
     }
 
     // Fonction qui enlève le highlight de la carte
     public void UnHighlightCard()
     {
-        highlightRenderer.material.DOFloat(0, "_Alpha", 0.3f);
+        _highlightRenderer.material.DOFloat(0, "_Alpha", 0.3f);
     }
     #endregion
 

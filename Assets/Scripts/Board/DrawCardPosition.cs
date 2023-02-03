@@ -11,7 +11,7 @@ public class DrawCardPosition : MonoBehaviour
     public float arrowSize = 0.5f;
     public Transform facingCard = null;
 
-    void OnDrawGizmosSelected()
+    private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Gizmos.matrix = transform.localToWorldMatrix;

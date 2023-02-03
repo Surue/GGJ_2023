@@ -20,37 +20,30 @@ public class CardDisplay : MonoBehaviour
 
     public SpriteRenderer attackType;
 
-    private CardController cardController;
-    private CardScriptable cardScriptableSo;
+    [SerializeField] private CardController cardController;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        // Setup récup du Scriptable Object
-        cardController = gameObject.GetComponent<CardController>();
-        cardScriptableSo = cardController.cardScriptableSo;
-    }
+
 
     public void UpdateUIStats()
     {
         // Setup Infos
-        nameText.text = cardScriptableSo.cardName;
-        descriptionText.text = cardScriptableSo.cardDescription;
+        nameText.text = cardController.CardScriptable.cardName;
+        descriptionText.text = cardController.CardScriptable.cardDescription;
 
         // Setup Stats
         manaText.text = cardController.cardManaCost.ToString();
 
         // Setup Illu
-        characterArtwork.sprite = cardScriptableSo.characterSprite;
-        backgroundElement.sprite = cardScriptableSo.backgroundElement;
-        backgroundColor.color = cardScriptableSo.backgroundColor;
+        characterArtwork.sprite = cardController.CardScriptable.characterSprite;
+        backgroundElement.sprite = cardController.CardScriptable.backgroundElement;
+        backgroundColor.color = cardController.CardScriptable.backgroundColor;
 
         // Setup Chara Stats
-        if (cardScriptableSo.currentType == CardScriptable.CardType.Character)
+        if (cardController.CardScriptable.currentType == CardScriptable.CardType.Character)
         {
             attText.text = cardController.cardAttack.ToString();
             healthText.text = cardController.cardHealth.ToString();
-            if (cardScriptableSo.attackType == CardScriptable.AttackType.Melee)
+            if (cardController.CardScriptable.attackType == CardScriptable.AttackType.Melee)
             {
                 // A CHANGER UNE FOIS LE VISUEL FAIT PAR LILIAN
                 //attackType.sprite = cardSO.attackMeleeSprite;

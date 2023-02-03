@@ -547,7 +547,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   card: {fileID: 8821135303853838801}
-  cardSO: {fileID: 11400000, guid: 913879566f18a2c499be36da0a957aac, type: 2}
   handPosition: {fileID: 0}
   moveToAreaDuration: 0.5
   moveToDeskDuration: 0.5
@@ -603,6 +602,7 @@ MonoBehaviour:
   backgroundElement: {fileID: 8821135304134530366}
   backgroundColor: {fileID: 8821135304001124855}
   attackType: {fileID: 1910442321639125786}
+  cardController: {fileID: 3791942290292583221}
 --- !u!65 &8821135303938986466
 BoxCollider:
   m_ObjectHideFlags: 0
