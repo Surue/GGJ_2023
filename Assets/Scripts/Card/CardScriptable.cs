@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 
 [CreateAssetMenu(fileName = "New_Character_Card", menuName = "Cards/Character")]
-public class Card : ScriptableObject
+public class CardScriptable : ScriptableObject
 {
     public enum CardType
     {
