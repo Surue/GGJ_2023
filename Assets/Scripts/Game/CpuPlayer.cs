@@ -114,13 +114,16 @@ public class CpuPlayer : Player
                 }
                 else
                 {
-                    if (cardsToAttack[0].slotController.boardLineType == EBoardLineType.Front)
+                    if (cardController.AttackSingleTarget())
                     {
-                        AttackOtherCard(cardController, cardsToAttack[0]);
+                        AttackOtherCard(cardController, cardsToAttack[Random.Range(0, cardsToAttack.Count)]);
                     }
                     else
                     {
-                        AttackOtherCard(cardController, cardsToAttack[1]);
+                        foreach (var controller in cardsToAttack)
+                        {
+                            AttackOtherCard(cardController, controller);
+                        }
                     }
                 }
             }
