@@ -31,6 +31,10 @@ public class Player : MonoBehaviour
     protected List<CardController> _cardsOnBoard;
     protected List<CardController> _cardsDiscarded;
     
+    public Queue<CardController> CardsInDeck => _cardsInDeck;
+    public List<CardController> CardsInHand => _cardsInHand;
+    public List<CardController> CardsOnBoard => _cardsOnBoard;
+    public List<CardController> CardsDiscarded => _cardsDiscarded;
     
     // Health
     private int _currentHealth;
