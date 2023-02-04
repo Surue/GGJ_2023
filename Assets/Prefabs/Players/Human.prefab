@@ -925,14 +925,14 @@ MonoBehaviour:
   - {fileID: 6252410726043828947}
   - {fileID: 6252410725994834316}
   _boardSlots:
-  - {fileID: 1046463237487976035}
-  - {fileID: 1046463237165712760}
-  - {fileID: 1046463237943504824}
-  - {fileID: 1046463238226510815}
   - {fileID: 1046463238052388876}
   - {fileID: 1046463238013906477}
   - {fileID: 1046463238517952767}
   - {fileID: 1046463238789455266}
+  - {fileID: 1046463237487976035}
+  - {fileID: 1046463237165712760}
+  - {fileID: 1046463237943504824}
+  - {fileID: 1046463238226510815}
   currentHandState: 0
   _lineIcon: {fileID: 6252410725100379906}
   _lineIconRenderer: {fileID: 6252410725100379908}
@@ -1296,7 +1296,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6359309897482650585, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
       propertyPath: m_Name
-      value: BoardSlot
+      value: BoardSlot (4)
       objectReference: {fileID: 0}
     - target: {fileID: 6359309897482650587, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
       propertyPath: m_RootOrder
@@ -1369,7 +1369,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6359309897482650585, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
       propertyPath: m_Name
-      value: BoardSlot (1)
+      value: BoardSlot (5)
       objectReference: {fileID: 0}
     - target: {fileID: 6359309897482650587, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
       propertyPath: m_RootOrder
@@ -1442,7 +1442,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6359309897482650585, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
       propertyPath: m_Name
-      value: BoardSlot (7)
+      value: BoardSlot (2)
       objectReference: {fileID: 0}
     - target: {fileID: 6359309897482650587, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
       propertyPath: m_RootOrder
@@ -1515,7 +1515,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6359309897482650585, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
       propertyPath: m_Name
-      value: BoardSlot (4)
+      value: BoardSlot (3)
       objectReference: {fileID: 0}
     - target: {fileID: 6359309897482650587, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
       propertyPath: m_RootOrder
@@ -1588,7 +1588,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6359309897482650585, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
       propertyPath: m_Name
-      value: BoardSlot (2)
+      value: BoardSlot (6)
       objectReference: {fileID: 0}
     - target: {fileID: 6359309897482650587, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
       propertyPath: m_RootOrder
@@ -1661,7 +1661,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6359309897482650585, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
       propertyPath: m_Name
-      value: BoardSlot (6)
+      value: BoardSlot (1)
       objectReference: {fileID: 0}
     - target: {fileID: 6359309897482650587, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
       propertyPath: m_RootOrder
@@ -1734,7 +1734,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6359309897482650585, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
       propertyPath: m_Name
-      value: BoardSlot (5)
+      value: BoardSlot (0)
       objectReference: {fileID: 0}
     - target: {fileID: 6359309897482650587, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
       propertyPath: m_RootOrder
@@ -1807,7 +1807,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6359309897482650585, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
       propertyPath: m_Name
-      value: BoardSlot (3)
+      value: BoardSlot (7)
       objectReference: {fileID: 0}
     - target: {fileID: 6359309897482650587, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
       propertyPath: m_RootOrder

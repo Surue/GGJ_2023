@@ -27,6 +27,7 @@ public class Player : MonoBehaviour
     protected Queue<CardController> _cardsInDeck;
     protected List<CardController> _cardsInHand;
     protected List<CardController> _cardsOnBoard;
+    protected List<CardController> _cardsDiscarded;
     
     // Finish turn 
     protected bool _hasFinishedTurn;
@@ -60,6 +61,7 @@ public class Player : MonoBehaviour
 
         _cardsInHand = new List<CardController>();
         _cardsOnBoard = new List<CardController>();
+        _cardsDiscarded = new List<CardController>();
 
         _currentHealth = _gameRules.MaxHealth;
         _currentMana = _gameRules.InitialMana;
@@ -69,6 +71,11 @@ public class Player : MonoBehaviour
             if(player == this) continue;
 
             _otherPlayer = player;
+        }
+
+        for (var i = 0; i < _boardSlots.Count; i++)
+        {
+            _boardSlots[i].Setup(i);
         }
     }
 
@@ -200,6 +207,22 @@ public class Player : MonoBehaviour
     {
         attackingCard.Attack();
         attackingCard.CardStateSwitch(CardController.CardState.onDesk);
+        
+        attackingCard.CardTakeDamage(defendingCard.cardAttack);
+        defendingCard.CardTakeDamage(attackingCard.cardAttack);
+
+        if (attackingCard.cardHealth <= 0)
+        {
+            _cardsOnBoard.Remove(attackingCard);
+            _cardsDiscarded.Add(attackingCard);
+        }
+        
+
+        if (defendingCard.cardHealth <= 0)
+        {
+            _otherPlayer._cardsOnBoard.Remove(defendingCard);
+            _otherPlayer._cardsDiscarded.Add(defendingCard);
+        }
     }
     
     protected List<CardController> GetPossibleCardToAttack(CardController attackingCard)

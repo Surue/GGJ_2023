@@ -104,7 +104,21 @@ public class CpuPlayer : Player
 
             if (cardsToAttack.Count > 0)
             {
-                Debug.Log("ICI");
+                if (cardsToAttack.Count == 1)
+                {
+                    AttackOtherCard(cardController, cardsToAttack[0]);
+                }
+                else
+                {
+                    if (cardsToAttack[0].boardController.boardLineType == EBoardLineType.Front)
+                    {
+                        AttackOtherCard(cardController, cardsToAttack[0]);
+                    }
+                    else
+                    {
+                        AttackOtherCard(cardController, cardsToAttack[1]);
+                    }
+                }
             }
             else
             {
