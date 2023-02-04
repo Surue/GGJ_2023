@@ -58,14 +58,11 @@ public class CardController : MonoBehaviour
     //Highlight
     private Renderer _highlightRenderer;
     private Vector2 _highlightOffset;
-    //MOVEMENT
-    //private float thresholdPlacement = 0.005f;
 
-    // --- ARCHIVES ---
-    [HideInInspector] public float lerpSpeed = 4f; // la vitesse de transition
-    [HideInInspector] public float lerpRotationSpeed = 8f;
-    [HideInInspector] public AnimationCurve offsetYCurve;
-
+    // Attack
+    private int _remainingAttackCharge;
+    private int _maxAttackCharge;
+    
     public enum CardState
     {
         inHand, 
@@ -127,6 +124,9 @@ public class CardController : MonoBehaviour
         cardManaCost = CardScriptable.initialManaCost;
         cardHealth = CardScriptable.initialHealth;
         cardAttack = CardScriptable.initialAttack;
+
+        _maxAttackCharge = CardScriptable.initialAttackCharge;
+        _remainingAttackCharge = _maxAttackCharge;
     }
 
     public void Setup(Transform deckTransform)
@@ -196,6 +196,16 @@ public class CardController : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    public bool CanAttack()
+    {
+        return _remainingAttackCharge > 0;
+    }
+
+    public void Attack()
+    {
+        _remainingAttackCharge--;
     }
 
     #region STATES
@@ -313,7 +323,6 @@ public class CardController : MonoBehaviour
     }
     #endregion
 
-    //Fonction qui gère l'interaction de la carte
     public void CardInteractionCheck()
     {
         if (currentCardState is CardState.isWaiting or CardState.isDead)
@@ -326,7 +335,6 @@ public class CardController : MonoBehaviour
         }
     }
 
-    // Fonction qui applique un montant de dégat et update l'UI
     public void CardTakeDamage(int damageAmount)
     {
         //Applique les dégats à la carte et update le visuel
@@ -381,31 +389,5 @@ public class CardController : MonoBehaviour
         //Joue l'animation Idle de la carte
         AnimComponent.PlayQueued(animationName);
     }
-    #endregion
-
-    #region ARCHIVES
-    // OBSOLETE --- Fonction qui lerp la carte a une position et une rotation donnée et applique une offset en Y pendant le lerp 
-    //public void MoveCard(Vector3 endPosition, Quaternion endRotation, AnimationCurve offsetYCurve, float offsetYMax)
-    //{
-    //    float progress = (Time.time - startMoveTime) * lerpSpeed;
-    //    float offsetY = offsetYCurve.Evaluate(progress) * offsetYMax;
-
-    //    Vector3 targetPosition = new Vector3(endPosition.x, endPosition.y + offsetY, endPosition.z);
-    //    if (Vector3.Distance(transform.localPosition, targetPosition) < thresholdPlacement)
-    //    {
-    //        transform.localPosition = targetPosition;
-    //        transform.localRotation = endRotation;
-    //        startMoveTime = 0;
-    //    }
-    //    else
-    //    {
-    //        transform.localPosition = Vector3.Lerp(transform.localPosition, targetPosition, lerpSpeed * Time.deltaTime);
-    //        transform.localRotation = Quaternion.Lerp(transform.localRotation, endRotation, lerpRotationSpeed * Time.deltaTime);
-    //        if (startMoveTime == 0)
-    //        {
-    //            startMoveTime = Time.time;
-    //        }
-    //    }
-    //}
     #endregion
 }

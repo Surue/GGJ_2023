@@ -40,7 +40,9 @@ public class CardScriptable : ScriptableObject
     public int initialHealth;
 
     public int initialAttack;
-    
+
+    public int initialAttackCharge = 1;
+
     // // ILLUSTRATION
     // [Header("Card Illustration")]
     // public Sprite characterSprite;

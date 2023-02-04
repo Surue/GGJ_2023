@@ -83,15 +83,16 @@ public class GameManager : MonoBehaviour
             case EGameState.StartHumanTurn:
                 if (!_isStartingTurn)
                 {
+                    _hasFinishedStartingTurn = false;
                     _currentPlayer = EPlayerType.Human;
                     StartTurn(EPlayerType.Human);
                     _isStartingTurn = true;
                 }
 
-                if (_hasFinishedInit)
+                if (_hasFinishedStartingTurn)
                 {
                     _gameState = EGameState.WaitHumanTurnEnd;
-                    _hasFinishedInit = false;
+                    _hasFinishedStartingTurn = false;
                     _hasFinishedWaiting = false;
                     _isStartingTurn = false;
                 }
@@ -110,15 +111,16 @@ public class GameManager : MonoBehaviour
             case EGameState.StartCpuTurn:
                 if (!_isStartingTurn)
                 {
+                    _hasFinishedStartingTurn = false;
                     _currentPlayer = EPlayerType.CPU;
                     StartTurn(EPlayerType.CPU);
                     _isStartingTurn = true;
                 }
                 
-                if (_hasFinishedInit)
+                if (_hasFinishedStartingTurn)
                 {
-                    _gameState = EGameState.WaitHumanTurnEnd;
-                    _hasFinishedInit = false;
+                    _gameState = EGameState.WaitCpuTurnEnd;
+                    _hasFinishedStartingTurn = false;
                     _hasFinishedWaiting = false;
                     _isStartingTurn = false;
                 }
@@ -219,5 +221,10 @@ public class GameManager : MonoBehaviour
     public void NextTurn()
     {
         _hasFinishedWaiting = true;
+    }
+
+    public void HasFinishedStartingTurn()
+    {
+        _hasFinishedStartingTurn = true;
     }
 }
