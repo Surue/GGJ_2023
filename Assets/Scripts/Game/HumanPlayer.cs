@@ -42,16 +42,16 @@ public class HumanPlayer : Player
 
         switch (currentHandState)
         {
-            case HandState.free:
+            case HandState.Free:
                 FreeState();
                 break;
-            case HandState.cardSelectedOnBoard:
+            case HandState.CardSelectedOnBoard:
                 CardSelectedState();
                 break;
-            case HandState.cardSelectedInHand:
+            case HandState.CardSelectedInHand:
                 CardInvokeOnDesk();
                 break;
-            case HandState.waitingTurn:
+            case HandState.WaitingTurn:
 
                 break;
             default:
@@ -94,16 +94,13 @@ public class HumanPlayer : Player
         }
 
         // Check if player select card in hands
-        if (Input.GetMouseButtonDown(0) && activeCardController != null)
+        if (Input.GetMouseButtonDown(0) && activeCardController != null && activeCardController.isInteractible)
         {
-            if (activeCardController.isInteractible)
-            {
-                activeCardController.CardStateSwitch(CardController.CardState.isWaiting);
-                activeCardController.PlayAnimationCard("ActiveAnim");
-                currentHandState = HandState.cardSelectedInHand;
+            activeCardController.CardStateSwitch(CardController.CardState.isWaiting);
+            activeCardController.PlayAnimationCard("ActiveAnim");
+            currentHandState = HandState.CardSelectedInHand;
 
-                _cardTransform = _hit.transform.GetComponent<Transform>();
-            }
+            _cardTransform = _hit.transform.GetComponent<Transform>();
         }
 
         // Check if hover slots
@@ -111,7 +108,7 @@ public class HumanPlayer : Player
         {
             _boardController = _hit.transform.GetComponent<BoardController>();
 
-            if (_boardController.containCard is not true) return;
+            if (!_boardController.containCard) return;
             
             _slotCardController = _boardController.cardController;
 
@@ -121,7 +118,7 @@ public class HumanPlayer : Player
                 _slotCardController.moveToPositon = _slotCardController.transform.localPosition + Vector3.up * 0.25f;
                 _slotCardController.CardStateSwitch(CardController.CardState.isSelected);
                 _slotCardController.PlayAnimationCard("ActiveAnim");
-                currentHandState = HandState.cardSelectedOnBoard;
+                currentHandState = HandState.CardSelectedOnBoard;
 
                 // [TEST] pour draw line
                 _cardTransform = _hit.transform.GetComponent<Transform>();
@@ -133,7 +130,6 @@ public class HumanPlayer : Player
     {
         if (CheckRaycastHit() == "Slot")
         {
-            //R�cup�re le Slot detect� et son controller
             _boardSlot = _hit.transform.gameObject;
             _boardController = _hit.transform.GetComponent<BoardController>();
 
@@ -143,15 +139,12 @@ public class HumanPlayer : Player
 
                 if (Input.GetMouseButtonDown(0))
                 {
-                    //Dit a la carte d'enregistrer son slot actuel
                     activeCardController.UpdatePreviousSlot(_boardController);
-                    //Change l'�tat de la carte
                     activeCardController.CardStateSwitch(CardController.CardState.onDesk);
                     activeCardController.PlayAnimationCard("IdleAnim");
 
-                    //Change l'�tat de la main
                     activeCardController = null;
-                    currentHandState = HandState.free;
+                    currentHandState = HandState.Free;
 
                     // [TEST LINE] Desactiver la line
                     _lineRenderer.enabled = false;
@@ -165,7 +158,6 @@ public class HumanPlayer : Player
         }
         else
         {
-            //Si il d�tecte un autre collider il renvoie rien (donc il faut un collider pour le plateau)
             _boardSlot = null;
             _boardController = null;
 
@@ -188,17 +180,10 @@ public class HumanPlayer : Player
 
                 if (Input.GetMouseButtonDown(0))
                 {
-                    //Change l'�tat de la main
-                    currentHandState = HandState.free;
-
-                    //Dit a la carte d'enregistrer son slot actuel
-                    _slotCardController.UpdatePreviousSlot(_boardController);
-
-                    //Change l'�tat de la carte
-                    _slotCardController.CardStateSwitch(CardController.CardState.onDesk);
-                    _slotCardController.PlayAnimationCard("IdleAnim");
-
-                    // [TEST LINE] Desactiver la line
+                    currentHandState = HandState.Free;
+                    
+                    DropCardOnBoard(_slotCardController, _boardController);
+                    
                     _lineRenderer.enabled = false;
                     _lineIcon.SetActive(false);
                 }
@@ -210,17 +195,9 @@ public class HumanPlayer : Player
 
                 if (Input.GetMouseButtonDown(0) & _targetCardController.canMove)
                 {
-                    //Repasse la main en free
-                    currentHandState = HandState.free;
-
-                    _slotCardController.UpdatePreviousSlot(_targetCardController.boardController);
-                    _targetCardController.UpdatePreviousSlot(_slotCardController.previousBoardController);
-                    _targetCardController.moveJumpHeight = 0.15f;
-                    _slotCardController.moveJumpHeight = 0.5f;
-                    _slotCardController.CardStateSwitch(CardController.CardState.onDesk);
-                    _slotCardController.PlayAnimationCard("IdleAnim");
-
-                    _targetCardController.CardStateSwitch(CardController.CardState.onDesk);
+                    currentHandState = HandState.Free;
+                    
+                    SwapCardOnBoard(_slotCardController, _targetCardController);
 
                     _lineRenderer.enabled = false;
                     _lineIcon.SetActive(false);

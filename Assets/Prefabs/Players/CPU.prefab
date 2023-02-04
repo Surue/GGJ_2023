@@ -706,10 +706,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _deckScriptable: {fileID: 11400000, guid: c18e9939f13571240b7474e285559558, type: 2}
-  _maxNumberOfCardInHand: 5
-  _maxHealthPoint: 30
-  _maxManaPoint: 10
-  _initialManaPoint: 3
+  _gameRules: {fileID: 11400000, guid: e3ae48cc240c93641817ae0fbc85cbc2, type: 2}
   _deckObject: {fileID: 4737758270311498518}
   _discardObject: {fileID: 4737758271979231340}
   _cardParent: {fileID: 4737758270540763096}
