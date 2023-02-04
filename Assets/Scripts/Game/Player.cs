@@ -249,13 +249,32 @@ public class Player : MonoBehaviour
     
     protected List<CardController> GetPossibleCardToAttack(CardController attackingCard)
     {
-        // TODO handle all type of attack
-        return GetColumnInFront(attackingCard);
+        var result = new List<CardController>();
+        switch (attackingCard.CardScriptable.AttackScriptable.AttackType)
+        {
+            case EAttackType.Front:
+                if (TryGetCardInFront(attackingCard, out var card))
+                {
+                    result.Add(card);
+                }
+                break;
+            case EAttackType.FrontAndBack:
+                result.AddRange(GetColumnInFront(attackingCard));
+                break;
+            case EAttackType.FrontLine:
+                result.AddRange(GetLine(EBoardLineType.Front));
+                break;
+            case EAttackType.NoAttack:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+        return result;
     }
     
     #region Get Cards On Board
-   
-    protected List<CardController> GetLine(EBoardLineType boardLineType)
+
+    private List<CardController> GetLine(EBoardLineType boardLineType)
     {
         var result = new List<CardController>();
         switch (boardLineType)
@@ -285,7 +304,7 @@ public class Player : MonoBehaviour
         return result;
     }
 
-    protected List<CardController> GetColumn(int columnId)
+    private List<CardController> GetColumn(int columnId)
     {
         var result = new List<CardController>();
 
@@ -298,8 +317,8 @@ public class Player : MonoBehaviour
         
         return result;
     }
-    
-    protected List<CardController> GetColumnInFront(CardController cardController)
+
+    private List<CardController> GetColumnInFront(CardController cardController)
     {
         return _otherPlayer.GetColumn(GetColumnIdOfOtherPlayer(cardController.slotController.columnID));
     }
@@ -314,7 +333,7 @@ public class Player : MonoBehaviour
         return cardController.slotController.boardLineType == EBoardLineType.Back;
     }
 
-    protected bool TryGetCardInFront(CardController cardController, out CardController result)
+    private bool TryGetCardInFront(CardController cardController, out CardController result)
     {
         if (cardController.slotController.boardLineType == EBoardLineType.Back)
         {
@@ -340,8 +359,8 @@ public class Player : MonoBehaviour
             return false;
         }
     }
-    
-    protected bool TryGetCardInBack(CardController cardController, out CardController result)
+
+    private bool TryGetCardInBack(CardController cardController, out CardController result)
     {
         if (cardController.slotController.boardLineType == EBoardLineType.Front)
         {
