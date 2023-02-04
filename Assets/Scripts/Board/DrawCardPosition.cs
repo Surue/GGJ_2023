@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using MiniTools.BetterGizmos;
 
@@ -21,6 +19,5 @@ public class DrawCardPosition : MonoBehaviour
         {
             BetterGizmos.DrawViewFacingArrow(Color.red, transform.position, facingCard.position, arrowSize);
         }
-
     }
 }
