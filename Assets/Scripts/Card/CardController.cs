@@ -35,8 +35,8 @@ public class CardController : MonoBehaviour
     public bool isInteractible = true;
     public bool isOverride;
     public bool isTweening;
-    public Transform selectionAreaTransform;
-    public Transform defausseTransform;
+    private Transform _selectionAreaTransform;
+    private Transform _discardTransform;
 
     // --- PUBLIC HIDE ---
     [HideInInspector] public float startMoveTime = 0;
@@ -91,40 +91,15 @@ public class CardController : MonoBehaviour
 
     private void Awake()
     {
-        // --- SETUP HIGHLIGHT ---
-        // Récupère le component Animation de la carte
-        AnimComponent = card.GetComponent<Animation>();
-        // Récupère le SpriteRenderer de l'highlight
+        // Get components
+        _cardDisplay = GetComponent<GUI_CardDisplay>();
         _highlightRenderer = highlight.GetComponent<SpriteRenderer>();
-        //Lance l'anim d'Idle par défaut
+        AnimComponent = card.GetComponent<Animation>();
+
+        // Play default animation
         PlayAnimationCard("IdleAnim");
 
-        // --- SETUP DATAS ---
-        //Récupère la class de gestion des visuels de la carte et met à jour l'UI
-        _cardDisplay = GetComponent<GUI_CardDisplay>();
-
-        // --- SETUP POSITION / MOVEMENTS (temporaire) ---
-
-        // Récupère la zone de selection
-        GameObject selectionArea = GameObject.Find("SelectionArea");
-        if (selectionArea != null)
-        {
-            selectionAreaTransform = selectionArea.transform;
-        }
-        else
-        {
-            Debug.LogError("selectionAreaobject is missing, it must be called 'SelectionArea'");
-        }
-        GameObject defausse = GameObject.Find("Discard");
-        if (defausse != null)
-        {
-            defausseTransform = defausse.transform;
-        }
-        else
-        {
-            Debug.LogError("selectionAreaobject is missing, it must be called 'Discard'");
-        }
-
+        // Set default values
         cardManaCost = CardScriptable.initialManaCost;
         cardHealth = CardScriptable.initialHealth;
         cardAttack = CardScriptable.initialAttack;
@@ -133,7 +108,7 @@ public class CardController : MonoBehaviour
         _remainingAttackCharge = _maxAttackCharge;
     }
 
-    public void Setup(Transform deckTransform)
+    public void Setup(Transform deckTransform, Transform discardTransform, Transform selectionTransform)
     {
         // --- SETUP STATE ---
         _deckPosition = deckTransform.position;
@@ -147,6 +122,10 @@ public class CardController : MonoBehaviour
         cardHealth = _cardScriptable.initialHealth;
         cardAttack = _cardScriptable.initialAttack;
         cardManaCost = _cardScriptable.initialManaCost;
+        
+        // Setup selection area and discard area
+        _selectionAreaTransform = selectionTransform;
+        _discardTransform = discardTransform;
     }
     
     public void SetHandSlot(Transform handSlotTransform)
@@ -245,7 +224,7 @@ public class CardController : MonoBehaviour
     private void IsWaitingState()
     {
         //Déplace la carte dans la zone de selection
-        TweenMoveCard(selectionAreaTransform.position, selectionAreaTransform.rotation, moveToAreaDuration, MoveType.toSelectionArea);
+        TweenMoveCard(_selectionAreaTransform.position, _selectionAreaTransform.rotation, moveToAreaDuration, MoveType.toSelectionArea);
         RefreshInteractionCheck();
     }
 
@@ -278,7 +257,7 @@ public class CardController : MonoBehaviour
     private void DeadState()
     {
         DOTween.Kill(transform);
-        TweenMoveCard(defausseTransform.localPosition, defausseTransform.localRotation, moveToDefausseDuration, MoveType.simpleMoveRotate);
+        TweenMoveCard(_discardTransform.localPosition, _discardTransform.localRotation, moveToDefausseDuration, MoveType.simpleMoveRotate);
         RefreshInteractionCheck();
     }
     #endregion
@@ -336,6 +315,7 @@ public class CardController : MonoBehaviour
             default:
                 break;
         }
+
     }
     #endregion
 

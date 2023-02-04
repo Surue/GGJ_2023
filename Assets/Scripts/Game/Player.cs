@@ -19,6 +19,7 @@ public class Player : MonoBehaviour
     [Header("Object on board")]
     [SerializeField] protected GameObject _deckObject;
     [SerializeField] protected GameObject _discardObject;
+    [SerializeField] protected GameObject _selectionObject;
     [SerializeField] protected GameObject _cardParent;
     [SerializeField] protected List<GameObject> _handSlots;
     [SerializeField] protected List<BoardController> _boardSlots;
@@ -27,6 +28,7 @@ public class Player : MonoBehaviour
     protected Queue<CardController> _cardsInDeck;
     protected List<CardController> _cardsInHand;
     protected List<CardController> _cardsOnBoard;
+    protected List<CardController> _cardsDiscarded;
     
     // Finish turn 
     protected bool _hasFinishedTurn;
@@ -60,6 +62,7 @@ public class Player : MonoBehaviour
 
         _cardsInHand = new List<CardController>();
         _cardsOnBoard = new List<CardController>();
+        _cardsDiscarded = new List<CardController>();
 
         _currentHealth = _gameRules.MaxHealth;
         _currentMana = _gameRules.InitialMana;
@@ -70,13 +73,18 @@ public class Player : MonoBehaviour
 
             _otherPlayer = player;
         }
+
+        for (var i = 0; i < _boardSlots.Count; i++)
+        {
+            _boardSlots[i].Setup(i);
+        }
     }
 
     private void Init()
     {
         _cardsInDeck = new Queue<CardController>();
 
-        _deckScriptable.FillList(ref _cardsInDeck, _deckObject.transform);
+        _deckScriptable.FillList(ref _cardsInDeck, _deckObject.transform, _discardObject.transform, _selectionObject.transform);
 
         foreach (var cardController in _cardsInDeck)
         {
@@ -200,6 +208,21 @@ public class Player : MonoBehaviour
     {
         attackingCard.Attack();
         attackingCard.SetCardState(CardController.CardState.onDesk);
+        
+        attackingCard.CardTakeDamage(defendingCard.cardAttack);
+        defendingCard.CardTakeDamage(attackingCard.cardAttack);
+
+        if (attackingCard.cardHealth <= 0)
+        {
+            _cardsOnBoard.Remove(attackingCard);
+            _cardsDiscarded.Add(attackingCard);
+        }
+        
+        if (defendingCard.cardHealth <= 0)
+        {
+            _otherPlayer._cardsOnBoard.Remove(defendingCard);
+            _otherPlayer._cardsDiscarded.Add(defendingCard);
+        }
     }
     
     protected List<CardController> GetPossibleCardToAttack(CardController attackingCard)

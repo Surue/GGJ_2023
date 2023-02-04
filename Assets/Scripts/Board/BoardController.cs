@@ -38,11 +38,6 @@ public class BoardController : MonoBehaviour
         columnID = index % 4;
     }
     
-    private void Update()
-    {
-
-    }
-
     void OnDrawGizmosSelected()
     {
         // dessin de l'overlapBox pour faciliter la visualisation

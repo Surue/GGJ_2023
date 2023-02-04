@@ -28,7 +28,7 @@ public class DeckScriptable : ScriptableObject
         return count;
     }
 
-    public void FillList(ref Queue<CardController> refCardList, Transform deckTransform)
+    public void FillList(ref Queue<CardController> refCardList, Transform deckTransform, Transform discardTransform, Transform selectionTransform)
     {
         List<CardController> shuffledCards = new List<CardController>();
         foreach (var pairCardQuantity in _cards)
@@ -38,7 +38,7 @@ public class DeckScriptable : ScriptableObject
                 var instance = Instantiate(pairCardQuantity.cardPrefab);
                 var cardController = instance.GetComponent<CardController>();
 
-                cardController.Setup(deckTransform);
+                cardController.Setup(deckTransform, discardTransform, selectionTransform);
                 shuffledCards.Add(cardController);
             }
         }
