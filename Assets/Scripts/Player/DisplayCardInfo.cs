@@ -22,6 +22,14 @@ public class DisplayCardInfo : MonoBehaviour
             {
                 _cardController = slotController.cardController;
             }
+            else
+            {
+                if (Input.GetMouseButtonDown(1) && currentDisplayedCard)
+                {
+                    Destroy(currentDisplayedCard);
+                    _cardController = null;
+                }
+            }
         }
         else if (layerHitName == "Card")
         {
@@ -38,14 +46,23 @@ public class DisplayCardInfo : MonoBehaviour
         }
         if (_cardController)
         {
-            if (Input.GetMouseButtonDown(1))
+            if (_cardController.currentCardState == CardController.CardState.onDesk || _humanPlayer.CardsInHand.Contains(_cardController))
             {
-                InstantiateCardInfo(_cardController);
+                if (Input.GetMouseButtonDown(1))
+                {
+                    InstantiateCardInfo(_cardController);
+                }
+            }
+            else
+            {
+                if (Input.GetMouseButtonDown(1) && currentDisplayedCard)
+                {
+                    Destroy(currentDisplayedCard);
+                    _cardController = null;
+                }
             }
         }
-
     }
-
 
     private void InstantiateCardInfo(CardController cardController)
     {
@@ -58,6 +75,7 @@ public class DisplayCardInfo : MonoBehaviour
         currentCardControler = currentDisplayedCard.GetComponent<CardController>();
         currentCardControler.UnHighlightCard();
         currentCardControler.PlayAnimationCard("ActiveAnim");
-
+        Collider cardCollider = currentDisplayedCard.GetComponent<Collider>();
+        cardCollider.enabled = false;
     }
 }
