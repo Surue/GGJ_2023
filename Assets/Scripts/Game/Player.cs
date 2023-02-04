@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     [SerializeField] protected GameObject _discardObject;
     [SerializeField] protected GameObject _cardParent;
     [SerializeField] protected List<GameObject> _handSlots;
+    [SerializeField] protected List<BoardController> _boardSlots;
     
     // Deck
     protected Queue<CardController> _cardsInDeck;
@@ -30,7 +31,7 @@ public class Player : MonoBehaviour
     
     // Mana
     private int _previousManaGain;
-    private int _currentMana;
+    protected int _currentMana;
     public Action<int, int> OnManaChanged;
     
     // Other player
@@ -164,6 +165,13 @@ public class Player : MonoBehaviour
         card2.CardStateSwitch(CardController.CardState.onDesk);
         
         UseMana(_gameRules.CardSwapManaCost);
+    }
+
+    protected void SetCardWaiting(CardController cardController)
+    {
+        cardController.CardStateSwitch(CardController.CardState.isWaiting);
+        cardController.PlayAnimationCard("ActiveAnim");
+        currentHandState = HandState.CardSelectedInHand;
     }
 
     protected void UseMana(int manaCost)

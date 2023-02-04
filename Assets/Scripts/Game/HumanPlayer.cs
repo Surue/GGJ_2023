@@ -84,7 +84,7 @@ public class HumanPlayer : Player
         if (CheckRaycastHit() == "Card")
         {
             var tmpCard = _hit.transform.GetComponent<CardController>();
-            if (tmpCard.currentCardState == CardController.CardState.inHand)
+            if (tmpCard.currentCardState == CardController.CardState.inHand && _cardsInHand.Contains(tmpCard))
             {
                 if (activeCardController != null && activeCardController != tmpCard)
                 {
@@ -108,9 +108,7 @@ public class HumanPlayer : Player
         // Check if player select card in hands
         if (Input.GetMouseButtonDown(0) && activeCardController != null && CanDropCardOnBoard(activeCardController) && activeCardController.isInteractible)
         {
-            activeCardController.CardStateSwitch(CardController.CardState.isWaiting);
-            activeCardController.PlayAnimationCard("ActiveAnim");
-            currentHandState = HandState.CardSelectedInHand;
+            SetCardWaiting(activeCardController);
 
             _cardTransform = _hit.transform.GetComponent<Transform>();
         }
@@ -118,14 +116,17 @@ public class HumanPlayer : Player
         // Check if hover slots
         if (CheckRaycastHit() == "Slot")
         {
-            _boardController = _hit.transform.GetComponent<BoardController>();
+            var tmpBoardController = _hit.transform.GetComponent<BoardController>();
+            // if (!_boardSlots.Contains(tmpBoardController)) return;
+            
+            _boardController = tmpBoardController;
 
             if (!_boardController.containCard) return;
             
             _slotCardController = _boardController.cardController;
 
             // Check if player click on a slot
-            if ((CanDropCardOnBoard(_slotCardController) || CanMoveCardOnBoard()) && Input.GetMouseButtonDown(0) && _slotCardController.isInteractible && _slotCardController.boardController.PlayerType == EPlayerType.Human)
+            if ((CanDropCardOnBoard(_slotCardController) || CanMoveCardOnBoard() || _slotCardController.CanAttack()) && Input.GetMouseButtonDown(0) && _slotCardController.isInteractible && _slotCardController.boardController.PlayerType == EPlayerType.Human)
             {
                 _slotCardController.moveToPositon = _slotCardController.transform.localPosition + Vector3.up * 0.25f;
                 _slotCardController.CardStateSwitch(CardController.CardState.isSelected);
@@ -292,7 +293,7 @@ public class HumanPlayer : Player
             B = (1 - t) * (1 - t) * startPos + 2 * (1 - t) * t * midPoint + t * t * lineCurrentEndPos;
             
             _lineRenderer.SetPosition(i, B);
-            t += (1 / (float)_lineRenderer.positionCount);
+            t += (1 / (float) _lineRenderer.positionCount);
         }
     }
 
