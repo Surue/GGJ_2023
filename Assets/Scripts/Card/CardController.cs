@@ -123,6 +123,10 @@ public class CardController : MonoBehaviour
         {
             Debug.LogError("selectionAreaobject is missing, it must be called 'Discard'");
         }
+
+        cardManaCost = CardScriptable.initialManaCost;
+        cardHealth = CardScriptable.initialHealth;
+        cardAttack = CardScriptable.initialAttack;
     }
 
     public void Setup(Transform deckTransform)
