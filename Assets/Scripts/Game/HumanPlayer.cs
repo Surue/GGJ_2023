@@ -353,6 +353,21 @@ public class HumanPlayer : Player
 
     }
 
+    public string CheckRaycastHit(out RaycastHit hit)
+    {
+        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out _hit))
+        {
+            hit = _hit;
+            return _hit.collider.tag;
+        }
+        else
+        {
+            hit = new RaycastHit();
+            return null;
+        }
+
+    }
 
     private void StartTurn()
     {
