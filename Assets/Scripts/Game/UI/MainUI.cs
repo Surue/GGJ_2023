@@ -8,11 +8,18 @@ public class MainUI : MonoBehaviour
 {
     [Header("Human")]
     [SerializeField] private Button _nextTurn;
-    [SerializeField] private TextMeshProUGUI _manaTextPlayer;
-    [SerializeField] private TextMeshProUGUI _healthTextPlayer;
+    [SerializeField] private TMP_Text _manaTextPlayer;
+    [SerializeField] private TMP_Text _healthTextPlayer;
     [Header("CPU")]
-    [SerializeField] private TextMeshProUGUI _manaTextCpu;
-    [SerializeField] private TextMeshProUGUI _healthTextCpu;
+    [SerializeField] private TMP_Text _manaTextCpu;
+    [SerializeField] private TMP_Text _healthTextCpu;
+
+    [Header("Turn Transition")] 
+    [SerializeField] private GameObject _panel;
+    [SerializeField] private TMP_Text _textTurnTransition;
+    [SerializeField] private Image _imageTurnTransition;
+    [SerializeField] private float _timeFadeTurnTransition;
+    [SerializeField] private float _timeOnScreenTurnTransition;
 
     private HumanPlayer _humanPlayer;
     private CpuPlayer _cpuPlayer;
@@ -30,6 +37,9 @@ public class MainUI : MonoBehaviour
 
         _cpuPlayer.OnHealthChanged += UpdateHealthCpu;
         _cpuPlayer.OnManaChanged += UpdateManaCpu;
+
+        GameManager.Instance.onCpuTurnStarted += OnCpuStartTurn;
+        GameManager.Instance.onHumanTurnStarted += OnHumanStartTurn;
     }
 
     private void UpdateHealthHuman(int newHealth, int maxHealth)
@@ -50,5 +60,58 @@ public class MainUI : MonoBehaviour
     private void UpdateManaCpu(int newMana, int maxMana)
     {
         _manaTextCpu.SetText($"Mana {newMana}/{maxMana}");
+    }
+
+    private void OnHumanStartTurn()
+    {
+        StartCoroutine(DisplayTurnTransition("Your Turn"));
+    }
+
+    private void OnCpuStartTurn()
+    {
+        StartCoroutine(DisplayTurnTransition("Enemy Turn"));
+    }
+
+    private IEnumerator DisplayTurnTransition(string textToDisplay)
+    {
+        _panel.SetActive(true);
+        
+        _textTurnTransition.SetText("");
+
+        float timer = 0;
+
+        Color currentColor = Color.black;
+
+        while (timer < _timeFadeTurnTransition)
+        {
+            timer += Time.deltaTime;
+            currentColor = _imageTurnTransition.color;
+            currentColor.a = timer;
+            _imageTurnTransition.color = currentColor;
+            yield return null;
+        }
+
+        currentColor.a = 1;
+        _imageTurnTransition.color = currentColor;
+        
+        _textTurnTransition.SetText(textToDisplay);
+
+        yield return new WaitForSeconds(_timeOnScreenTurnTransition);
+        
+        _textTurnTransition.SetText("");
+        
+        timer = 0;
+        while (timer < _timeFadeTurnTransition)
+        {
+            timer += Time.deltaTime;
+            currentColor = _imageTurnTransition.color;
+            currentColor.a = 1 - timer;
+            _imageTurnTransition.color = currentColor;
+            yield return null;
+        }
+        
+        currentColor.a = 0;
+        _imageTurnTransition.color = currentColor;
+        _panel.SetActive(false);
     }
 }

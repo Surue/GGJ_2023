@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     [Header("Settings")]
     [SerializeField] protected DeckScriptable _deckScriptable;
     [SerializeField] protected GameRulesScriptables _gameRules;
+    [SerializeField] protected EPlayerType _playerType;
     
     // Board objects
     [Header("Object on board")]
@@ -30,11 +31,11 @@ public class Player : MonoBehaviour
     protected List<CardController> _cardsOnBoard;
     protected List<CardController> _cardsDiscarded;
     
-    // Finish turn 
-    protected bool _hasFinishedTurn;
     
     // Health
     private int _currentHealth;
+    public int CurrentHealth => _currentHealth;
+
     public Action<int, int> OnHealthChanged;
     
     // Mana
@@ -44,8 +45,6 @@ public class Player : MonoBehaviour
     
     // Other player
     private Player _otherPlayer;
-    
-    public bool HasFinishedTurn => _hasFinishedTurn;
 
     public enum HandState
     {
@@ -66,6 +65,7 @@ public class Player : MonoBehaviour
 
         _currentHealth = _gameRules.MaxHealth;
         _currentMana = _gameRules.InitialMana;
+        _previousManaGain = _currentMana;
 
         foreach (var player in FindObjectsOfType<Player>())
         {
@@ -97,17 +97,24 @@ public class Player : MonoBehaviour
         OnManaChanged(_currentMana, _gameRules.MaxMana);
     }
 
+    protected void ResetCardStartTurn()
+    {
+        foreach (var cardController in _cardsOnBoard)
+        {
+            cardController.ResetStartTurn();
+        }
+    }
+
     protected void AddManaStartTurn()
     {
+        _currentMana = _previousManaGain;
+        
+        OnManaChanged(_currentMana, _gameRules.MaxMana);
+        
         if (_previousManaGain < _gameRules.MaxMana)
         {
             _previousManaGain++;
         }
-
-        _currentMana += _previousManaGain;
-        _currentMana = Mathf.Min(_currentMana, _gameRules.MaxMana);
-        
-        OnManaChanged(_currentMana, _gameRules.MaxMana);
     }
 
     protected void FillHand()
@@ -123,10 +130,15 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int damage)
+    private void TakeDamage(int damage)
     {
         _currentHealth -= damage;
         OnHealthChanged(_currentHealth, _gameRules.MaxHealth);
+        
+        if(_currentHealth <= 0)
+        {
+            GameManager.Instance.PlayerDeath(_playerType);
+        }
     }
 
     protected bool CanSwapCards()
@@ -214,12 +226,22 @@ public class Player : MonoBehaviour
 
         if (attackingCard.cardHealth <= 0)
         {
+            attackingCard.boardController.containCard = false;
+            attackingCard.boardController.cardController = null;
+
+            attackingCard.boardController = null;
+            
             _cardsOnBoard.Remove(attackingCard);
             _cardsDiscarded.Add(attackingCard);
         }
         
         if (defendingCard.cardHealth <= 0)
         {
+            defendingCard.boardController.containCard = false;
+            defendingCard.boardController.cardController = null;
+
+            defendingCard.boardController = null;
+            
             _otherPlayer._cardsOnBoard.Remove(defendingCard);
             _otherPlayer._cardsDiscarded.Add(defendingCard);
         }
@@ -269,8 +291,9 @@ public class Player : MonoBehaviour
 
         for (int i = 0; i < 2; i++)
         {
-            if (!_boardSlots[i + columnId].containCard) continue;
-            result.Add(_boardSlots[i + columnId].cardController);
+            var slot = _boardSlots[i * 4 + columnId];
+            if (!slot.containCard) continue;
+            result.Add(slot.cardController);
         }
         
         return result;
