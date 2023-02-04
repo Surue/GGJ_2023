@@ -3,8 +3,6 @@ using TMPro;
 
 public class HumanPlayer : Player
 {
-    private bool _isPlaying;
-    
     // Active card
     private CardController activeCardController;
 
