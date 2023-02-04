@@ -8,6 +8,9 @@ public class Player : MonoBehaviour
     [Header("Settings")]
     [SerializeField] protected DeckScriptable _deckScriptable;
     [SerializeField] protected int _maxNumberOfCardInHand;
+    [SerializeField] protected int _maxHealthPoint = 30;
+    [SerializeField] protected int _maxManaPoint = 10;
+    [SerializeField] protected int _initialManaPoint = 3; 
     
     // Board objects
     [Header("Object on board")]
@@ -20,7 +23,17 @@ public class Player : MonoBehaviour
     protected Queue<CardController> _cardsInDeck;
     protected List<CardController> _cardsInHand;
     
+    // Finish turn 
+    protected bool _hasFinishedTurn;
     
+    // Health
+    private int _currentHealth;
+    
+    // Mana
+    private int _currentMana;
+
+    public bool HasFinishedTurn => _hasFinishedTurn;
+
     public enum HandState
     {
         free, 
@@ -35,8 +48,10 @@ public class Player : MonoBehaviour
         GameManager.Instance.onGameInit += Init;
 
         _cardsInHand = new List<CardController>();
+
+        _currentHealth = _maxHealthPoint;
+        _currentMana = _currentMana;
     }
-    
 
     private void Init()
     {
@@ -63,5 +78,10 @@ public class Player : MonoBehaviour
             card.CardStateSwitch(CardController.CardState.inHand);
             _cardsInHand.Add(card);
         }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        _currentHealth -= damage;
     }
 }
