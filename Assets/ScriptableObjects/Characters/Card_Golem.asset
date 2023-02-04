@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ec44e3a9aecffa744b52f3120ac5e3d3, type: 3}
-  m_Name: Card_Viking
+  m_Name: Card_Golem
   m_EditorClassIdentifier: 
-  cardName: Viking
-  cardDescription: Description Debug Bis
-  initialManaCost: 3
+  cardName: Golem
+  cardDescription: Big Golem grrr
+  initialManaCost: 7
   currentType: 0
   currentAbilty: 0
-  _attackScriptable: {fileID: 11400000, guid: c8c92ac6c2c8f5b4ba6edadc6af04472, type: 2}
-  initialHealth: 3
+  _attackScriptable: {fileID: 11400000, guid: 1a109f14e0686054ca153ed4fe7734ab, type: 2}
+  initialHealth: 10

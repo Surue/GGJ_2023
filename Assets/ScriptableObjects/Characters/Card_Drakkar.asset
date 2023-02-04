@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ec44e3a9aecffa744b52f3120ac5e3d3, type: 3}
-  m_Name: Card_Boar
+  m_Name: Card_Drakkar
   m_EditorClassIdentifier: 
-  cardName: Boar
-  cardDescription: i'm a Boar...
-  initialManaCost: 1
+  cardName: Drakkar
+  cardDescription: Can move on the whole line
+  initialManaCost: 6
   currentType: 0
   currentAbilty: 0
-  _attackScriptable: {fileID: 11400000, guid: 50fd5c01f36feea4db576fdc79eedae9, type: 2}
-  initialHealth: 2
+  _attackScriptable: {fileID: 11400000, guid: dcfa1d123f968a54d92838d70e28a79f, type: 2}
+  initialHealth: 6
