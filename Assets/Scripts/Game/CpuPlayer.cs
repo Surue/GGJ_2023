@@ -104,7 +104,7 @@ public class CpuPlayer : Player
 
             if (cardsToAttack.Count > 0)
             {
-                
+                Debug.Log("ICI");
             }
             else
             {
@@ -177,11 +177,6 @@ public class CpuPlayer : Player
         }
 
         return result;
-    }
-
-    public List<CardController> GetPossibleCardToAttack(CardController attackingCard)
-    {
-        return new List<CardController>();
     }
 
     #endregion

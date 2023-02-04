@@ -2,6 +2,12 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum EBoardLineType
+{
+    Front,
+    Back
+}
+
 public class Player : MonoBehaviour
 {
     // Settings
@@ -193,4 +199,248 @@ public class Player : MonoBehaviour
         attackingCard.Attack();
         attackingCard.CardStateSwitch(CardController.CardState.onDesk);
     }
+    
+    protected List<CardController> GetPossibleCardToAttack(CardController attackingCard)
+    {
+        // TODO handle all type of attack
+        return GetColumnInFront(attackingCard);
+    }
+    
+    #region Get Cards On Board
+   
+    protected List<CardController> GetLine(EBoardLineType boardLineType)
+    {
+        var result = new List<CardController>();
+        switch (boardLineType)
+        {
+            case EBoardLineType.Front:
+                for (int i = 0; i < 4; i++)
+                {
+                    if (_boardSlots[i].containCard)
+                    {
+                        result.Add(_boardSlots[i].cardController);
+                    }
+                }
+                break;
+            case EBoardLineType.Back:
+                for (int i = 4; i < _boardSlots.Count; i++)
+                {
+                    if (_boardSlots[i].containCard)
+                    {
+                        result.Add(_boardSlots[i].cardController);
+                    }
+                }
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(boardLineType), boardLineType, null);
+        }
+
+        return result;
+    }
+
+    protected List<CardController> GetColumn(int columnId)
+    {
+        var result = new List<CardController>();
+
+        for (int i = 0; i < 2; i++)
+        {
+            if (!_boardSlots[i + columnId].containCard) continue;
+            result.Add(_boardSlots[i + columnId].cardController);
+        }
+        
+        return result;
+    }
+    
+    protected List<CardController> GetColumnInFront(CardController cardController)
+    {
+        return _otherPlayer.GetColumn(GetColumnIdOfOtherPlayer(cardController.boardController.columnID));
+    }
+    
+    protected bool IsInFront(CardController cardController)
+    {
+        return cardController.boardController.boardLineType == EBoardLineType.Front;
+    }
+    
+    protected bool IsInBack(CardController cardController)
+    {
+        return cardController.boardController.boardLineType == EBoardLineType.Back;
+    }
+
+    protected bool TryGetCardInFront(CardController cardController, out CardController result)
+    {
+        if (cardController.boardController.boardLineType == EBoardLineType.Back)
+        {
+            result = _boardSlots[cardController.boardController.columnID].cardController;
+            return _boardSlots[cardController.boardController.columnID].containCard;
+        }
+        else
+        {
+            var cardsOnColum = _otherPlayer.GetColumn(GetColumnIdOfOtherPlayer(cardController.boardController.columnID));
+            if (cardsOnColum.Count > 0)
+            {
+                foreach (var controller in cardsOnColum)
+                {
+                    if (controller.boardController.boardLineType == EBoardLineType.Front)
+                    {
+                        result = controller;
+                        return true;
+                    }
+                }
+            }
+
+            result = null;
+            return false;
+        }
+    }
+    
+    protected bool TryGetCardInBack(CardController cardController, out CardController result)
+    {
+        if (cardController.boardController.boardLineType == EBoardLineType.Front)
+        {
+            result = _boardSlots[cardController.boardController.columnID + 4].cardController;
+            return _boardSlots[cardController.boardController.columnID + 4].containCard;
+        }
+        
+        result = null;
+        return false;
+    }
+
+    private static int GetColumnIdOfOtherPlayer(int selfColumnID)
+    {
+        return Mathf.Abs(3 - selfColumnID);
+    }
+
+    protected List<CardController> GetAllNeighbors(CardController cardController)
+    {
+        var result = new List<CardController>();
+
+        var columnID = cardController.boardController.columnID;
+
+        if (cardController.boardController.boardLineType == EBoardLineType.Back)
+        {
+            if (TryGetCardInFront(cardController, out var neighbor))
+            {
+                result.Add(neighbor);
+            }
+        }
+        else
+        {
+            if (TryGetCardInBack(cardController, out var neighbor))
+            {
+                result.Add(neighbor);
+            }
+        }
+
+        if (columnID == 0)
+        {
+            result.AddRange(GetColumn(columnID + 1));    
+        }
+        else if (columnID == 3)
+        {
+            result.AddRange(GetColumn(columnID - 1));    
+        }
+        else
+        {
+            result.AddRange(GetColumn(columnID + 1));    
+            result.AddRange(GetColumn(columnID - 1));    
+        }
+        
+        return result;
+    }
+
+    protected List<CardController> GetCrossNeighbors(CardController cardController)
+    {
+        var result = new List<CardController>();
+
+        var columnID = cardController.boardController.columnID;
+
+        if (cardController.boardController.boardLineType == EBoardLineType.Back)
+        {
+            if (TryGetCardInFront(cardController, out var neighbor))
+            {
+                result.Add(neighbor);
+            }
+        }
+        else
+        {
+            if (TryGetCardInBack(cardController, out var neighbor))
+            {
+                result.Add(neighbor);
+            }
+        }
+
+        if (columnID == 0)
+        {
+            if (TryGetNeighbor(cardController, NeighborDirection.Right, out var rightCard))
+            {
+                result.Add(rightCard);
+            }
+        }
+        else if (columnID == 3)
+        {
+            if (TryGetNeighbor(cardController, NeighborDirection.Left, out var leftCard))
+            {
+                result.Add(leftCard);
+            }    
+        }
+        else
+        {
+            if (TryGetNeighbor(cardController, NeighborDirection.Left, out var leftCard))
+            {
+                result.Add(leftCard);
+            }
+
+            if (TryGetNeighbor(cardController, NeighborDirection.Right, out var rightCard))
+            {
+                result.Add(rightCard);
+            }
+        }
+        
+        return result;
+    }
+
+    private enum NeighborDirection
+    {
+        Left,
+        Right
+    }
+
+    private bool TryGetNeighbor(CardController cardController, NeighborDirection direction, out CardController result)
+    {
+        var columnID = cardController.boardController.columnID;
+        var slotID = cardController.boardController.slotID;
+        
+        switch (direction)
+        {
+            case NeighborDirection.Left:
+                if (columnID == 0)
+                {
+                    result = null;
+                    return false;
+                }
+                else
+                {
+                    var slot = _boardSlots[slotID - 1];
+                    result = slot.cardController;
+                    return slot.containCard;
+                }
+                break;
+            case NeighborDirection.Right:
+                if (columnID >= 4)
+                {
+                    result = null;
+                    return false;
+                }
+                else
+                {
+                    var slot = _boardSlots[slotID + 1];
+                    result = slot.cardController;
+                    return slot.containCard;
+                }
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+        }
+    }
+    #endregion
 }
