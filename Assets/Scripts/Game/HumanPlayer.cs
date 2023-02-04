@@ -86,8 +86,12 @@ public class HumanPlayer : Player
         {
             if (cardController == null)
             {
-                cardController = _hit.transform.GetComponent<CardController>();
-                cardController.CardStateSwitch(CardController.CardState.isOverride);
+                var tmpCard = _hit.transform.GetComponent<CardController>();
+                if (tmpCard.currentCardState == CardController.CardState.inHand)
+                {
+                    cardController = tmpCard;
+                    cardController.CardStateSwitch(CardController.CardState.isOverride);
+                }
             }
         }
         else if (cardController != null)
