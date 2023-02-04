@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: Hawk
   cardDescription: Description Debug Bis
-  initialManaCost: 3
+  initialManaCost: 2
   currentType: 0
   currentAbilty: 0
   attackType: 1
