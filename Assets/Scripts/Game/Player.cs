@@ -32,7 +32,10 @@ public class Player : MonoBehaviour
     private int _previousManaGain;
     private int _currentMana;
     public Action<int, int> OnManaChanged;
-
+    
+    // Other player
+    private Player _otherPlayer;
+    
     public bool HasFinishedTurn => _hasFinishedTurn;
 
     public enum HandState
@@ -53,6 +56,13 @@ public class Player : MonoBehaviour
 
         _currentHealth = _gameRules.MaxHealth;
         _currentMana = _gameRules.InitialMana;
+
+        foreach (var player in FindObjectsOfType<Player>())
+        {
+            if(player == this) continue;
+
+            _otherPlayer = player;
+        }
     }
 
     private void Init()
@@ -101,6 +111,7 @@ public class Player : MonoBehaviour
     public void TakeDamage(int damage)
     {
         _currentHealth -= damage;
+        OnHealthChanged(_currentHealth, _gameRules.MaxHealth);
     }
 
     protected bool CanSwapCards()
@@ -159,5 +170,17 @@ public class Player : MonoBehaviour
     {
         _currentMana -= manaCost;
         OnManaChanged(_currentMana, _gameRules.MaxMana);
+    }
+
+    protected void AttackOtherPlayer(CardController attackingCard)
+    {
+        attackingCard.Attack();
+        
+        _otherPlayer.TakeDamage(attackingCard.cardAttack);
+    }
+
+    protected void AttackOtherCard(CardController attackingCard, CardController defendingCard)
+    {
+        attackingCard.Attack();
     }
 }
