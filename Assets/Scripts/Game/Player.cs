@@ -19,6 +19,7 @@ public class Player : MonoBehaviour
     [Header("Object on board")]
     [SerializeField] protected GameObject _deckObject;
     [SerializeField] protected GameObject _discardObject;
+    [SerializeField] protected GameObject _selectionObject;
     [SerializeField] protected GameObject _cardParent;
     [SerializeField] protected List<GameObject> _handSlots;
     [SerializeField] protected List<BoardController> _boardSlots;
@@ -83,7 +84,7 @@ public class Player : MonoBehaviour
     {
         _cardsInDeck = new Queue<CardController>();
 
-        _deckScriptable.FillList(ref _cardsInDeck, _deckObject.transform);
+        _deckScriptable.FillList(ref _cardsInDeck, _deckObject.transform, _discardObject.transform, _selectionObject.transform);
 
         foreach (var cardController in _cardsInDeck)
         {
@@ -217,7 +218,6 @@ public class Player : MonoBehaviour
             _cardsDiscarded.Add(attackingCard);
         }
         
-
         if (defendingCard.cardHealth <= 0)
         {
             _otherPlayer._cardsOnBoard.Remove(defendingCard);

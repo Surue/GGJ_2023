@@ -917,6 +917,7 @@ MonoBehaviour:
   _gameRules: {fileID: 11400000, guid: e3ae48cc240c93641817ae0fbc85cbc2, type: 2}
   _deckObject: {fileID: 6252410725271488163}
   _discardObject: {fileID: 6252410725183325273}
+  _selectionObject: {fileID: 6252410727155716011}
   _cardParent: {fileID: 6252410726140323544}
   _handSlots:
   - {fileID: 6252410726581115101}

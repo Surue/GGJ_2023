@@ -98,8 +98,9 @@ public class CpuPlayer : Player
     private IEnumerator AttackCoroutine()
     {
         _phase = ECpuPhase.Attacking;
-        foreach (var cardController in _cardsOnBoard)
+        for (var i = _cardsOnBoard.Count - 1; i >= 0; i--)
         {
+            var cardController = _cardsOnBoard[i];
             var cardsToAttack = GetPossibleCardToAttack(cardController);
 
             if (cardsToAttack.Count > 0)
@@ -124,9 +125,10 @@ public class CpuPlayer : Player
             {
                 AttackOtherPlayer(cardController);
             }
-            
+
             yield return null;
         }
+
         _phase = ECpuPhase.End;
     }
     
