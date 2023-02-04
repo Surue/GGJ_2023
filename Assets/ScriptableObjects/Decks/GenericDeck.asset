@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GenericDeck
   m_EditorClassIdentifier: 
   _cards:
-  - cardPrefab: {fileID: 4818621042777980020, guid: 7243caaf703fa5744b94fc8629e7e639, type: 3}
+  - cardPrefab: {fileID: 4818621042777980020, guid: 79926874970862b43ab761bc0f531601, type: 3}
     cardQuantity: 15
   - cardPrefab: {fileID: 4818621042777980020, guid: d31cdf1f87b5bda4089d23e3467d91d0, type: 3}
     cardQuantity: 10

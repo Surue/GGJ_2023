@@ -37,7 +37,7 @@ public class HandDeck : MonoBehaviour
         for (int i = 0; i < cardsInHand.Count; i++)
         {
             CalcAlign(i, cardsInHand.Count);
-            cardsInHand[i].sortingGroup.sortingOrder = i == currentSelectedIndex ? 200 : 100 - i;
+            cardsInHand[i].sortingGroup.sortingOrder = i == currentSelectedIndex ? 20000 : 10000 - i;
         }
 
         bool anyCardSelected = cards.Any(x => x.currentCardState == CardController.CardState.isOverride);

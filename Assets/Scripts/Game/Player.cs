@@ -172,6 +172,8 @@ public class Player : MonoBehaviour
         cardController.CardStateSwitch(CardController.CardState.isWaiting);
         cardController.PlayAnimationCard("ActiveAnim");
         currentHandState = HandState.CardSelectedInHand;
+
+        cardController.sortingGroup.sortingOrder = 999;
     }
 
     protected void UseMana(int manaCost)
