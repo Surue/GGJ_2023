@@ -13,10 +13,12 @@ public class GameRulesScriptables : ScriptableObject
     
     [Header("Action mana cost")]
     [SerializeField] private int _cardSwapManaCost;
+    [SerializeField] private int _cardMoveManaCost;
     
     public int MaxHealth => _maxHealth;
     public int MaxMana => _maxMana;
     public int InitialMana => _initialMana;
     public int MaxCardInHand => _maxCardInHand;
     public int CardSwapManaCost => _cardSwapManaCost;
+    public int CardMoveManaCost => _cardMoveManaCost;
 }
