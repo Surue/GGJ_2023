@@ -287,8 +287,9 @@ public class Player : MonoBehaviour
 
         for (int i = 0; i < 2; i++)
         {
-            if (!_boardSlots[i + columnId].containCard) continue;
-            result.Add(_boardSlots[i + columnId].cardController);
+            var slot = _boardSlots[i * 4 + columnId];
+            if (!slot.containCard) continue;
+            result.Add(slot.cardController);
         }
         
         return result;

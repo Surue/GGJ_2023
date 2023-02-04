@@ -44,8 +44,6 @@ public class HumanPlayer : Player
         GameManager.Instance.onHumanTurnStarted += AddManaStartTurn;
         GameManager.Instance.onHumanTurnFinished += EndTurn;
         _isPlaying = false;
-
-
     }
 
     private void Update()
@@ -246,7 +244,7 @@ public class HumanPlayer : Player
                 _targetCardController = _boardController.cardController;
                 DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve, _lineColorAttack, _slotCardController.cardAttack.ToString());
 
-                if (Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonDown(0) && GetPossibleCardToAttack(_slotCardController).Contains(_targetCardController))
                 {
                     currentHandState = HandState.Free;
                     
