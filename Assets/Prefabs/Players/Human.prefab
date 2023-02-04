@@ -869,6 +869,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6252410726464767104}
   - component: {fileID: 6252410726464767105}
+  - component: {fileID: 2447317999179322112}
   - component: {fileID: 6252410726464767106}
   m_Layer: 0
   m_Name: Human
@@ -915,6 +916,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _deckScriptable: {fileID: 11400000, guid: c18e9939f13571240b7474e285559558, type: 2}
   _gameRules: {fileID: 11400000, guid: e3ae48cc240c93641817ae0fbc85cbc2, type: 2}
+  _playerType: 0
   _deckObject: {fileID: 6252410725271488163}
   _discardObject: {fileID: 6252410725183325273}
   _selectionObject: {fileID: 6252410727155716011}
@@ -946,6 +948,18 @@ MonoBehaviour:
   _lineColorAttack: {r: 1, g: 0.67058825, b: 0.05882353, a: 1}
   _lineColorNeutral: {r: 0.5294118, g: 0.5294118, b: 0.5294118, a: 1}
   lineLerpSpeed: 18
+--- !u!114 &2447317999179322112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6252410726464767135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e8a95d2a02fbcf42bf7f1437a65adb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!120 &6252410726464767106
 LineRenderer:
   m_ObjectHideFlags: 0
