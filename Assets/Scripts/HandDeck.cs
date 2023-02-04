@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -9,12 +8,19 @@ public class HandDeck : MonoBehaviour
     [SerializeField] private List<CardController> cardsInHand;
     [SerializeField] private Transform handBasePos;
     
+    [SerializeField] private bool inverted = false;
+    [Space]
     [SerializeField] private float zRot;
     [SerializeField] private float xOffset;
     [SerializeField] private float yOffset;
-    [SerializeField] private float selectedYOffset = 2;
-    
+    [SerializeField] private float zOffset;
+    [Space]
+    [SerializeField] private float selectedYOffset = 0.2f;
+    [SerializeField] private float selectedZOffset = 0.2f;
+    [SerializeField] private float selectedScale = 1.1f;
+    [Space]
     [SerializeField] private float lerpSpeed = 2;
+    [SerializeField] private float scaleLerpSpeed = 8;
 
     private void Update()
     {
@@ -34,17 +40,24 @@ public class HandDeck : MonoBehaviour
         float alignResult = index / (cardCount - 1.0f);
         float rotZ = Mathf.Lerp(cardCount * zRot, cardCount * -zRot, alignResult);
         float xPos = Mathf.Lerp(cardCount * -xOffset, cardCount * xOffset, alignResult);
-        float yPos =
-            -Mathf.Abs(Mathf.Lerp(cardCount * -yOffset, cardCount * yOffset,
-                alignResult)); // Make sure that y remains negative
+        float yPos = Mathf.Abs(Mathf.Lerp(cardCount * -yOffset, cardCount * yOffset, alignResult));
+        float zPos = Mathf.Lerp(cardCount * -zOffset, cardCount * zOffset, alignResult);
 
+        float scale = 1;
+        
+        yPos = inverted ? yPos : -yPos;
+        
         if (cardsInHand[index].currentCardState == CardController.CardState.isOverride)
         {
-            yPos += selectedYOffset;
+            yPos = selectedYOffset;
+            rotZ = 0;
+            zPos += selectedZOffset;
+            scale = selectedScale;
         }
 
         var cardTransform = cardsInHand[index].transform;
-        cardTransform.localPosition = Vector3.Lerp(cardTransform.localPosition, handBasePos.position + new Vector3(xPos, 0, yPos), lerpSpeed * Time.deltaTime);
+        cardTransform.localScale = Vector3.Lerp(cardTransform.localScale, Vector3.one * scale, scaleLerpSpeed * Time.deltaTime);
+        cardTransform.localPosition = Vector3.Lerp(cardTransform.localPosition, handBasePos.position + new Vector3(xPos, zPos, yPos), lerpSpeed * Time.deltaTime);
         cardTransform.localRotation = Quaternion.Lerp(cardTransform.localRotation, Quaternion.Euler(handBasePos.eulerAngles + new Vector3(0, 0, rotZ)), lerpSpeed * Time.deltaTime);
     }
 }
