@@ -65,6 +65,7 @@ public class Player : MonoBehaviour
 
         _currentHealth = _gameRules.MaxHealth;
         _currentMana = _gameRules.InitialMana;
+        _previousManaGain = _currentMana;
 
         foreach (var player in FindObjectsOfType<Player>())
         {
@@ -106,15 +107,14 @@ public class Player : MonoBehaviour
 
     protected void AddManaStartTurn()
     {
+        _currentMana = _previousManaGain;
+        
+        OnManaChanged(_currentMana, _gameRules.MaxMana);
+        
         if (_previousManaGain < _gameRules.MaxMana)
         {
             _previousManaGain++;
         }
-
-        _currentMana += _previousManaGain;
-        _currentMana = Mathf.Min(_currentMana, _gameRules.MaxMana);
-        
-        OnManaChanged(_currentMana, _gameRules.MaxMana);
     }
 
     protected void FillHand()
