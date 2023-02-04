@@ -19,6 +19,25 @@ public class BoardController : MonoBehaviour
     // --- PRIVATE ---
     public CardController cardController;
 
+    public EBoardLineType boardLineType;
+    public int columnID;
+    public int slotID;
+    
+    public void Setup(int index)
+    {
+        slotID = index;
+        if (index < 4)
+        {
+            boardLineType = EBoardLineType.Front;
+        }
+        else
+        {
+            boardLineType = EBoardLineType.Back;
+        }
+
+        columnID = index % 4;
+    }
+    
     private void Update()
     {
 
