@@ -44,22 +44,22 @@ public class MainUI : MonoBehaviour
 
     private void UpdateHealthHuman(int newHealth, int maxHealth)
     {
-        _healthTextPlayer.SetText($"HP {newHealth}/{maxHealth}");  
+        _healthTextPlayer.SetText($"{newHealth}");  
     }
 
     private void UpdateManaHuman(int newMana, int maxMana)
     {
-        _manaTextPlayer.SetText($"Mana {newMana}/{maxMana}");  
+        _manaTextPlayer.SetText($"{newMana}");  
     }
 
     private void UpdateHealthCpu(int newHealth, int maxHealth)
     {
-        _healthTextCpu.SetText($"HP {newHealth}/{maxHealth}");
+        _healthTextCpu.SetText($"{newHealth}");
     }
 
     private void UpdateManaCpu(int newMana, int maxMana)
     {
-        _manaTextCpu.SetText($"Mana {newMana}/{maxMana}");
+        _manaTextCpu.SetText($"{newMana}");
     }
 
     private void OnHumanStartTurn()
