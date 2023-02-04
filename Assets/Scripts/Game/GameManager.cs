@@ -213,4 +213,9 @@ public class GameManager : MonoBehaviour
         Debug.Log("[GameManager] EndGames");
         onGameEnded?.Invoke();
     }
+
+    public void NextTurn()
+    {
+        _hasFinishedWaiting = true;
+    }
 }

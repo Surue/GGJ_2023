@@ -10,12 +10,11 @@ public class DeckScriptable : ScriptableObject
     [Serializable]
     public class PairCardQuantity
     {
-        public CardScriptable cardScriptable;
+        public GameObject cardPrefab;
         public int cardQuantity;
     }
 
     [SerializeField] private List<PairCardQuantity> _cards;
-    [SerializeField] private GameObject _cardPrefab;
     
     public int GetTotalNumberOfCard()
     {
@@ -36,10 +35,10 @@ public class DeckScriptable : ScriptableObject
         {
             for (int i = 0; i < pairCardQuantity.cardQuantity; i++)
             {
-                var instance = Instantiate(_cardPrefab);
+                var instance = Instantiate(pairCardQuantity.cardPrefab);
                 var cardController = instance.GetComponent<CardController>();
 
-                cardController.Setup(deckTransform, pairCardQuantity.cardScriptable);
+                cardController.Setup(deckTransform);
                 shuffledCards.Add(cardController);
             }
         }

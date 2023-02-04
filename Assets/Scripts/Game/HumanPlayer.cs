@@ -60,6 +60,13 @@ public class HumanPlayer : Player
         }
     }
 
+    public void NextTurn()
+    {
+        if (!_isPlaying) return;
+
+        GameManager.Instance.NextTurn();
+    }
+
     private void FreeState()
     {
         // Check if player hover card in hands

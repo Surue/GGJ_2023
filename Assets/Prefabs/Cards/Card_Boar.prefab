@@ -263,9 +263,13 @@ PrefabInstance:
       propertyPath: handPosition
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 3791942290292583221, guid: 0c733bb333c084042b554b2df2eed85e, type: 3}
+      propertyPath: _cardScriptable
+      value: 
+      objectReference: {fileID: 11400000, guid: 913879566f18a2c499be36da0a957aac, type: 2}
     - target: {fileID: 8821135303938986493, guid: 0c733bb333c084042b554b2df2eed85e, type: 3}
       propertyPath: m_Name
-      value: BaseCard
+      value: Card_Boar
       objectReference: {fileID: 0}
     - target: {fileID: 8821135303938986494, guid: 0c733bb333c084042b554b2df2eed85e, type: 3}
       propertyPath: m_RootOrder
