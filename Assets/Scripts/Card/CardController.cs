@@ -174,6 +174,8 @@ public class CardController : MonoBehaviour
                     TweenMoveCardOnBoard(slotController);
                 }
                 
+                _cardDisplay.SetManaActive(false);
+                
                 OnDeskState();
                 break;
 

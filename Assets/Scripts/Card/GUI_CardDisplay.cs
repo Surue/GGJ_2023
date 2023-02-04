@@ -4,7 +4,7 @@ using TMPro;
 
 public class GUI_CardDisplay : MonoBehaviour
 {
-    [Space]
+    public GameObject manaGroup;
     public TMP_Text nameText;
     public TMP_Text descriptionText;
 
@@ -16,10 +16,18 @@ public class GUI_CardDisplay : MonoBehaviour
 
     [SerializeField] private CardController cardController;
 
+    private void OnDestroy()
+    {
+        GameManager.Instance.GetPlayer(cardController.Owner).OnManaChanged -= OnManaChanged;
+    }
+
     public void Init()
     {
         // Setup Infos
         nameText.text = cardController.CardScriptable.cardName;
+        GameManager.Instance.GetPlayer(cardController.Owner).OnManaChanged += OnManaChanged;
+
+            
         descriptionText.text = cardController.CardScriptable.cardDescription;
 
         // Setup Stats
@@ -48,5 +56,18 @@ public class GUI_CardDisplay : MonoBehaviour
             healthText.text = null;
             attackType.sprite = null;
         }
+    }
+
+    private void OnManaChanged(int currentMana, int maxMana)
+    {
+        if (cardController.currentCardState == CardController.CardState.inHand)
+            manaText.color = Color.white;
+        
+        manaText.color = cardController.cardManaCost > currentMana ? Color.red : Color.white;
+    }
+
+    public void SetManaActive(bool enabled)
+    {
+        manaGroup.SetActive(enabled);
     }
 }
