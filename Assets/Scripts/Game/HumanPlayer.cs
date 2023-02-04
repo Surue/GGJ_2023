@@ -31,6 +31,7 @@ public class HumanPlayer : Player
     private void Start()
     {
         GameManager.Instance.onHumanTurnStarted += StartTurn;
+        GameManager.Instance.onHumanTurnStarted += AddManaStartTurn;
         GameManager.Instance.onHumanTurnFinished += EndTurn;
         _isPlaying = false;
     }

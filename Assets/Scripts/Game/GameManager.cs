@@ -93,6 +93,7 @@ public class GameManager : MonoBehaviour
                     _gameState = EGameState.WaitHumanTurnEnd;
                     _hasFinishedInit = false;
                     _hasFinishedWaiting = false;
+                    _isStartingTurn = false;
                 }
                 break;
             case EGameState.WaitHumanTurnEnd:
@@ -119,6 +120,7 @@ public class GameManager : MonoBehaviour
                     _gameState = EGameState.WaitHumanTurnEnd;
                     _hasFinishedInit = false;
                     _hasFinishedWaiting = false;
+                    _isStartingTurn = false;
                 }
                 break;
             case EGameState.WaitCpuTurnEnd:

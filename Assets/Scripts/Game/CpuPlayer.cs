@@ -9,6 +9,7 @@ public class CpuPlayer : Player
     void Start()
     {
         GameManager.Instance.onCpuTurnStarted += StartTurn;
+        GameManager.Instance.onCpuTurnStarted += AddManaStartTurn;
         GameManager.Instance.onCpuTurnFinished += EndTurn;
 
         _isPlaying = false;

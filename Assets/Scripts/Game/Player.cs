@@ -28,9 +28,12 @@ public class Player : MonoBehaviour
     
     // Health
     private int _currentHealth;
+    public Action<int, int> OnHealthChanged;
     
     // Mana
+    private int _previousManaGain;
     private int _currentMana;
+    public Action<int, int> OnManaChanged;
 
     public bool HasFinishedTurn => _hasFinishedTurn;
 
@@ -65,6 +68,22 @@ public class Player : MonoBehaviour
         }
         
         FillHand();
+
+        OnHealthChanged(_currentHealth, _maxHealthPoint);
+        OnManaChanged(_currentMana, _maxManaPoint);
+    }
+
+    protected void AddManaStartTurn()
+    {
+        if (_previousManaGain < _maxManaPoint)
+        {
+            _previousManaGain++;
+        }
+
+        _currentMana += _previousManaGain;
+        _currentMana = Mathf.Min(_currentMana, _maxManaPoint);
+        
+        OnManaChanged(_currentMana, _maxManaPoint);
     }
 
     protected void FillHand()
