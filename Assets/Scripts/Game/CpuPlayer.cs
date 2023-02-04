@@ -47,6 +47,7 @@ public class CpuPlayer : Player
             case ECpuPhase.Attacking:
                 break;
             case ECpuPhase.End:
+                EndTurn();
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -118,6 +119,8 @@ public class CpuPlayer : Player
     private void EndTurn()
     {
         _isPlaying = false;
+        
+        GameManager.Instance.NextTurn();
     }
 
     #region AI
