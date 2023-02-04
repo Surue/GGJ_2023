@@ -283,7 +283,7 @@ public class CardController : MonoBehaviour
     public void TweenMoveCardOnBoard(SlotController slotController)
     {
         DOTween.Kill(transform);
-        transform.DOLocalJump(slotController.transform.position, moveJumpHeight, 1, 0.4f).SetEase(Ease.InOutSine).OnComplete(() =>
+        transform.DOLocalJump(slotController.transform.position, 1.2f, 1, 0.4f).SetEase(Ease.InOutSine).OnComplete(() =>
         {
             RefreshInteractionCheck();
             // GameObject.Find("CAMERA").transform.DOShakePosition(0.4f, 0.05f, 10);

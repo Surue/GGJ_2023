@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 
@@ -65,6 +66,13 @@ public class GameManager : MonoBehaviour
 
             return _instance;
         }
+    }
+    
+    [InitializeOnEnterPlayMode]
+    static void OnEnterPlaymodeInEditor(EnterPlayModeOptions options)
+    {
+        if (options.HasFlag(EnterPlayModeOptions.DisableDomainReload))
+            _isInit = false;
     }
 
     private void Update()

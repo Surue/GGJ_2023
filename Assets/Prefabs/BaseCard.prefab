@@ -1651,7 +1651,7 @@ MonoBehaviour:
   isOverride: 0
   isTweening: 0
   startMoveTime: 0
-  moveJumpHeight: 1.1
+  moveJumpHeight: 1.6
   moveToPositon: {x: 0, y: 0, z: 0}
   moveToRotation: {x: 0, y: 0, z: 0, w: 0}
   cardHealth: 0
