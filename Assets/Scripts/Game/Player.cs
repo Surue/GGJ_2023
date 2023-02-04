@@ -226,10 +226,10 @@ public class Player : MonoBehaviour
 
         if (attackingCard.cardHealth <= 0)
         {
-            attackingCard.boardController.containCard = false;
-            attackingCard.boardController.cardController = null;
+            attackingCard.slotController.containCard = false;
+            attackingCard.slotController.cardController = null;
 
-            attackingCard.boardController = null;
+            attackingCard.slotController = null;
             
             _cardsOnBoard.Remove(attackingCard);
             _cardsDiscarded.Add(attackingCard);
@@ -237,10 +237,10 @@ public class Player : MonoBehaviour
         
         if (defendingCard.cardHealth <= 0)
         {
-            defendingCard.boardController.containCard = false;
-            defendingCard.boardController.cardController = null;
+            defendingCard.slotController.containCard = false;
+            defendingCard.slotController.cardController = null;
 
-            defendingCard.boardController = null;
+            defendingCard.slotController = null;
             
             _otherPlayer._cardsOnBoard.Remove(defendingCard);
             _otherPlayer._cardsDiscarded.Add(defendingCard);
