@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Card
   - Slot
+  - AttackZone
   layers:
   - Default
   - TransparentFX
