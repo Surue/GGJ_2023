@@ -30,8 +30,6 @@ public class Player : MonoBehaviour
     protected List<CardController> _cardsOnBoard;
     protected List<CardController> _cardsDiscarded;
     
-    // Finish turn 
-    protected bool _hasFinishedTurn;
     
     // Health
     private int _currentHealth;
@@ -44,8 +42,6 @@ public class Player : MonoBehaviour
     
     // Other player
     private Player _otherPlayer;
-    
-    public bool HasFinishedTurn => _hasFinishedTurn;
 
     public enum HandState
     {
