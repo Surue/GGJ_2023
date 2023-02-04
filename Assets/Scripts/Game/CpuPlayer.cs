@@ -2,11 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class CpuPlayer : Player
 {
+    protected override EPlayerType GetPlayerType() => EPlayerType.CPU;
+    
     private bool _isPlaying;
 
     private enum ECpuPhase
@@ -76,6 +77,8 @@ public class CpuPlayer : Player
         {
             SetCardWaiting(cardController);
 
+            yield return null;
+            
             while (cardController.isTweening)
             {
                 yield return null;
@@ -85,6 +88,8 @@ public class CpuPlayer : Player
             freeSlots.Remove(freeSlot);
             
             DropCardOnBoard(cardController, freeSlot);
+            
+            yield return null;
             
             while (cardController.isTweening)
             {
@@ -121,12 +126,17 @@ public class CpuPlayer : Player
                     }
                 }
             }
-            else
+            else if(cardsToAttack.Count == 0 && cardController.slotController.boardLineType == EBoardLineType.Front)
             {
                 AttackOtherPlayer(cardController);
             }
 
             yield return null;
+            
+            while (cardController.isTweening)
+            {
+                yield return null;
+            }
         }
 
         _phase = ECpuPhase.End;

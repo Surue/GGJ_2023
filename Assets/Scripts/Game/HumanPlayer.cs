@@ -53,13 +53,13 @@ public class HumanPlayer : Player
         switch (currentHandState)
         {
             case HandState.Free:
-                FreeState();
+                OnFreeState();
                 break;
             case HandState.CardSelectedOnBoard:
-                CardSelectedState();
+                OnCardSelectedState();
                 break;
             case HandState.CardSelectedInHand:
-                CardInvokeOnDesk();
+                OnCardInvokeOnDesk();
                 break;
             case HandState.WaitingTurn:
                 break;
@@ -68,6 +68,7 @@ public class HumanPlayer : Player
         lineCurrentEndPos = Vector3.Lerp(lineCurrentEndPos, lineTargetEndPos, lineLerpSpeed * Time.deltaTime);
     }
 
+    
     public void NextTurn()
     {
         if (!_isPlaying) return;
@@ -75,7 +76,7 @@ public class HumanPlayer : Player
         GameManager.Instance.NextTurn();
     }
 
-    private void FreeState()
+    private void OnFreeState()
     {
         // Check if player hover card in hands
         if (CheckRaycastHit() == "Card")
@@ -128,7 +129,7 @@ public class HumanPlayer : Player
 
             // Check if player click on a slot
             if ((CanDropCardOnBoard(_slotCardController) 
-                 || CanMoveCardOnBoard() 
+                 || CanInvokeCardOnBoard() 
                  || _slotCardController.CanAttack()) 
                  && Input.GetMouseButtonDown(0) 
                  && _slotCardController.isInteractible 
@@ -143,13 +144,8 @@ public class HumanPlayer : Player
             }
         }
     }
-
-    public void SetHandState(HandState handState)
-    {
-        currentHandState = handState;
-    }
-
-    private void CardInvokeOnDesk()
+    
+    private void OnCardInvokeOnDesk()
     {
         if (Input.GetMouseButtonDown(1))
         {
@@ -196,16 +192,7 @@ public class HumanPlayer : Player
         }
     }
 
-    /// <summary>
-    /// Disable preview line
-    /// </summary>
-    private void ResetLine()
-    {
-        _lineRenderer.enabled = false;
-        _lineIcon.SetActive(false);
-    }
-
-    private void CardSelectedState()
+    private void OnCardSelectedState()
     {
         var layerHitName = CheckRaycastHit();
         
@@ -226,7 +213,7 @@ public class HumanPlayer : Player
             _boardSlot = _hit.transform.gameObject;
             _slotController = _hit.transform.GetComponent<SlotController>();
 
-            if (CanMoveCardOnBoard() && _slotController.PlayerType == EPlayerType.Human && !_slotController.containCard) // Drop card on empty board
+            if (CanInvokeCardOnBoard() && _slotController.PlayerType == EPlayerType.Human && !_slotController.containCard) // Drop card on empty board
             {
                 DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorDeplacement, _gameRules.CardMoveManaCost.ToString());
 
@@ -257,16 +244,22 @@ public class HumanPlayer : Player
             }else if (_slotCardController.CanAttack() && _slotController.PlayerType == EPlayerType.CPU && _slotController.containCard) // Attack other card
             {
                 _targetCardController = _slotController.cardController;
-                DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve, _lineColorAttack, _slotCardController.cardAttack.ToString());
-
-                if (Input.GetMouseButtonDown(0) && GetPossibleCardToAttack(_slotCardController).Contains(_targetCardController))
+                if (GetPossibleCardToAttack(_slotCardController).Contains(_targetCardController))
                 {
-                    currentHandState = HandState.Free;
+                    DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve, _lineColorAttack, _slotCardController.cardAttack.ToString());
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        currentHandState = HandState.Free;
                     
-                    AttackOtherCard(_slotCardController, _targetCardController);
+                        AttackOtherCard(_slotCardController, _targetCardController);
                     
-                    _lineRenderer.enabled = false;
-                    _lineIcon.SetActive(false);
+                        _lineRenderer.enabled = false;
+                        _lineIcon.SetActive(false);
+                    }
+                }
+                else
+                {
+                    DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve, _lineColorNeutral, _slotCardController.cardAttack.ToString());
                 }
             }
             else
@@ -274,12 +267,12 @@ public class HumanPlayer : Player
                 DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorNeutral, "");
             }
         }
-        else if (layerHitName == "AttackZone") // Attack player
+        else if (layerHitName == "AttackZone" && _slotCardController.CanAttack() && !TryGetCardInFront(_slotCardController, out var _)) // Attack player
         {
             DrawMovementLine(_cardTransform.position, _hit.point, _offsetYCurve, _lineColorAttack, _slotCardController.cardAttack.ToString());
             
             // TODO Check line of attack
-            if (Input.GetMouseButtonDown(0) && _slotCardController.CanAttack()) 
+            if (Input.GetMouseButtonDown(0)) 
             {
                 currentHandState = HandState.Free;
                     
@@ -299,6 +292,7 @@ public class HumanPlayer : Player
             DrawMovementLine(_cardTransform.position, _hit.point, _offsetYCurve, _lineColorNeutral,"");
         }
     }
+
 
     private void DrawMovementLine(Vector3 startPos, Vector3 endPos, float offsetY, Color lineColor, string value)
     {
@@ -336,7 +330,16 @@ public class HumanPlayer : Player
         }
     }
 
-    public string CheckRaycastHit()
+    /// <summary>
+    /// Disable preview line
+    /// </summary>
+    private void ResetLine()
+    {
+        _lineRenderer.enabled = false;
+        _lineIcon.SetActive(false);
+    }
+    
+    private string CheckRaycastHit()
     {
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out _hit))
@@ -376,5 +379,11 @@ public class HumanPlayer : Player
     private void EndTurn()
     {
         _isPlaying = false;
+    }
+    
+    
+    public void SetHandState(HandState handState)
+    {
+        currentHandState = handState;
     }
 }

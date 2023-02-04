@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using TMPro;
-using UnityEngine.Serialization;
 
 public class GUI_CardDisplay : MonoBehaviour
 {
@@ -10,20 +9,14 @@ public class GUI_CardDisplay : MonoBehaviour
     public TMP_Text descriptionText;
 
     public TMP_Text manaText;
-    [FormerlySerializedAs("attText")] public TMP_Text attackText;
+    public TMP_Text attackText;
     public TMP_Text healthText;
-
-    // public SpriteRenderer characterArtwork;
-    // public SpriteRenderer backgroundElement;
-    // public SpriteRenderer backgroundColor;
 
     public SpriteRenderer attackType;
 
     [SerializeField] private CardController cardController;
 
-
-
-    public void UpdateUIStats()
+    public void Init()
     {
         // Setup Infos
         nameText.text = cardController.CardScriptable.cardName;
