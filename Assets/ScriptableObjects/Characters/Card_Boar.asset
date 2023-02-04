@@ -17,8 +17,5 @@ MonoBehaviour:
   initialManaCost: 1
   currentType: 0
   currentAbilty: 0
-  attackType: 1
-  attackDistanceSprite: {fileID: 0}
-  attackMeleeSprite: {fileID: 0}
+  _attackScriptable: {fileID: 11400000, guid: 50fd5c01f36feea4db576fdc79eedae9, type: 2}
   initialHealth: 5
-  initialAttack: 3
