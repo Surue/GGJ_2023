@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ec44e3a9aecffa744b52f3120ac5e3d3, type: 3}
-  m_Name: Elf_SwordWoman_Debug
+  m_Name: Card_Boar
   m_EditorClassIdentifier: 
-  cardName: Archer
+  cardName: Boar
   cardDescription: Placeholder
-  initialManaCost: 2
+  initialManaCost: 4
   currentType: 0
   currentAbilty: 0
   attackType: 1

@@ -115,14 +115,14 @@ public class CardController : MonoBehaviour
         {
             Debug.LogError("selectionAreaobject is missing, it must be called 'SelectionArea'");
         }
-        GameObject defausse = GameObject.Find("Defausse");
+        GameObject defausse = GameObject.Find("Discard");
         if (defausse != null)
         {
             defausseTransform = defausse.transform;
         }
         else
         {
-            Debug.LogError("selectionAreaobject is missing, it must be called 'Defausse'");
+            Debug.LogError("selectionAreaobject is missing, it must be called 'Discard'");
         }
     }
 
