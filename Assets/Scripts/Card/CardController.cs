@@ -102,9 +102,9 @@ public class CardController : MonoBehaviour
         // Set default values
         cardManaCost = CardScriptable.initialManaCost;
         cardHealth = CardScriptable.initialHealth;
-        cardAttack = CardScriptable.initialAttack;
+        cardAttack = CardScriptable.AttackScriptable.AttackDamage;
 
-        _maxAttackCharge = CardScriptable.initialAttackCharge;
+        _maxAttackCharge = CardScriptable.AttackScriptable.AttackCharge;
         _remainingAttackCharge = _maxAttackCharge;
     }
 
@@ -117,12 +117,7 @@ public class CardController : MonoBehaviour
         SetCardState(CardState.inDeck);
         
         _cardDisplay.UpdateUIStats();
-        
-        //Setup des datas de la carte (recup du ScriptableObject)
-        cardHealth = _cardScriptable.initialHealth;
-        cardAttack = _cardScriptable.initialAttack;
-        cardManaCost = _cardScriptable.initialManaCost;
-        
+
         // Setup selection area and discard area
         _selectionAreaTransform = selectionTransform;
         _discardTransform = discardTransform;
