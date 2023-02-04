@@ -245,9 +245,14 @@ public class Player : MonoBehaviour
     {
         attackingCard.Attack();
         attackingCard.SetCardState(CardController.CardState.onDesk);
-        
-        attackingCard.CardTakeDamage(defendingCard.cardAttack);
+
         defendingCard.CardTakeDamage(attackingCard.cardAttack);
+
+        bool cardExists = _otherPlayer.TryGetCardInFront(defendingCard, out var result);
+        if (defendingCard.slotController.boardLineType == EBoardLineType.Front && cardExists && result == attackingCard)
+        {
+            attackingCard.CardTakeDamage(defendingCard.cardAttack);
+        }
 
         if (attackingCard.cardHealth <= 0)
         {
@@ -290,7 +295,7 @@ public class Player : MonoBehaviour
                 result.AddRange(GetColumnInFront(attackingCard));
                 break;
             case EAttackType.FrontLine:
-                result.AddRange(GetLine(EBoardLineType.Front));
+                result.AddRange(_otherPlayer.GetLine(EBoardLineType.Front));
                 break;
             case EAttackType.NoAttack:
                 break;

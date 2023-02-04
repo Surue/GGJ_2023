@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using TMPro;
 
@@ -127,7 +128,7 @@ public class HumanPlayer : Player
             // Check if player click on a slot
             if ((CanDropCardOnBoard(_slotCardController) 
                  || CanMoveCardOnBoard() 
-                 || _slotCardController.CanAttack()) 
+                 || _slotCardController.CanAttackOtherPlayer()) 
                  && Input.GetMouseButtonDown(0) 
                  && _slotCardController.isInteractible 
                  && _slotCardController.slotController.PlayerType == EPlayerType.Human)
@@ -244,27 +245,42 @@ public class HumanPlayer : Player
                     _lineIconRenderer.gameObject.SetActive(false);
                 }
             }
-            else if (_slotCardController.CanAttack() && _slotController.PlayerType == EPlayerType.CPU && _slotController.containCard) // Attack other card
+            else if (_slotCardController.CanAttack(GetPossibleCardToAttack(_slotCardController)) && _slotController.PlayerType == EPlayerType.CPU) // Attack other card
             {
-                _targetCardController = _slotController.cardController;
-                if (GetPossibleCardToAttack(_slotCardController).Contains(_targetCardController))
+                if (_slotController.containCard && _slotCardController.AttackSingleTarget() && GetPossibleCardToAttack(_slotCardController).Contains(_slotController.cardController)) // Target a specific card
                 {
-                    DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve,
-                        _lineColorAttack, _slotCardController.cardAttack);
+                    _targetCardController = _slotController.cardController;
+                
+                    DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve, _lineColorAttack, _slotCardController.cardAttack);
                     if (Input.GetMouseButtonDown(0))
                     {
                         currentHandState = HandState.Free;
-                    
+                
                         AttackOtherCard(_slotCardController, _targetCardController);
-                    
+                
+                        _lineRenderer.enabled = false;
+                        _lineIconRenderer.gameObject.SetActive(false);
+                    }
+                }
+                else if(!_slotCardController.AttackSingleTarget()) // Target multiple cards
+                {
+                    DrawMovementLine(_cardTransform.position, _slotController.transform.position, _offsetYCurve, _lineColorAttack, _slotCardController.cardAttack);
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        currentHandState = HandState.Free;
+
+                        foreach (var cardController in GetPossibleCardToAttack(_slotCardController))
+                        {
+                            AttackOtherCard(_slotCardController, cardController);
+                        }
+                
                         _lineRenderer.enabled = false;
                         _lineIconRenderer.gameObject.SetActive(false);
                     }
                 }
                 else
                 {
-                    DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve,
-                        _lineColorNeutral, _slotCardController.cardAttack);
+                    DrawMovementLine(_cardTransform.position, _hit.point, _offsetYCurve, _lineColorNeutral, -1);
                 }
             }
             else
@@ -273,7 +289,7 @@ public class HumanPlayer : Player
                     _lineColorNeutral, -1);
             }
         }
-        else if (layerHitName == "AttackZone" && _slotCardController.CanAttack() && !TryGetCardInFront(_slotCardController, out var _)) // Attack player
+        else if (layerHitName == "AttackZone" && _slotCardController.CanAttackOtherPlayer() && !TryGetCardInFront(_slotCardController, out var _)) // Attack player
         {
             DrawMovementLine(_cardTransform.position, _hit.point, _offsetYCurve, _lineColorAttack, _slotCardController.cardAttack);
             
