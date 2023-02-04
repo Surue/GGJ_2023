@@ -1,7 +1,8 @@
 using System;
+using System.Collections;
 using UnityEditor;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 
 public enum EGameState
 {
@@ -29,10 +30,9 @@ public class GameManager : MonoBehaviour
     public Action onHumanTurnFinished;
     public Action onCpuTurnStarted;
     public Action onCpuTurnFinished;
-    public Action onGameEnded;
+    public Action<EPlayerType> onGameEnded;
 
     private EPlayerType _currentPlayerType;
-    private bool _gameFinished;
 
     // Init state
     private bool _hasFinishedInit;
@@ -44,6 +44,12 @@ public class GameManager : MonoBehaviour
 
     // Wait Turn
     private bool _hasFinishedWaiting;
+    
+    // End
+    private bool _aPlayerDied;
+    private bool _hasFinishedGame;
+    private EPlayerType _winningPlayer;
+    private float _waitTimeBeforeSceneReload = 4.0f;
 
     // Players
     private HumanPlayer _humanPlayer => FindObjectOfType<HumanPlayer>();
@@ -51,6 +57,7 @@ public class GameManager : MonoBehaviour
 
     public Player GetPlayer(EPlayerType playerType)
     {
+        if (_humanPlayer == null) return null;
         return playerType == EPlayerType.Human ? (Player) _humanPlayer : _cpuPlayer;
     }
     
@@ -70,7 +77,13 @@ public class GameManager : MonoBehaviour
             return _instance;
         }
     }
-    
+
+    private void OnDestroy()
+    {
+        _instance = null;
+        _isInit = false;
+    }
+
 #if UNITY_EDITOR
     [InitializeOnEnterPlayMode]
     static void OnEnterPlaymodeInEditor(EnterPlayModeOptions options)
@@ -156,7 +169,7 @@ public class GameManager : MonoBehaviour
             case EGameState.EndTurn:
                 EndTurn(_currentPlayerType);
 
-                if (_gameFinished)
+                if (_aPlayerDied)
                 {
                     _gameState = EGameState.EndGame;
                 }
@@ -176,7 +189,11 @@ public class GameManager : MonoBehaviour
                 }
                 break;
             case EGameState.EndGame:
-                EndGame();
+                if (!_hasFinishedGame)
+                {
+                    _hasFinishedGame = true;
+                    EndGame();
+                }
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -185,7 +202,6 @@ public class GameManager : MonoBehaviour
 
     private void InitGame()
     {
-        Debug.Log("[GameManager] InitGame");
         onGameInit?.Invoke();
 
         _hasFinishedInit = true;
@@ -193,8 +209,6 @@ public class GameManager : MonoBehaviour
 
     private void StartTurn(EPlayerType playerType)
     {
-        Debug.Log("[GameManager] StartTurn of " + playerType);
-
         switch (playerType)
         {
             case EPlayerType.Human:
@@ -210,14 +224,10 @@ public class GameManager : MonoBehaviour
 
     private void WaitTurnEnd(EPlayerType playerType)
     {
-        Debug.Log("[GameManager] Wait en turn of " + playerType);
     }
 
     private void EndTurn(EPlayerType playerType)
     {
-        Debug.Log("[GameManager] End Turn of " + playerType);
-        
-
         switch (playerType)
         {
             case EPlayerType.Human:
@@ -235,19 +245,34 @@ public class GameManager : MonoBehaviour
     {
         if (playerType == EPlayerType.Human)
         {
-            Debug.Log("You lose");
+            _winningPlayer = EPlayerType.CPU;
         }
         else
         {
-            Debug.Log("You win");
+            _winningPlayer = EPlayerType.Human;
         }
 
-        _gameFinished = true;
+        _aPlayerDied = true;
     }
 
     private void EndGame()
     {
-        onGameEnded?.Invoke();
+        onGameEnded?.Invoke(_winningPlayer);
+
+        StartCoroutine(WaitEndCoroutine());
+    }
+
+    private IEnumerator WaitEndCoroutine()
+    {
+        float timer = 0.0f;
+
+        while (timer < _waitTimeBeforeSceneReload)
+        {
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        SceneManager.LoadSceneAsync("GameScene");
     }
 
     public void NextTurn()

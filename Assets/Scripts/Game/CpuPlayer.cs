@@ -8,8 +8,6 @@ public class CpuPlayer : Player
 {
     protected override EPlayerType GetPlayerType() => EPlayerType.CPU;
     
-    private bool _isPlaying;
-
     private enum ECpuPhase
     {
         InvokeCard,

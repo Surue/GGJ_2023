@@ -18,7 +18,16 @@ public class GUI_CardDisplay : MonoBehaviour
 
     private void OnDestroy()
     {
-        GameManager.Instance.GetPlayer(cardController.Owner).OnManaChanged -= OnManaChanged;
+        var gameManager = GameManager.Instance;
+
+        if (gameManager != null)
+        {
+            var player = gameManager.GetPlayer(cardController.Owner);
+            if (player != null)
+            {
+                player.OnManaChanged -= OnManaChanged;
+            }
+        }
     }
 
     public void Init()
