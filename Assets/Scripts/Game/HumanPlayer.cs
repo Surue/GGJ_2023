@@ -1,3 +1,4 @@
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public class HumanPlayer : Player
@@ -13,7 +14,7 @@ public class HumanPlayer : Player
     [SerializeField] private LineRenderer _lineRenderer;
     [SerializeField] private float _lineIconOffset = -0.4f;
     [SerializeField] private float _offsetYCurve = 1f;
-    [SerializeField] private int _dotPerUnit = 1;
+    [SerializeField] private float _dotPerUnit = 1.0f;
     [SerializeField] private Color _lineColorDisplacement;
     [SerializeField] private Color _lineColorAttack;
     [SerializeField] private Color _lineColorNeutral;
@@ -166,8 +167,10 @@ public class HumanPlayer : Player
 
     private void CardSelectedState()
     {
+        var layerHitName = CheckRaycastHit();
+        
         // Move card to slot
-        if (CheckRaycastHit() == "Slot")
+        if (layerHitName == "Slot")
         {
             _boardSlot = _hit.transform.gameObject;
             _boardController = _hit.transform.GetComponent<BoardController>();
@@ -186,7 +189,7 @@ public class HumanPlayer : Player
                     _lineIcon.SetActive(false);
                 }
             }
-            else if (CanSwapCards() && _boardController.PlayerType == EPlayerType.Human &&_boardController.containCard) // Swap cards
+            else if (CanSwapCards() && _boardController.PlayerType == EPlayerType.Human && _boardController.containCard) // Swap cards
             {
                 _targetCardController = _boardController.cardController;
                 DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve, _lineColorDisplacement);
@@ -200,10 +203,39 @@ public class HumanPlayer : Player
                     _lineRenderer.enabled = false;
                     _lineIcon.SetActive(false);
                 }
+            }else if (_slotCardController.CanAttack() && _boardController.PlayerType == EPlayerType.CPU && _boardController.containCard) // Attack other card
+            {
+                _targetCardController = _boardController.cardController;
+                DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve, _lineColorAttack);
+
+                if (Input.GetMouseButtonDown(0))
+                {
+                    currentHandState = HandState.Free;
+                    
+                    AttackOtherCard(_slotCardController, _targetCardController);
+                    
+                    _lineRenderer.enabled = false;
+                    _lineIcon.SetActive(false);
+                }
             }
             else
             {
                 DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorNeutral);
+            }
+        }
+        else if (layerHitName == "AttackZone")
+        {
+            DrawMovementLine(_cardTransform.position, _hit.point, _offsetYCurve, _lineColorAttack);
+            
+            // TODO Check line of attack
+            if (Input.GetMouseButtonDown(0) && _slotCardController.CanAttack()) // Attack player
+            {
+                currentHandState = HandState.Free;
+                    
+                AttackOtherPlayer(_slotCardController);
+                    
+                _lineRenderer.enabled = false;
+                _lineIcon.SetActive(false);
             }
         }
         else
