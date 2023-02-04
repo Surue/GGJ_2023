@@ -46,7 +46,7 @@ Material:
     - _BUILTIN_QueueControl: 0
     - _BUILTIN_QueueOffset: 0
     - _Float: 19
-    - _OffSetSpeed: -1.5
+    - _OffSetSpeed: -1
     - _Offset: 2.01
     - _Steps: 0.33
     - _Tiling: 5
