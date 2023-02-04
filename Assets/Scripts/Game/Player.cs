@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     [Header("Settings")]
     [SerializeField] protected DeckScriptable _deckScriptable;
     [SerializeField] protected GameRulesScriptables _gameRules;
+    [SerializeField] protected EPlayerType _playerType;
     
     // Board objects
     [Header("Object on board")]
@@ -33,6 +34,8 @@ public class Player : MonoBehaviour
     
     // Health
     private int _currentHealth;
+    public int CurrentHealth => _currentHealth;
+
     public Action<int, int> OnHealthChanged;
     
     // Mana
@@ -127,10 +130,15 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int damage)
+    private void TakeDamage(int damage)
     {
         _currentHealth -= damage;
         OnHealthChanged(_currentHealth, _gameRules.MaxHealth);
+        
+        if(_currentHealth <= 0)
+        {
+            GameManager.Instance.PlayerDeath(_playerType);
+        }
     }
 
     protected bool CanSwapCards()
