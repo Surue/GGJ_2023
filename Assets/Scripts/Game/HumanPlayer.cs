@@ -60,6 +60,25 @@ public class HumanPlayer : Player
         }
     }
 
+    public void NextTurn()
+    {
+        if (!_isPlaying) return;
+        
+        GameManager.Instance.OnTurnEnd();
+    }
+    
+    private void StartTurn()
+    {
+        _isPlaying = true;
+        
+        FillHand();
+    }
+    
+    private void EndTurn()
+    {
+        _isPlaying = false;
+    }
+
     private void FreeState()
     {
         // Check if player hover card in hands
@@ -198,7 +217,7 @@ public class HumanPlayer : Player
 
                 if (Input.GetMouseButtonDown(0) & _targetCardController.canMove)
                 {
-                    //Repasse la main en free
+                    // Repasse la main en free
                     currentHandState = HandState.free;
 
                     _slotCardController.UpdatePreviousSlot(_targetCardController.boardController);
@@ -260,7 +279,6 @@ public class HumanPlayer : Player
         }
     }
 
-
     private string CheckRaycastHit()
     {
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -273,17 +291,5 @@ public class HumanPlayer : Player
             return null;
         }
 
-    }
-
-    private void StartTurn()
-    {
-        _isPlaying = true;
-        
-        FillHand();
-    }
-    
-    private void EndTurn()
-    {
-        _isPlaying = false;
     }
 }
