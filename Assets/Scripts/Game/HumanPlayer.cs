@@ -39,6 +39,8 @@ public class HumanPlayer : Player
     private void Start()
     {
         GameManager.Instance.onHumanTurnStarted += StartTurn;
+        GameManager.Instance.onHumanTurnStarted += FillHand;
+        GameManager.Instance.onHumanTurnStarted += ResetCardStartTurn;
         GameManager.Instance.onHumanTurnStarted += AddManaStartTurn;
         GameManager.Instance.onHumanTurnFinished += EndTurn;
         _isPlaying = false;
@@ -338,9 +340,7 @@ public class HumanPlayer : Player
     private void StartTurn()
     {
         _isPlaying = true;
-        
-        FillHand();
-        
+
         GameManager.Instance.HasFinishedStartingTurn();
     }
     

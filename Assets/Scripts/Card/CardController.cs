@@ -193,6 +193,11 @@ public class CardController : MonoBehaviour
         _remainingAttackCharge--;
     }
 
+    public void ResetStartTurn()
+    {
+        _remainingAttackCharge = _maxAttackCharge;
+    }
+
     #region STATES
 
     private void InDeck()

@@ -97,6 +97,14 @@ public class Player : MonoBehaviour
         OnManaChanged(_currentMana, _gameRules.MaxMana);
     }
 
+    protected void ResetCardStartTurn()
+    {
+        foreach (var cardController in _cardsOnBoard)
+        {
+            cardController.ResetStartTurn();
+        }
+    }
+
     protected void AddManaStartTurn()
     {
         if (_previousManaGain < _gameRules.MaxMana)
@@ -214,12 +222,22 @@ public class Player : MonoBehaviour
 
         if (attackingCard.cardHealth <= 0)
         {
+            attackingCard.boardController.containCard = false;
+            attackingCard.boardController.cardController = null;
+
+            attackingCard.boardController = null;
+            
             _cardsOnBoard.Remove(attackingCard);
             _cardsDiscarded.Add(attackingCard);
         }
         
         if (defendingCard.cardHealth <= 0)
         {
+            defendingCard.boardController.containCard = false;
+            defendingCard.boardController.cardController = null;
+
+            defendingCard.boardController = null;
+            
             _otherPlayer._cardsOnBoard.Remove(defendingCard);
             _otherPlayer._cardsDiscarded.Add(defendingCard);
         }

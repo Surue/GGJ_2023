@@ -25,6 +25,8 @@ public class CpuPlayer : Player
     {
         GameManager.Instance.onCpuTurnStarted += StartTurn;
         GameManager.Instance.onCpuTurnStarted += AddManaStartTurn;
+        GameManager.Instance.onCpuTurnStarted += FillHand;
+        GameManager.Instance.onCpuTurnStarted += ResetCardStartTurn;
         GameManager.Instance.onCpuTurnFinished += EndTurn;
 
         _isPlaying = false;
@@ -57,8 +59,6 @@ public class CpuPlayer : Player
     private void StartTurn()
     {
         _isPlaying = true;
-        
-        FillHand();
 
         _phase = ECpuPhase.InvokeCard;
         
