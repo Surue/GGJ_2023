@@ -110,7 +110,7 @@ public class Player : MonoBehaviour
         {
             var card = _cardsInDeck.Dequeue();
             card.SetHandSlot(_handSlots[i].transform);
-            card.CardStateSwitch(CardController.CardState.inHand);
+            card.SetCardState(CardController.CardState.inHand);
             _cardsInHand.Add(card);
         }
     }
@@ -140,7 +140,7 @@ public class Player : MonoBehaviour
     {
         cardToMove.UpdatePreviousSlot(slot);
 
-        cardToMove.CardStateSwitch(CardController.CardState.onDesk);
+        cardToMove.SetCardState(CardController.CardState.onDesk);
         cardToMove.PlayAnimationCard("IdleAnim");
 
         UseMana(_gameRules.CardMoveManaCost);
@@ -150,7 +150,7 @@ public class Player : MonoBehaviour
     {
         cardToMove.UpdatePreviousSlot(slot);
 
-        cardToMove.CardStateSwitch(CardController.CardState.onDesk);
+        cardToMove.SetCardState(CardController.CardState.onDesk);
         cardToMove.PlayAnimationCard("IdleAnim");
         
         _cardsInHand.Remove(cardToMove);
@@ -165,17 +165,17 @@ public class Player : MonoBehaviour
         card2.UpdatePreviousSlot(card1.previousBoardController);
         card2.moveJumpHeight = 0.15f;
         card1.moveJumpHeight = 0.5f;
-        card1.CardStateSwitch(CardController.CardState.onDesk);
+        card1.SetCardState(CardController.CardState.onDesk);
         card1.PlayAnimationCard("IdleAnim");
 
-        card2.CardStateSwitch(CardController.CardState.onDesk);
+        card2.SetCardState(CardController.CardState.onDesk);
         
         UseMana(_gameRules.CardSwapManaCost);
     }
 
     protected void SetCardWaiting(CardController cardController)
     {
-        cardController.CardStateSwitch(CardController.CardState.isWaiting);
+        cardController.SetCardState(CardController.CardState.isWaiting);
         cardController.PlayAnimationCard("ActiveAnim");
         currentHandState = HandState.CardSelectedInHand;
 
@@ -191,7 +191,7 @@ public class Player : MonoBehaviour
     protected void AttackOtherPlayer(CardController attackingCard)
     {
         attackingCard.Attack();
-        attackingCard.CardStateSwitch(CardController.CardState.onDesk);
+        attackingCard.SetCardState(CardController.CardState.onDesk);
         
         _otherPlayer.TakeDamage(attackingCard.cardAttack);
     }
@@ -199,7 +199,7 @@ public class Player : MonoBehaviour
     protected void AttackOtherCard(CardController attackingCard, CardController defendingCard)
     {
         attackingCard.Attack();
-        attackingCard.CardStateSwitch(CardController.CardState.onDesk);
+        attackingCard.SetCardState(CardController.CardState.onDesk);
     }
     
     protected List<CardController> GetPossibleCardToAttack(CardController attackingCard)

@@ -62,9 +62,6 @@ public class HumanPlayer : Player
                 CardInvokeOnDesk();
                 break;
             case HandState.WaitingTurn:
-
-                break;
-            default:
                 break;
         }
 
@@ -88,16 +85,16 @@ public class HumanPlayer : Player
             {
                 if (activeCardController != null && activeCardController != tmpCard)
                 {
-                    activeCardController.CardStateSwitch(CardController.CardState.inHand);
+                    activeCardController.SetCardState(CardController.CardState.inHand);
                 }
                 
                 activeCardController = tmpCard;
-                activeCardController.CardStateSwitch(CardController.CardState.isOverride);
+                activeCardController.SetCardState(CardController.CardState.isOverride);
             }
         }
         else if (activeCardController != null)
         {
-            activeCardController.CardStateSwitch(CardController.CardState.inHand);
+            activeCardController.SetCardState(CardController.CardState.inHand);
             activeCardController = null;
         }
         else
@@ -106,11 +103,15 @@ public class HumanPlayer : Player
         }
 
         // Check if player select card in hands
-        if (Input.GetMouseButtonDown(0) && activeCardController != null && CanDropCardOnBoard(activeCardController) && activeCardController.isInteractible)
+        if (Input.GetMouseButtonDown(0))
         {
-            SetCardWaiting(activeCardController);
+            if (activeCardController != null && CanDropCardOnBoard(activeCardController) &&
+                activeCardController.isInteractible)
+            {
+                SetCardWaiting(activeCardController);
 
-            _cardTransform = _hit.transform.GetComponent<Transform>();
+                _cardTransform = _hit.transform.GetComponent<Transform>();
+            }
         }
 
         // Check if hover slots
@@ -129,9 +130,9 @@ public class HumanPlayer : Player
             if ((CanDropCardOnBoard(_slotCardController) || CanMoveCardOnBoard() || _slotCardController.CanAttack()) && Input.GetMouseButtonDown(0) && _slotCardController.isInteractible && _slotCardController.boardController.PlayerType == EPlayerType.Human)
             {
                 _slotCardController.moveToPositon = _slotCardController.transform.localPosition + Vector3.up * 0.25f;
-                _slotCardController.CardStateSwitch(CardController.CardState.isSelected);
+                _slotCardController.SetCardState(CardController.CardState.isSelected);
                 _slotCardController.PlayAnimationCard("ActiveAnim");
-                currentHandState = HandState.CardSelectedOnBoard;
+                SetHandState(HandState.CardSelectedOnBoard);
 
                 // [TEST] pour draw line
                 _cardTransform = _hit.transform.GetComponent<Transform>();
@@ -139,8 +140,24 @@ public class HumanPlayer : Player
         }
     }
 
+    public void SetHandState(HandState handState)
+    {
+        currentHandState = handState;
+    }
+
     private void CardInvokeOnDesk()
     {
+        if (Input.GetMouseButtonDown(1))
+        {
+            activeCardController.SetCardState(CardController.CardState.inHand);
+            
+            activeCardController = null;
+            SetHandState(HandState.Free);
+            
+            ResetLine();
+            return;
+        }
+        
         if (CheckRaycastHit() == "Slot")
         {
             _boardSlot = _hit.transform.gameObject;
@@ -155,11 +172,9 @@ public class HumanPlayer : Player
                     DropCardOnBoard(activeCardController, _boardController);
 
                     activeCardController = null;
-                    currentHandState = HandState.Free;
+                    SetHandState(HandState.Free);
 
-                    // [TEST LINE] Desactiver la line
-                    _lineRenderer.enabled = false;
-                    _lineIcon.SetActive(false);
+                    ResetLine();
                 }
             }
             else
@@ -175,6 +190,15 @@ public class HumanPlayer : Player
             // [TEST LINE]
             DrawMovementLine(_cardTransform.position, _hit.point, _offsetYCurve, _lineColorNeutral, "");
         }
+    }
+
+    /// <summary>
+    /// Disable preview line
+    /// </summary>
+    private void ResetLine()
+    {
+        _lineRenderer.enabled = false;
+        _lineIcon.SetActive(false);
     }
 
     private void CardSelectedState()

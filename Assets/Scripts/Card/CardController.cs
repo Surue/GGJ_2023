@@ -74,6 +74,7 @@ public class CardController : MonoBehaviour
         isDead,
         inDeck
     }
+
     public CardState currentCardState;
     public enum MoveType
     {
@@ -138,7 +139,7 @@ public class CardController : MonoBehaviour
         _deckPosition = deckTransform.position;
         transform.position = _deckPosition;
         transform.rotation = deckTransform.rotation;
-        CardStateSwitch(CardState.inDeck);
+        SetCardState(CardState.inDeck);
         
         _cardDisplay.UpdateUIStats();
         
@@ -162,7 +163,7 @@ public class CardController : MonoBehaviour
         _highlightRenderer.material.SetTextureOffset("_FadeTex", _highlightOffset);
     }
 
-    public void CardStateSwitch(CardState nextCardState)
+    public void SetCardState(CardState nextCardState)
     {
         currentCardState = nextCardState;
         //Gère les différents états
@@ -199,6 +200,8 @@ public class CardController : MonoBehaviour
             default:
                 break;
         }
+        
+        RefreshInteractionCheck();
     }
 
     public bool CanAttack()
@@ -243,7 +246,7 @@ public class CardController : MonoBehaviour
     {
         //Déplace la carte dans la zone de selection
         TweenMoveCard(selectionAreaTransform.position, selectionAreaTransform.rotation, moveToAreaDuration, MoveType.toSelectionArea);
-        CardInteractionCheck();
+        RefreshInteractionCheck();
     }
 
     private void OnDeskState()
@@ -276,7 +279,7 @@ public class CardController : MonoBehaviour
     {
         DOTween.Kill(transform);
         TweenMoveCard(defausseTransform.localPosition, defausseTransform.localRotation, moveToDefausseDuration, MoveType.simpleMoveRotate);
-        CardInteractionCheck();
+        RefreshInteractionCheck();
     }
     #endregion
 
@@ -288,18 +291,27 @@ public class CardController : MonoBehaviour
         {
             case MoveType.simpleMove:
                 DOTween.Kill(transform);
-                transform.DOLocalMove(endPosition, duration).SetEase(Ease.InOutSine);
+                transform.DOLocalMove(endPosition, duration).SetEase(Ease.InOutSine).OnComplete(() =>
+                {
+                    RefreshInteractionCheck();
+                });
                 break;
 
             case MoveType.simpleMoveRotate:
                 DOTween.Kill(transform);
-                transform.DOLocalMove(endPosition, duration).SetEase(Ease.InOutSine);
+                transform.DOLocalMove(endPosition, duration).SetEase(Ease.InOutSine).OnComplete(() =>
+                {
+                    RefreshInteractionCheck();
+                });
                 transform.DORotateQuaternion(endRotation, duration).SetEase(Ease.InOutSine);
                 break;
 
             case MoveType.toSelectionArea:
                 DOTween.Kill(transform);
-                transform.DOLocalMove(endPosition, duration).SetEase(Ease.InOutSine);
+                transform.DOLocalMove(endPosition, duration).SetEase(Ease.InOutSine).OnComplete(() =>
+                {
+                    RefreshInteractionCheck();
+                });
                 transform.DORotateQuaternion(endRotation, duration).SetEase(Ease.InOutSine);
                 break;
 
@@ -307,7 +319,7 @@ public class CardController : MonoBehaviour
                 DOTween.Kill(transform);
                 transform.DOLocalMove(endPosition, duration).SetEase(Ease.InOutSine).OnComplete(() =>
                 {
-                    CardInteractionCheck();
+                    RefreshInteractionCheck();
                 });
                 transform.DORotateQuaternion(endRotation, duration).SetEase(Ease.InOutSine);
                 break;
@@ -316,7 +328,7 @@ public class CardController : MonoBehaviour
                 DOTween.Kill(transform);
                 transform.DOLocalJump(endPosition, moveJumpHeight, 1, duration).SetEase(Ease.InOutSine).OnComplete(() =>
                 {
-                    CardInteractionCheck();
+                    RefreshInteractionCheck();
                 });
                 transform.DORotateQuaternion(endRotation, duration).SetEase(Ease.InOutSine);
                 break;
@@ -324,11 +336,10 @@ public class CardController : MonoBehaviour
             default:
                 break;
         }
-
     }
     #endregion
 
-    public void CardInteractionCheck()
+    private void RefreshInteractionCheck()
     {
         if (currentCardState is CardState.isWaiting or CardState.isDead)
         {
@@ -349,7 +360,7 @@ public class CardController : MonoBehaviour
         //Passe la carte en état "dead" si sa vie passe a 0 ou moins
         if(cardHealth <= 0)
         {
-            CardStateSwitch(CardState.isDead);
+            SetCardState(CardState.isDead);
         }
     }
 
