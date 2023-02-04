@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using TMPro;
 using UnityEngine.Serialization;
@@ -31,27 +32,21 @@ public class GUI_CardDisplay : MonoBehaviour
         // Setup Stats
         manaText.text = cardController.cardManaCost.ToString();
 
-        // // Setup Illu
-        // characterArtwork.sprite = cardController.CardScriptable.characterSprite;
-        // backgroundElement.sprite = cardController.CardScriptable.backgroundElement;
-        // backgroundColor.color = cardController.CardScriptable.backgroundColor;
-
         // Setup Chara Stats
         if (cardController.CardScriptable.currentType == CardScriptable.CardType.Character)
         {
             attackText.text = cardController.cardAttack.ToString();
             healthText.text = cardController.cardHealth.ToString();
-            if (cardController.CardScriptable.attackType == CardScriptable.AttackType.Melee)
+            switch (cardController.CardScriptable.AttackScriptable.AttackType)
             {
-                // A CHANGER UNE FOIS LE VISUEL FAIT PAR LILIAN
-                //attackType.sprite = cardSO.attackMeleeSprite;
-                attackType.sprite = null;
-            }
-            else
-            {
-                // A CHANGER UNE FOIS LE VISUEL FAIT PAR LILIAN
-                //attackType.sprite = cardSO.attackDistanceSprite;
-                attackType.sprite = null;
+                case EAttackType.Front:
+                    break;
+                case EAttackType.FrontAndBack:
+                    break;
+                case EAttackType.FrontLine:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
         else

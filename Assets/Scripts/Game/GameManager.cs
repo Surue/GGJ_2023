@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour
     public Action onCpuTurnFinished;
     public Action onGameEnded;
 
-    private EPlayerType _currentPlayer;
+    private EPlayerType _currentPlayerType;
     private bool _gameFinished;
 
     // Init state
@@ -46,6 +46,10 @@ public class GameManager : MonoBehaviour
     // Wait Turn
     private bool _hasFinishedWaiting;
 
+    // Players
+    private HumanPlayer _humanPlayer;
+    private CpuPlayer _cpuPlayer;
+    
     // Singleton
     private static bool _isInit = false;
     private static GameManager _instance;
@@ -84,7 +88,7 @@ public class GameManager : MonoBehaviour
                 if (!_isStartingTurn)
                 {
                     _hasFinishedStartingTurn = false;
-                    _currentPlayer = EPlayerType.Human;
+                    _currentPlayerType = EPlayerType.Human;
                     StartTurn(EPlayerType.Human);
                     _isStartingTurn = true;
                 }
@@ -112,7 +116,7 @@ public class GameManager : MonoBehaviour
                 if (!_isStartingTurn)
                 {
                     _hasFinishedStartingTurn = false;
-                    _currentPlayer = EPlayerType.CPU;
+                    _currentPlayerType = EPlayerType.CPU;
                     StartTurn(EPlayerType.CPU);
                     _isStartingTurn = true;
                 }
@@ -136,7 +140,7 @@ public class GameManager : MonoBehaviour
                 }
                 break;
             case EGameState.EndTurn:
-                EndTurn(_currentPlayer);
+                EndTurn(_currentPlayerType);
 
                 if (_gameFinished)
                 {
@@ -144,7 +148,7 @@ public class GameManager : MonoBehaviour
                 }
                 else
                 {
-                    switch (_currentPlayer)
+                    switch (_currentPlayerType)
                     {
                         case EPlayerType.Human:
                             _gameState = EGameState.StartCpuTurn;
@@ -198,6 +202,7 @@ public class GameManager : MonoBehaviour
     private void EndTurn(EPlayerType playerType)
     {
         Debug.Log("[GameManager] End Turn of " + playerType);
+        
 
         switch (playerType)
         {
@@ -212,9 +217,22 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void PlayerDeath(EPlayerType playerType)
+    {
+        if (playerType == EPlayerType.Human)
+        {
+            Debug.Log("You lose");
+        }
+        else
+        {
+            Debug.Log("You win");
+        }
+
+        _gameFinished = true;
+    }
+
     private void EndGame()
     {
-        Debug.Log("[GameManager] EndGames");
         onGameEnded?.Invoke();
     }
 

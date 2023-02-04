@@ -111,7 +111,7 @@ public class CpuPlayer : Player
                 }
                 else
                 {
-                    if (cardsToAttack[0].boardController.boardLineType == EBoardLineType.Front)
+                    if (cardsToAttack[0].slotController.boardLineType == EBoardLineType.Front)
                     {
                         AttackOtherCard(cardController, cardsToAttack[0]);
                     }
@@ -181,9 +181,9 @@ public class CpuPlayer : Player
         return cardToInvoke;
     }
 
-    private List<BoardController> GetFreeSlots()
+    private List<SlotController> GetFreeSlots()
     {
-        var result = new List<BoardController>();
+        var result = new List<SlotController>();
         foreach (var boardSlot in _boardSlots)
         {
             if (!boardSlot.containCard)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.Rendering;
+using UnityEngine.Serialization;
 
 public class CardController : MonoBehaviour
 {   // --- PUBLIC ---
@@ -40,7 +41,7 @@ public class CardController : MonoBehaviour
 
     // --- PUBLIC HIDE ---
     [HideInInspector] public float startMoveTime = 0;
-    [HideInInspector] public float moveJumpHeight = 0.25f;
+    public float moveJumpHeight = 1.2f;
     [HideInInspector] public Vector3 moveToPositon;
     [HideInInspector] public Quaternion moveToRotation;
     [HideInInspector] public int cardHealth;
@@ -54,8 +55,8 @@ public class CardController : MonoBehaviour
     private Transform _handSlotTransform;
     //Controllers 
     private GUI_CardDisplay _cardDisplay;
-    public BoardController boardController;
-    public BoardController previousBoardController;
+    [FormerlySerializedAs("boardController")] public SlotController slotController;
+    [FormerlySerializedAs("previousBoardController")] public SlotController previousSlotController;
     //Highlight
     private Renderer _highlightRenderer;
     private Vector2 _highlightOffset;
@@ -102,9 +103,9 @@ public class CardController : MonoBehaviour
         // Set default values
         cardManaCost = CardScriptable.initialManaCost;
         cardHealth = CardScriptable.initialHealth;
-        cardAttack = CardScriptable.initialAttack;
+        cardAttack = CardScriptable.AttackScriptable.AttackDamage;
 
-        _maxAttackCharge = CardScriptable.initialAttackCharge;
+        _maxAttackCharge = CardScriptable.AttackScriptable.AttackCharge;
         _remainingAttackCharge = _maxAttackCharge;
     }
 
@@ -117,12 +118,7 @@ public class CardController : MonoBehaviour
         SetCardState(CardState.inDeck);
         
         _cardDisplay.UpdateUIStats();
-        
-        //Setup des datas de la carte (recup du ScriptableObject)
-        cardHealth = _cardScriptable.initialHealth;
-        cardAttack = _cardScriptable.initialAttack;
-        cardManaCost = _cardScriptable.initialManaCost;
-        
+
         // Setup selection area and discard area
         _selectionAreaTransform = selectionTransform;
         _discardTransform = discardTransform;
@@ -144,32 +140,43 @@ public class CardController : MonoBehaviour
 
     public void SetCardState(CardState nextCardState)
     {
+        var previousCardState = currentCardState;
         currentCardState = nextCardState;
         //Gère les différents états
         switch (currentCardState)
         {
             case CardState.inDeck:
-                InDeck();
+                OnInDeck();
                 break;
             
             case CardState.inHand:
-                InHandState();
+                OnInHandState();
                 break;
 
             case CardState.isOverride:
-                IsOverrideState();
+                OnIsOverrideState();
                 break;
 
             case CardState.isWaiting:
-                IsWaitingState();
+                OnIsWaitingState();
                 break;
 
             case CardState.onDesk:
+
+                if (previousCardState == CardState.isWaiting)
+                {
+                    TweenPlaceCard(slotController);
+                }
+                else
+                {
+                    TweenMoveCardOnBoard(slotController);
+                }
+                
                 OnDeskState();
                 break;
 
             case CardState.isSelected:
-                IsSelected();
+                OnSelected();
                 break;
 
             case CardState.isDead:
@@ -200,12 +207,12 @@ public class CardController : MonoBehaviour
 
     #region STATES
 
-    private void InDeck()
+    private void OnInDeck()
     {
         
     }
     
-    private void InHandState()
+    private void OnInHandState()
     {
         //Highlight la carte de base
         if (isInteractible)
@@ -220,13 +227,13 @@ public class CardController : MonoBehaviour
         //TweenMoveCard(_handSlotTransform.position, _handSlotTransform.rotation, 0.18f, MoveType.simpleMoveRotate);
     }
 
-    private void IsOverrideState()
+    private void OnIsOverrideState()
     {
         //Déplace la carte 
         // TweenMoveCard(_initialPosition + Vector3.forward * 1f, _initialOrientation, 0.3f, MoveType.simpleMove);
     }
 
-    private void IsWaitingState()
+    private void OnIsWaitingState()
     {
         //Déplace la carte dans la zone de selection
         TweenMoveCard(_selectionAreaTransform.position, _selectionAreaTransform.rotation, moveToAreaDuration, MoveType.toSelectionArea);
@@ -235,27 +242,31 @@ public class CardController : MonoBehaviour
 
     private void OnDeskState()
     {
+        PlayAnimationCard("IdleAnim");
+        
         // Désactive le collider de la carte
         Collider cardCollider = this.GetComponent<Collider>();
         cardCollider.enabled = false;
 
         //Déplace la carte sur l'emplacement du plateau
-        TweenMoveCard(boardController.transform.localPosition, boardController.transform.localRotation, moveOnDeskDuration, MoveType.onDesk);
+        // TweenMoveCard(slotController.transform.localPosition, slotController.transform.localRotation, moveOnDeskDuration, MoveType.toDesk);
 
         //Enlève le highlight de la carte
         UnHighlightCard();
 
         //Envoie les infos au Board Controller
-        boardController.containCard = true;
-        boardController.cardController = this;
+        slotController.containCard = true;
+        slotController.cardController = this;
         
         sortingGroup.sortingOrder = 1;
     }
 
-    private void IsSelected()
+    private void OnSelected()
     {
+        PlayAnimationCard("ActiveAnim");
+
         //MoveCard(moveToPositon, boardController.transform.localRotation, offsetYCurve, 0);
-        TweenMoveCard(moveToPositon, boardController.transform.localRotation, moveToDeskDuration, MoveType.simpleMove);
+        TweenMoveCard(moveToPositon, slotController.transform.localRotation, moveToDeskDuration, MoveType.simpleMove);
         HighlightCard(Color.white);
     }
 
@@ -268,6 +279,44 @@ public class CardController : MonoBehaviour
     #endregion
 
     #region MOVEMENTS
+
+    public void TweenMoveCardOnBoard(SlotController slotController)
+    {
+        DOTween.Kill(transform);
+        transform.DOLocalJump(slotController.transform.position, moveJumpHeight, 1, 0.4f).SetEase(Ease.InOutSine).OnComplete(() =>
+        {
+            RefreshInteractionCheck();
+            // GameObject.Find("CAMERA").transform.DOShakePosition(0.4f, 0.05f, 10);
+        });
+    }
+    
+    public void TweenPlaceCard(SlotController slotController)
+    {
+        DOTween.Kill(transform);
+        // transform.DOLocalJump(slotController.transform.position, moveJumpHeight, 1, 0.4f).SetEase(Ease.InOutSine).OnComplete(() =>
+        // {
+        //     RefreshInteractionCheck();
+        // });
+
+        transform.DOLocalMove(slotController.transform.position + (Vector3.up*0.8f), 0.6f)
+            .SetEase(Ease.OutQuint)
+            .OnComplete(
+            () =>
+            {
+                transform.DOScale(Vector3.one, 0.4f)
+                    .SetDelay(0.1f);
+
+                transform.DOLocalMove(slotController.transform.position, 0.4f)
+                    .SetDelay(0.1f)
+                    .SetEase(Ease.InOutBack)
+                    .OnComplete(() =>
+                {
+                    GameObject.Find("CAMERA").transform.DOShakePosition(0.4f, 0.1f, 10);
+                });
+            });
+        transform.DORotateQuaternion(slotController.transform.localRotation, 1).SetEase(Ease.InOutSine);
+    }
+    
     public void TweenMoveCard(Vector3 endPosition, Quaternion endRotation, float duration, MoveType moveType)
     {
         lastMoveType = moveType;
@@ -300,15 +349,6 @@ public class CardController : MonoBehaviour
                 break;
 
             case MoveType.toDesk:
-                DOTween.Kill(transform);
-                transform.DOLocalMove(endPosition, duration).SetEase(Ease.InOutSine).OnComplete(() =>
-                {
-                    RefreshInteractionCheck();
-                });
-                transform.DORotateQuaternion(endRotation, duration).SetEase(Ease.InOutSine);
-                break;
-
-            case MoveType.onDesk:
                 DOTween.Kill(transform);
                 transform.DOLocalJump(endPosition, moveJumpHeight, 1, duration).SetEase(Ease.InOutSine).OnComplete(() =>
                 {
@@ -350,14 +390,14 @@ public class CardController : MonoBehaviour
     }
 
     // Fonction qui set le slot précédent de la carte sur false et enlève le cardController associé en cas de changement de slot
-    public void UpdatePreviousSlot(BoardController newBoardController)
+    public void UpdatePreviousSlot(SlotController newSlotController)
     {
-        previousBoardController = boardController;
-        boardController = newBoardController;
-        if (previousBoardController != null)
+        previousSlotController = slotController;
+        slotController = newSlotController;
+        if (previousSlotController != null)
         {
-            previousBoardController.containCard = false;
-            previousBoardController.cardController = null;
+            previousSlotController.containCard = false;
+            previousSlotController.cardController = null;
         }
     }
 

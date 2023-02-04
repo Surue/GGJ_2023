@@ -9,12 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96f2dda0f0fa60b4b890a570efbf4561, type: 3}
-  m_Name: GenericGameRules
+  m_Script: {fileID: 11500000, guid: 38f820d2c8f456a41a7b17706b433e85, type: 3}
+  m_Name: NoAttack
   m_EditorClassIdentifier: 
-  _maxHealth: 30
-  _maxMana: 64221
-  _initialMana: 56562
-  _maxCardInHand: 5
-  _cardSwapManaCost: 1
-  _cardMoveManaCost: 1
+  _attackType: 0
+  _attackDamage: 0
+  _attackCharge: 0

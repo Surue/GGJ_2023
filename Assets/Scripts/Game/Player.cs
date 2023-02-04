@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     [Header("Settings")]
     [SerializeField] protected DeckScriptable _deckScriptable;
     [SerializeField] protected GameRulesScriptables _gameRules;
+    [SerializeField] protected EPlayerType _playerType;
     
     // Board objects
     [Header("Object on board")]
@@ -22,7 +23,7 @@ public class Player : MonoBehaviour
     [SerializeField] protected GameObject _selectionObject;
     [SerializeField] protected GameObject _cardParent;
     [SerializeField] protected List<GameObject> _handSlots;
-    [SerializeField] protected List<BoardController> _boardSlots;
+    [SerializeField] protected List<SlotController> _boardSlots;
     
     // Deck
     protected Queue<CardController> _cardsInDeck;
@@ -30,11 +31,11 @@ public class Player : MonoBehaviour
     protected List<CardController> _cardsOnBoard;
     protected List<CardController> _cardsDiscarded;
     
-    // Finish turn 
-    protected bool _hasFinishedTurn;
     
     // Health
     private int _currentHealth;
+    public int CurrentHealth => _currentHealth;
+
     public Action<int, int> OnHealthChanged;
     
     // Mana
@@ -44,8 +45,6 @@ public class Player : MonoBehaviour
     
     // Other player
     private Player _otherPlayer;
-    
-    public bool HasFinishedTurn => _hasFinishedTurn;
 
     public enum HandState
     {
@@ -66,6 +65,7 @@ public class Player : MonoBehaviour
 
         _currentHealth = _gameRules.MaxHealth;
         _currentMana = _gameRules.InitialMana;
+        _previousManaGain = _currentMana;
 
         foreach (var player in FindObjectsOfType<Player>())
         {
@@ -107,15 +107,14 @@ public class Player : MonoBehaviour
 
     protected void AddManaStartTurn()
     {
+        _currentMana = _previousManaGain;
+        
+        OnManaChanged(_currentMana, _gameRules.MaxMana);
+        
         if (_previousManaGain < _gameRules.MaxMana)
         {
             _previousManaGain++;
         }
-
-        _currentMana += _previousManaGain;
-        _currentMana = Mathf.Min(_currentMana, _gameRules.MaxMana);
-        
-        OnManaChanged(_currentMana, _gameRules.MaxMana);
     }
 
     protected void FillHand()
@@ -131,10 +130,15 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int damage)
+    private void TakeDamage(int damage)
     {
         _currentHealth -= damage;
         OnHealthChanged(_currentHealth, _gameRules.MaxHealth);
+        
+        if(_currentHealth <= 0)
+        {
+            GameManager.Instance.PlayerDeath(_playerType);
+        }
     }
 
     protected bool CanSwapCards()
@@ -152,7 +156,7 @@ public class Player : MonoBehaviour
         return _currentMana >= _gameRules.CardMoveManaCost;
     }
     
-    protected void MoveCardOnBoard(CardController cardToMove, BoardController slot)
+    protected void MoveCardOnBoard(CardController cardToMove, SlotController slot)
     {
         cardToMove.UpdatePreviousSlot(slot);
 
@@ -162,7 +166,7 @@ public class Player : MonoBehaviour
         UseMana(_gameRules.CardMoveManaCost);
     }
 
-    protected void DropCardOnBoard(CardController cardToMove, BoardController slot)
+    protected void DropCardOnBoard(CardController cardToMove, SlotController slot)
     {
         cardToMove.UpdatePreviousSlot(slot);
 
@@ -177,8 +181,8 @@ public class Player : MonoBehaviour
 
     protected void SwapCardOnBoard(CardController card1, CardController card2)
     {
-        card1.UpdatePreviousSlot(card2.boardController);
-        card2.UpdatePreviousSlot(card1.previousBoardController);
+        card1.UpdatePreviousSlot(card2.slotController);
+        card2.UpdatePreviousSlot(card1.previousSlotController);
         card2.moveJumpHeight = 0.15f;
         card1.moveJumpHeight = 0.5f;
         card1.SetCardState(CardController.CardState.onDesk);
@@ -222,10 +226,10 @@ public class Player : MonoBehaviour
 
         if (attackingCard.cardHealth <= 0)
         {
-            attackingCard.boardController.containCard = false;
-            attackingCard.boardController.cardController = null;
+            attackingCard.slotController.containCard = false;
+            attackingCard.slotController.cardController = null;
 
-            attackingCard.boardController = null;
+            attackingCard.slotController = null;
             
             _cardsOnBoard.Remove(attackingCard);
             _cardsDiscarded.Add(attackingCard);
@@ -233,10 +237,10 @@ public class Player : MonoBehaviour
         
         if (defendingCard.cardHealth <= 0)
         {
-            defendingCard.boardController.containCard = false;
-            defendingCard.boardController.cardController = null;
+            defendingCard.slotController.containCard = false;
+            defendingCard.slotController.cardController = null;
 
-            defendingCard.boardController = null;
+            defendingCard.slotController = null;
             
             _otherPlayer._cardsOnBoard.Remove(defendingCard);
             _otherPlayer._cardsDiscarded.Add(defendingCard);
@@ -287,8 +291,9 @@ public class Player : MonoBehaviour
 
         for (int i = 0; i < 2; i++)
         {
-            if (!_boardSlots[i + columnId].containCard) continue;
-            result.Add(_boardSlots[i + columnId].cardController);
+            var slot = _boardSlots[i * 4 + columnId];
+            if (!slot.containCard) continue;
+            result.Add(slot.cardController);
         }
         
         return result;
@@ -296,34 +301,34 @@ public class Player : MonoBehaviour
     
     protected List<CardController> GetColumnInFront(CardController cardController)
     {
-        return _otherPlayer.GetColumn(GetColumnIdOfOtherPlayer(cardController.boardController.columnID));
+        return _otherPlayer.GetColumn(GetColumnIdOfOtherPlayer(cardController.slotController.columnID));
     }
     
     protected bool IsInFront(CardController cardController)
     {
-        return cardController.boardController.boardLineType == EBoardLineType.Front;
+        return cardController.slotController.boardLineType == EBoardLineType.Front;
     }
     
     protected bool IsInBack(CardController cardController)
     {
-        return cardController.boardController.boardLineType == EBoardLineType.Back;
+        return cardController.slotController.boardLineType == EBoardLineType.Back;
     }
 
     protected bool TryGetCardInFront(CardController cardController, out CardController result)
     {
-        if (cardController.boardController.boardLineType == EBoardLineType.Back)
+        if (cardController.slotController.boardLineType == EBoardLineType.Back)
         {
-            result = _boardSlots[cardController.boardController.columnID].cardController;
-            return _boardSlots[cardController.boardController.columnID].containCard;
+            result = _boardSlots[cardController.slotController.columnID].cardController;
+            return _boardSlots[cardController.slotController.columnID].containCard;
         }
         else
         {
-            var cardsOnColum = _otherPlayer.GetColumn(GetColumnIdOfOtherPlayer(cardController.boardController.columnID));
+            var cardsOnColum = _otherPlayer.GetColumn(GetColumnIdOfOtherPlayer(cardController.slotController.columnID));
             if (cardsOnColum.Count > 0)
             {
                 foreach (var controller in cardsOnColum)
                 {
-                    if (controller.boardController.boardLineType == EBoardLineType.Front)
+                    if (controller.slotController.boardLineType == EBoardLineType.Front)
                     {
                         result = controller;
                         return true;
@@ -338,10 +343,10 @@ public class Player : MonoBehaviour
     
     protected bool TryGetCardInBack(CardController cardController, out CardController result)
     {
-        if (cardController.boardController.boardLineType == EBoardLineType.Front)
+        if (cardController.slotController.boardLineType == EBoardLineType.Front)
         {
-            result = _boardSlots[cardController.boardController.columnID + 4].cardController;
-            return _boardSlots[cardController.boardController.columnID + 4].containCard;
+            result = _boardSlots[cardController.slotController.columnID + 4].cardController;
+            return _boardSlots[cardController.slotController.columnID + 4].containCard;
         }
         
         result = null;
@@ -357,9 +362,9 @@ public class Player : MonoBehaviour
     {
         var result = new List<CardController>();
 
-        var columnID = cardController.boardController.columnID;
+        var columnID = cardController.slotController.columnID;
 
-        if (cardController.boardController.boardLineType == EBoardLineType.Back)
+        if (cardController.slotController.boardLineType == EBoardLineType.Back)
         {
             if (TryGetCardInFront(cardController, out var neighbor))
             {
@@ -395,9 +400,9 @@ public class Player : MonoBehaviour
     {
         var result = new List<CardController>();
 
-        var columnID = cardController.boardController.columnID;
+        var columnID = cardController.slotController.columnID;
 
-        if (cardController.boardController.boardLineType == EBoardLineType.Back)
+        if (cardController.slotController.boardLineType == EBoardLineType.Back)
         {
             if (TryGetCardInFront(cardController, out var neighbor))
             {
@@ -450,8 +455,8 @@ public class Player : MonoBehaviour
 
     private bool TryGetNeighbor(CardController cardController, NeighborDirection direction, out CardController result)
     {
-        var columnID = cardController.boardController.columnID;
-        var slotID = cardController.boardController.slotID;
+        var columnID = cardController.slotController.columnID;
+        var slotID = cardController.slotController.slotID;
         
         switch (direction)
         {
