@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.Rendering;
 
 public class CardController : MonoBehaviour
 {   // --- PUBLIC ---
@@ -84,6 +85,8 @@ public class CardController : MonoBehaviour
         moveOverride, 
     }
     public MoveType lastMoveType;
+
+    public SortingGroup sortingGroup => GetComponent<SortingGroup>();
 
     private void Awake()
     {

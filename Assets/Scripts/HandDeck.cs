@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 public class HandDeck : MonoBehaviour
@@ -21,17 +22,28 @@ public class HandDeck : MonoBehaviour
     [Space]
     [SerializeField] private float lerpSpeed = 2;
     [SerializeField] private float scaleLerpSpeed = 8;
+    [Space]
+    [SerializeField] private float selectedXOffset = 2;
 
+    [SerializeField] private int currentSelectedIndex;
     private void Update()
     {
-        var cardss = GetComponentsInChildren<CardController>().ToList();
-        cardsInHand = cardss.FindAll(x => 
+        var cards = GetComponentsInChildren<CardController>().ToList();
+        cardsInHand = cards.FindAll(x => 
             x.currentCardState == CardController.CardState.inHand ||
             x.currentCardState == CardController.CardState.isOverride).ToList();
         
         for (int i = 0; i < cardsInHand.Count; i++)
         {
             CalcAlign(i, cardsInHand.Count);
+            cards[i].sortingGroup.sortingOrder = i == currentSelectedIndex ? 200 : 100 - i;
+        }
+
+        bool anyCardSelected = cards.Any(x => x.currentCardState == CardController.CardState.isOverride);
+
+        if (!anyCardSelected)
+        {
+            currentSelectedIndex = -100;
         }
     }
 
@@ -53,6 +65,20 @@ public class HandDeck : MonoBehaviour
             rotZ = 0;
             zPos += selectedZOffset;
             scale = selectedScale;
+
+            currentSelectedIndex = index;
+        }
+        
+        if (currentSelectedIndex != -100)
+        {
+            if (currentSelectedIndex < index)
+            {
+                xPos += selectedXOffset;
+            }
+            if (currentSelectedIndex > index)
+            {
+                xPos -= selectedXOffset;
+            }
         }
 
         var cardTransform = cardsInHand[index].transform;
