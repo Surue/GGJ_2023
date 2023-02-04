@@ -151,7 +151,7 @@ public class Player : MonoBehaviour
         return _currentMana >= cardToDrop.cardManaCost;
     }
 
-    protected bool CanMoveCardOnBoard()
+    protected bool CanInvokeCardOnBoard()
     {
         return _currentMana >= _gameRules.CardMoveManaCost;
     }

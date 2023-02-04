@@ -128,7 +128,7 @@ public class HumanPlayer : Player
 
             // Check if player click on a slot
             if ((CanDropCardOnBoard(_slotCardController) 
-                 || CanMoveCardOnBoard() 
+                 || CanInvokeCardOnBoard() 
                  || _slotCardController.CanAttack()) 
                  && Input.GetMouseButtonDown(0) 
                  && _slotCardController.isInteractible 
@@ -226,7 +226,7 @@ public class HumanPlayer : Player
             _boardSlot = _hit.transform.gameObject;
             _slotController = _hit.transform.GetComponent<SlotController>();
 
-            if (CanMoveCardOnBoard() && _slotController.PlayerType == EPlayerType.Human && !_slotController.containCard) // Drop card on empty board
+            if (CanInvokeCardOnBoard() && _slotController.PlayerType == EPlayerType.Human && !_slotController.containCard) // Drop card on empty board
             {
                 DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorDeplacement, _gameRules.CardMoveManaCost.ToString());
 

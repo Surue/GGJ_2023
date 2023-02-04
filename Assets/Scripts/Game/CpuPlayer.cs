@@ -76,6 +76,8 @@ public class CpuPlayer : Player
         {
             SetCardWaiting(cardController);
 
+            yield return null;
+            
             while (cardController.isTweening)
             {
                 yield return null;
@@ -85,6 +87,8 @@ public class CpuPlayer : Player
             freeSlots.Remove(freeSlot);
             
             DropCardOnBoard(cardController, freeSlot);
+            
+            yield return null;
             
             while (cardController.isTweening)
             {
@@ -127,6 +131,11 @@ public class CpuPlayer : Player
             }
 
             yield return null;
+            
+            while (cardController.isTweening)
+            {
+                yield return null;
+            }
         }
 
         _phase = ECpuPhase.End;
