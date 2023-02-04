@@ -53,13 +53,13 @@ public class HumanPlayer : Player
         switch (currentHandState)
         {
             case HandState.Free:
-                FreeState();
+                OnFreeState();
                 break;
             case HandState.CardSelectedOnBoard:
-                CardSelectedState();
+                OnCardSelectedState();
                 break;
             case HandState.CardSelectedInHand:
-                CardInvokeOnDesk();
+                OnCardInvokeOnDesk();
                 break;
             case HandState.WaitingTurn:
                 break;
@@ -68,6 +68,7 @@ public class HumanPlayer : Player
         lineCurrentEndPos = Vector3.Lerp(lineCurrentEndPos, lineTargetEndPos, lineLerpSpeed * Time.deltaTime);
     }
 
+    
     public void NextTurn()
     {
         if (!_isPlaying) return;
@@ -75,7 +76,7 @@ public class HumanPlayer : Player
         GameManager.Instance.NextTurn();
     }
 
-    private void FreeState()
+    private void OnFreeState()
     {
         // Check if player hover card in hands
         if (CheckRaycastHit() == "Card")
@@ -143,13 +144,8 @@ public class HumanPlayer : Player
             }
         }
     }
-
-    public void SetHandState(HandState handState)
-    {
-        currentHandState = handState;
-    }
-
-    private void CardInvokeOnDesk()
+    
+    private void OnCardInvokeOnDesk()
     {
         if (Input.GetMouseButtonDown(1))
         {
@@ -196,16 +192,7 @@ public class HumanPlayer : Player
         }
     }
 
-    /// <summary>
-    /// Disable preview line
-    /// </summary>
-    private void ResetLine()
-    {
-        _lineRenderer.enabled = false;
-        _lineIcon.SetActive(false);
-    }
-
-    private void CardSelectedState()
+    private void OnCardSelectedState()
     {
         var layerHitName = CheckRaycastHit();
         
@@ -306,6 +293,7 @@ public class HumanPlayer : Player
         }
     }
 
+
     private void DrawMovementLine(Vector3 startPos, Vector3 endPos, float offsetY, Color lineColor, string value)
     {
         lineTargetEndPos = endPos;
@@ -342,6 +330,15 @@ public class HumanPlayer : Player
         }
     }
 
+    /// <summary>
+    /// Disable preview line
+    /// </summary>
+    private void ResetLine()
+    {
+        _lineRenderer.enabled = false;
+        _lineIcon.SetActive(false);
+    }
+    
     private string CheckRaycastHit()
     {
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -356,6 +353,7 @@ public class HumanPlayer : Player
 
     }
 
+
     private void StartTurn()
     {
         _isPlaying = true;
@@ -366,5 +364,11 @@ public class HumanPlayer : Player
     private void EndTurn()
     {
         _isPlaying = false;
+    }
+    
+    
+    public void SetHandState(HandState handState)
+    {
+        currentHandState = handState;
     }
 }

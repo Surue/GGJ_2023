@@ -68,12 +68,15 @@ public class GameManager : MonoBehaviour
         }
     }
     
+#if UNITY_EDITOR
     [InitializeOnEnterPlayMode]
     static void OnEnterPlaymodeInEditor(EnterPlayModeOptions options)
     {
         if (options.HasFlag(EnterPlayModeOptions.DisableDomainReload))
             _isInit = false;
     }
+#endif
+    
 
     private void Update()
     {

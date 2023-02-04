@@ -1,12 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.Rendering;
 using UnityEngine.Serialization;
 
 public class CardController : MonoBehaviour
-{   // --- PUBLIC ---
+{
+    public EPlayerType Owner;
+    
+    // --- PUBLIC ---
     // ScriptableObject
     public GameObject card;
     [SerializeField] private CardScriptable _cardScriptable;
@@ -109,6 +110,16 @@ public class CardController : MonoBehaviour
         _remainingAttackCharge = _maxAttackCharge;
     }
 
+    private void Update()
+    {
+        isTweening = DOTween.IsTweening(transform);
+        //Anim la texture de highlight
+        _highlightOffset = _highlightRenderer.material.GetTextureOffset("_FadeTex");
+        _highlightOffset += highlightAnimSpeed * Time.deltaTime;
+        _highlightRenderer.material.SetTextureOffset("_FadeTex", _highlightOffset);
+    }
+
+    
     public void Setup(Transform deckTransform, Transform discardTransform, Transform selectionTransform)
     {
         // --- SETUP STATE ---
@@ -117,7 +128,7 @@ public class CardController : MonoBehaviour
         transform.rotation = deckTransform.rotation;
         SetCardState(CardState.inDeck);
         
-        _cardDisplay.UpdateUIStats();
+        _cardDisplay.Init();
 
         // Setup selection area and discard area
         _selectionAreaTransform = selectionTransform;
@@ -127,15 +138,6 @@ public class CardController : MonoBehaviour
     public void SetHandSlot(Transform handSlotTransform)
     {
         _handSlotTransform = handSlotTransform;
-    }
-
-    private void Update()
-    {
-        isTweening = DOTween.IsTweening(transform);
-        //Anim la texture de highlight
-        _highlightOffset = _highlightRenderer.material.GetTextureOffset("_FadeTex");
-        _highlightOffset += highlightAnimSpeed * Time.deltaTime;
-        _highlightRenderer.material.SetTextureOffset("_FadeTex", _highlightOffset);
     }
 
     public void SetCardState(CardState nextCardState)
@@ -206,7 +208,6 @@ public class CardController : MonoBehaviour
     }
 
     #region STATES
-
     private void OnInDeck()
     {
         
@@ -279,7 +280,6 @@ public class CardController : MonoBehaviour
     #endregion
 
     #region MOVEMENTS
-
     public void TweenMoveCardOnBoard(SlotController slotController)
     {
         DOTween.Kill(transform);
@@ -380,7 +380,7 @@ public class CardController : MonoBehaviour
     {
         //Applique les dégats à la carte et update le visuel
         cardHealth -= damageAmount;
-        _cardDisplay.UpdateUIStats();
+        _cardDisplay.Init();
 
         //Passe la carte en état "dead" si sa vie passe a 0 ou moins
         if(cardHealth <= 0)

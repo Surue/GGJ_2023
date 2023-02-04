@@ -10,6 +10,8 @@ public enum EBoardLineType
 
 public class Player : MonoBehaviour
 {
+    protected virtual EPlayerType GetPlayerType() => EPlayerType.Human;
+
     // Settings
     [Header("Settings")]
     [SerializeField] protected DeckScriptable _deckScriptable;
@@ -130,9 +132,11 @@ public class Player : MonoBehaviour
             var card = _cardsInDeck.Dequeue();
             card.SetHandSlot(_handSlots[i].transform);
             card.SetCardState(CardController.CardState.inHand);
+            card.Owner = GetPlayerType();
             _cardsInHand.Add(card);
         }
     }
+
 
     private void TakeDamage(int damage)
     {
