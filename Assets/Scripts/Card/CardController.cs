@@ -7,7 +7,7 @@ public class CardController : MonoBehaviour
 {   // --- PUBLIC ---
     // ScriptableObject
     public GameObject card;
-    private CardScriptable _cardScriptable;
+    [SerializeField] private CardScriptable _cardScriptable;
     public CardScriptable CardScriptable => _cardScriptable;
 
     [Space]
@@ -126,10 +126,9 @@ public class CardController : MonoBehaviour
         }
     }
 
-    public void Setup(Transform deckTransform, CardScriptable scriptable)
+    public void Setup(Transform deckTransform)
     {
         // --- SETUP STATE ---
-        _cardScriptable = scriptable;
         _deckPosition = deckTransform.position;
         transform.position = _deckPosition;
         transform.rotation = deckTransform.rotation;
