@@ -336,7 +336,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   containCard: 0
   highlight: {fileID: 1939839579}
-  _playerType: 0
+  playerType: 0
   arrowSize: 0.5
   slotSize: {x: 0, y: 0, z: 0}
   facingCard: {fileID: 6359309897717281299}
@@ -427,7 +427,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -50
-  m_Sprite: {fileID: 21300000, guid: 315ab1ba7e84eb34b8e8d4380c801ba4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3ec934433e2a18b4da67462c058e516f, type: 3}
   m_Color: {r: 0.23584908, g: 0.23584908, b: 0.23584908, a: 1}
   m_FlipX: 0
   m_FlipY: 0
