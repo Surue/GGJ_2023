@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 public class HumanPlayer : Player
 {
@@ -10,11 +11,13 @@ public class HumanPlayer : Player
     // Drawing
     [Header("LINE PARAMETERS")]
     [SerializeField] private GameObject _lineIcon;
+    [SerializeField] private SpriteRenderer _lineIconRenderer;
     [SerializeField] private LineRenderer _lineRenderer;
+    [SerializeField] private TMP_Text _iconText;
     [SerializeField] private float _lineIconOffset = -0.4f;
     [SerializeField] private float _offsetYCurve = 1f;
     [SerializeField] private float _dotPerUnit = 1.0f;
-    [SerializeField] private Color _lineColorDisplacement;
+    [SerializeField] private Color _lineColorDeplacement;
     [SerializeField] private Color _lineColorAttack;
     [SerializeField] private Color _lineColorNeutral;
     
@@ -34,6 +37,8 @@ public class HumanPlayer : Player
         GameManager.Instance.onHumanTurnStarted += AddManaStartTurn;
         GameManager.Instance.onHumanTurnFinished += EndTurn;
         _isPlaying = false;
+
+
     }
 
     private void Update()
@@ -135,7 +140,7 @@ public class HumanPlayer : Player
 
             if (CanDropCardOnBoard(activeCardController) && !_boardController.containCard && _boardController.PlayerType == EPlayerType.Human)
             {
-                DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorDisplacement);
+                DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorDeplacement, activeCardController.cardManaCost.ToString());
 
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -151,7 +156,7 @@ public class HumanPlayer : Player
             }
             else
             {
-                DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorNeutral);
+                DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorNeutral, "");
             }
         }
         else
@@ -160,7 +165,7 @@ public class HumanPlayer : Player
             _boardController = null;
 
             // [TEST LINE]
-            DrawMovementLine(_cardTransform.position, _hit.point, _offsetYCurve, _lineColorNeutral);
+            DrawMovementLine(_cardTransform.position, _hit.point, _offsetYCurve, _lineColorNeutral, "");
         }
     }
 
@@ -176,7 +181,7 @@ public class HumanPlayer : Player
 
             if (CanMoveCardOnBoard() && _boardController.PlayerType == EPlayerType.Human && !_boardController.containCard) // Drop card on empty board
             {
-                DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorDisplacement);
+                DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorDeplacement, _gameRules.CardMoveManaCost.ToString());
 
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -191,7 +196,7 @@ public class HumanPlayer : Player
             else if (CanSwapCards() && _boardController.PlayerType == EPlayerType.Human && _boardController.containCard) // Swap cards
             {
                 _targetCardController = _boardController.cardController;
-                DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve, _lineColorDisplacement);
+                DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve, _lineColorDeplacement, _gameRules.CardSwapManaCost.ToString());
 
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -205,7 +210,7 @@ public class HumanPlayer : Player
             }else if (_slotCardController.CanAttack() && _boardController.PlayerType == EPlayerType.CPU && _boardController.containCard) // Attack other card
             {
                 _targetCardController = _boardController.cardController;
-                DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve, _lineColorAttack);
+                DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve, _lineColorAttack, _slotCardController.cardAttack.ToString());
 
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -219,15 +224,15 @@ public class HumanPlayer : Player
             }
             else
             {
-                DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorNeutral);
+                DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorNeutral, "");
             }
         }
-        else if (layerHitName == "AttackZone")
+        else if (layerHitName == "AttackZone") // Attack player
         {
-            DrawMovementLine(_cardTransform.position, _hit.point, _offsetYCurve, _lineColorAttack);
+            DrawMovementLine(_cardTransform.position, _hit.point, _offsetYCurve, _lineColorAttack, _slotCardController.cardAttack.ToString());
             
             // TODO Check line of attack
-            if (Input.GetMouseButtonDown(0) && _slotCardController.CanAttack()) // Attack player
+            if (Input.GetMouseButtonDown(0) && _slotCardController.CanAttack()) 
             {
                 currentHandState = HandState.Free;
                     
@@ -244,18 +249,21 @@ public class HumanPlayer : Player
             _boardController = null;
 
             // [TEST LINE]
-            DrawMovementLine(_cardTransform.position, _hit.point, _offsetYCurve, _lineColorNeutral);
+            DrawMovementLine(_cardTransform.position, _hit.point, _offsetYCurve, _lineColorNeutral,"");
         }
     }
-    
-    private void DrawMovementLine(Vector3 startPos, Vector3 endPos, float offsetY, Color lineColor)
+
+    private void DrawMovementLine(Vector3 startPos, Vector3 endPos, float offsetY, Color lineColor, string value)
     {
         //Modifie la couleur du line Renderer
         _lineRenderer.material.SetColor("_DotColor", lineColor);
+        _lineIconRenderer.color = lineColor;
         //Active le line Renderer
         _lineRenderer.enabled = true;
         //Set le nombre de points du line renderer
         _lineRenderer.positionCount = 15;
+
+        _iconText.SetText(value);
 
         float distanceBetween = Vector3.Distance(startPos, endPos);
         _lineRenderer.material.SetFloat("_Tiling", distanceBetween * _dotPerUnit);
