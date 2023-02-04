@@ -223,7 +223,7 @@ public class HandController : MonoBehaviour
                 targetCardController = boardController.cardController;
                 DrawMovementLine(cardTransform.position, targetCardController.transform.position, offsetYCurve, lineColorDeplacement);
 
-                if (Input.GetMouseButtonDown(0) & targetCardController.canMove is true)
+                if (Input.GetMouseButtonDown(0))
                 {
                     //Repasse la main en free
                     currentHandState = HandState.free;

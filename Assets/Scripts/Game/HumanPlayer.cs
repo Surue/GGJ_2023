@@ -193,7 +193,7 @@ public class HumanPlayer : Player
                 _targetCardController = _boardController.cardController;
                 DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve, _lineColorDisplacement);
 
-                if (Input.GetMouseButtonDown(0) & _targetCardController.canMove)
+                if (Input.GetMouseButtonDown(0))
                 {
                     currentHandState = HandState.Free;
                     

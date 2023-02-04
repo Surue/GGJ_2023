@@ -33,7 +33,6 @@ public class CardController : MonoBehaviour
     [Header("STATE PARAMETERS")]
     public bool isInteractible = true;
     public bool isOverride;
-    public bool canMove;
     public bool isTweening;
     public Transform selectionAreaTransform;
     public Transform defausseTransform;
