@@ -556,11 +556,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardsInHand: []
   handBasePos: {fileID: 6252410725828815384}
+  inverted: 0
   zRot: 6.4
   xOffset: 0.28
   yOffset: 0.09
-  selectedYOffset: 0.2
+  zOffset: 0
+  selectedYOffset: 0.7
+  selectedZOffset: 0.2
+  selectedScale: 1.1
   lerpSpeed: 8
+  scaleLerpSpeed: 8
 --- !u!1 &6252410726316105960
 GameObject:
   m_ObjectHideFlags: 0

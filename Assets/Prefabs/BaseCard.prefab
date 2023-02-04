@@ -330,7 +330,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: -6
   m_Sprite: {fileID: 21300000, guid: 3ec934433e2a18b4da67462c058e516f, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.67058825, b: 0.058823533, a: 1}
   m_FlipX: 0
   m_FlipY: 1
   m_DrawMode: 0
@@ -1278,7 +1278,6 @@ MonoBehaviour:
   highlightAnimSpeed: {x: -0.1, y: -0.1}
   isInteractible: 1
   isOverride: 0
-  canMove: 0
   isTweening: 0
   selectionAreaTransform: {fileID: 0}
   defausseTransform: {fileID: 0}
