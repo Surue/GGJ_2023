@@ -214,7 +214,7 @@ public class CardController : MonoBehaviour
             UnHighlightCard();
         }
         //Remet la carte a sa place
-        TweenMoveCard(_handSlotTransform.position, _handSlotTransform.rotation, 0.18f, MoveType.simpleMoveRotate);
+        //TweenMoveCard(_handSlotTransform.position, _handSlotTransform.rotation, 0.18f, MoveType.simpleMoveRotate);
     }
 
     private void IsOverrideState()

@@ -1650,6 +1650,8 @@ MonoBehaviour:
   zRot: 6.4
   xOffset: 0.28
   yOffset: 0.09
+  selectedYOffset: 0.2
+  lerpSpeed: 8
 --- !u!1 &951337866
 GameObject:
   m_ObjectHideFlags: 0

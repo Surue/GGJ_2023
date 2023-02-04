@@ -5,7 +5,7 @@ public class HumanPlayer : Player
     private bool _isPlaying;
     
     // Active card
-    private CardController cardController;
+    private CardController activeCardController;
 
     // Drawing
     [Header("LINE PARAMETERS")]
@@ -70,33 +70,35 @@ public class HumanPlayer : Player
         // Check if player hover card in hands
         if (CheckRaycastHit() == "Card")
         {
-            if (cardController == null)
+            var tmpCard = _hit.transform.GetComponent<CardController>();
+            if (tmpCard.currentCardState == CardController.CardState.inHand)
             {
-                var tmpCard = _hit.transform.GetComponent<CardController>();
-                if (tmpCard.currentCardState == CardController.CardState.inHand)
+                if (activeCardController != null && activeCardController != tmpCard)
                 {
-                    cardController = tmpCard;
-                    cardController.CardStateSwitch(CardController.CardState.isOverride);
+                    activeCardController.CardStateSwitch(CardController.CardState.inHand);
                 }
+                
+                activeCardController = tmpCard;
+                activeCardController.CardStateSwitch(CardController.CardState.isOverride);
             }
         }
-        else if (cardController != null)
+        else if (activeCardController != null)
         {
-            cardController.CardStateSwitch(CardController.CardState.inHand);
-            cardController = null;
+            activeCardController.CardStateSwitch(CardController.CardState.inHand);
+            activeCardController = null;
         }
         else
         {
-            cardController = null;
+            activeCardController = null;
         }
 
         // Check if player select card in hands
-        if (Input.GetMouseButtonDown(0) && cardController != null)
+        if (Input.GetMouseButtonDown(0) && activeCardController != null)
         {
-            if (cardController.isInteractible)
+            if (activeCardController.isInteractible)
             {
-                cardController.CardStateSwitch(CardController.CardState.isWaiting);
-                cardController.PlayAnimationCard("ActiveAnim");
+                activeCardController.CardStateSwitch(CardController.CardState.isWaiting);
+                activeCardController.PlayAnimationCard("ActiveAnim");
                 currentHandState = HandState.cardSelectedInHand;
 
                 _cardTransform = _hit.transform.GetComponent<Transform>();
@@ -141,13 +143,13 @@ public class HumanPlayer : Player
                 if (Input.GetMouseButtonDown(0))
                 {
                     //Dit a la carte d'enregistrer son slot actuel
-                    cardController.UpdatePreviousSlot(_boardController);
+                    activeCardController.UpdatePreviousSlot(_boardController);
                     //Change l'�tat de la carte
-                    cardController.CardStateSwitch(CardController.CardState.onDesk);
-                    cardController.PlayAnimationCard("IdleAnim");
+                    activeCardController.CardStateSwitch(CardController.CardState.onDesk);
+                    activeCardController.PlayAnimationCard("IdleAnim");
 
                     //Change l'�tat de la main
-                    cardController = null;
+                    activeCardController = null;
                     currentHandState = HandState.free;
 
                     // [TEST LINE] Desactiver la line

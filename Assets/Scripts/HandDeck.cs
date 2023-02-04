@@ -12,6 +12,9 @@ public class HandDeck : MonoBehaviour
     [SerializeField] private float zRot;
     [SerializeField] private float xOffset;
     [SerializeField] private float yOffset;
+    [SerializeField] private float selectedYOffset = 2;
+    
+    [SerializeField] private float lerpSpeed = 2;
 
     private void Update()
     {
@@ -35,7 +38,13 @@ public class HandDeck : MonoBehaviour
             -Mathf.Abs(Mathf.Lerp(cardCount * -yOffset, cardCount * yOffset,
                 alignResult)); // Make sure that y remains negative
 
-        cardsInHand[index].transform.localPosition = handBasePos.position + new Vector3(xPos, 0, yPos);
-        cardsInHand[index].transform.localRotation = Quaternion.Euler(handBasePos.eulerAngles + new Vector3(0, 0, rotZ));
+        if (cardsInHand[index].currentCardState == CardController.CardState.isOverride)
+        {
+            yPos += selectedYOffset;
+        }
+
+        var cardTransform = cardsInHand[index].transform;
+        cardTransform.localPosition = Vector3.Lerp(cardTransform.localPosition, handBasePos.position + new Vector3(xPos, 0, yPos), lerpSpeed * Time.deltaTime);
+        cardTransform.localRotation = Quaternion.Lerp(cardTransform.localRotation, Quaternion.Euler(handBasePos.eulerAngles + new Vector3(0, 0, rotZ)), lerpSpeed * Time.deltaTime);
     }
 }
