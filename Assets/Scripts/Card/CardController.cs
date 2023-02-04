@@ -192,7 +192,7 @@ public class CardController : MonoBehaviour
 
     public bool CanAttack()
     {
-        return _remainingAttackCharge > 0;
+        return _remainingAttackCharge > 0 && slotController.boardLineType == EBoardLineType.Front;
     }
 
     public void Attack()

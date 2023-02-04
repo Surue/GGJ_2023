@@ -254,6 +254,9 @@ public class Player : MonoBehaviour
     protected List<CardController> GetPossibleCardToAttack(CardController attackingCard)
     {
         var result = new List<CardController>();
+
+        if (attackingCard.slotController.boardLineType == EBoardLineType.Back) return result;
+        
         switch (attackingCard.CardScriptable.AttackScriptable.AttackType)
         {
             case EAttackType.Front:
@@ -337,7 +340,7 @@ public class Player : MonoBehaviour
         return cardController.slotController.boardLineType == EBoardLineType.Back;
     }
 
-    private bool TryGetCardInFront(CardController cardController, out CardController result)
+    protected bool TryGetCardInFront(CardController cardController, out CardController result)
     {
         if (cardController.slotController.boardLineType == EBoardLineType.Back)
         {

@@ -125,7 +125,7 @@ public class CpuPlayer : Player
                     }
                 }
             }
-            else
+            else if(cardsToAttack.Count == 0 && cardController.slotController.boardLineType == EBoardLineType.Front)
             {
                 AttackOtherPlayer(cardController);
             }

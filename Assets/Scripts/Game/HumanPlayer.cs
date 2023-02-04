@@ -257,16 +257,22 @@ public class HumanPlayer : Player
             }else if (_slotCardController.CanAttack() && _slotController.PlayerType == EPlayerType.CPU && _slotController.containCard) // Attack other card
             {
                 _targetCardController = _slotController.cardController;
-                DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve, _lineColorAttack, _slotCardController.cardAttack.ToString());
-
-                if (Input.GetMouseButtonDown(0) && GetPossibleCardToAttack(_slotCardController).Contains(_targetCardController))
+                if (GetPossibleCardToAttack(_slotCardController).Contains(_targetCardController))
                 {
-                    currentHandState = HandState.Free;
+                    DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve, _lineColorAttack, _slotCardController.cardAttack.ToString());
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        currentHandState = HandState.Free;
                     
-                    AttackOtherCard(_slotCardController, _targetCardController);
+                        AttackOtherCard(_slotCardController, _targetCardController);
                     
-                    _lineRenderer.enabled = false;
-                    _lineIcon.SetActive(false);
+                        _lineRenderer.enabled = false;
+                        _lineIcon.SetActive(false);
+                    }
+                }
+                else
+                {
+                    DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve, _lineColorNeutral, _slotCardController.cardAttack.ToString());
                 }
             }
             else
@@ -274,12 +280,12 @@ public class HumanPlayer : Player
                 DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorNeutral, "");
             }
         }
-        else if (layerHitName == "AttackZone") // Attack player
+        else if (layerHitName == "AttackZone" && _slotCardController.CanAttack() && !TryGetCardInFront(_slotCardController, out var _)) // Attack player
         {
             DrawMovementLine(_cardTransform.position, _hit.point, _offsetYCurve, _lineColorAttack, _slotCardController.cardAttack.ToString());
             
             // TODO Check line of attack
-            if (Input.GetMouseButtonDown(0) && _slotCardController.CanAttack()) 
+            if (Input.GetMouseButtonDown(0)) 
             {
                 currentHandState = HandState.Free;
                     
