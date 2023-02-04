@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -48,8 +46,13 @@ public class GameManager : MonoBehaviour
     private bool _hasFinishedWaiting;
 
     // Players
-    private HumanPlayer _humanPlayer;
-    private CpuPlayer _cpuPlayer;
+    private HumanPlayer _humanPlayer => FindObjectOfType<HumanPlayer>();
+    private CpuPlayer _cpuPlayer => FindObjectOfType<CpuPlayer>();
+
+    public Player GetPlayer(EPlayerType playerType)
+    {
+        return playerType == EPlayerType.Human ? (Player) _humanPlayer : _cpuPlayer;
+    }
     
     // Singleton
     private static bool _isInit = false;
