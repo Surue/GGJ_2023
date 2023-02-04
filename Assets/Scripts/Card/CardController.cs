@@ -416,6 +416,10 @@ public class CardController : MonoBehaviour
     {
         _highlightRenderer.material.DOFloat(0, "_Alpha", 0.3f);
     }
+    public void UnHighlightCard(float duration)
+    {
+        _highlightRenderer.material.DOFloat(0, "_Alpha", duration);
+    }
     #endregion
 
     #region ANIMATION

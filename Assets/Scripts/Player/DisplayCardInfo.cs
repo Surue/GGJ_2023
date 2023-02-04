@@ -1,4 +1,5 @@
 using UnityEngine;
+using DG.Tweening;
 
 public class DisplayCardInfo : MonoBehaviour
 {
@@ -26,8 +27,7 @@ public class DisplayCardInfo : MonoBehaviour
             {
                 if (Input.GetMouseButtonDown(1) && currentDisplayedCard)
                 {
-                    Destroy(currentDisplayedCard);
-                    _cardController = null;
+                    DestroyCardInfo();
                 }
             }
         }
@@ -40,8 +40,7 @@ public class DisplayCardInfo : MonoBehaviour
             _cardController = null;
             if (Input.GetMouseButtonDown(1) && currentDisplayedCard)
             {
-                Destroy(currentDisplayedCard);
-                _cardController = null;
+                DestroyCardInfo();
             }
         }
         if (_cardController)
@@ -57,8 +56,7 @@ public class DisplayCardInfo : MonoBehaviour
             {
                 if (Input.GetMouseButtonDown(1) && currentDisplayedCard)
                 {
-                    Destroy(currentDisplayedCard);
-                    _cardController = null;
+                    DestroyCardInfo();
                 }
             }
         }
@@ -71,11 +69,20 @@ public class DisplayCardInfo : MonoBehaviour
             Destroy(currentDisplayedCard);
         }
         currentDisplayedCard = Instantiate(cardController.gameObject, cardInfoTransform.position, cardInfoTransform.rotation, cardInfoTransform);
-        currentDisplayedCard.transform.localScale = cardInfoTransform.localScale;
+        cardInfoTransform.DOScale(cardInfoTransform.localScale * 1.15f, 0.25f).SetEase(EaseExtensions.FadeInFadeOutCurve);
         currentCardControler = currentDisplayedCard.GetComponent<CardController>();
-        currentCardControler.UnHighlightCard();
+        currentCardControler.UnHighlightCard(0f);
         currentCardControler.PlayAnimationCard("ActiveAnim");
         Collider cardCollider = currentDisplayedCard.GetComponent<Collider>();
         cardCollider.enabled = false;
+    }
+    private void DestroyCardInfo()
+    {
+        _cardController = null;
+        currentDisplayedCard.transform.DOScale(currentDisplayedCard.transform.localScale * 0.5f, 0.25f).SetEase(Ease.InBack).OnComplete(() =>
+        {
+            Destroy(currentDisplayedCard);
+        });
+
     }
 }
