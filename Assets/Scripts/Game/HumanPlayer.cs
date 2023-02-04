@@ -77,7 +77,7 @@ public class HumanPlayer : Player
         if (CheckRaycastHit() == "Card")
         {
             var tmpCard = _hit.transform.GetComponent<CardController>();
-            if (tmpCard.currentCardState == CardController.CardState.inHand)
+            if (tmpCard.currentCardState == CardController.CardState.inHand && _cardsInHand.Contains(tmpCard))
             {
                 if (activeCardController != null && activeCardController != tmpCard)
                 {
@@ -109,7 +109,10 @@ public class HumanPlayer : Player
         // Check if hover slots
         if (CheckRaycastHit() == "Slot")
         {
-            _boardController = _hit.transform.GetComponent<BoardController>();
+            var tmpBoardController = _hit.transform.GetComponent<BoardController>();
+            // if (!_boardSlots.Contains(tmpBoardController)) return;
+            
+            _boardController = tmpBoardController;
 
             if (!_boardController.containCard) return;
             
