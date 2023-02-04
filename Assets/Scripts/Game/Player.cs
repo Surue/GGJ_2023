@@ -47,6 +47,8 @@ public class Player : MonoBehaviour
     // Mana
     private int _previousManaGain;
     protected int _currentMana;
+    public int CurrentMana => _currentMana;
+
     public Action<int, int> OnManaChanged;
     
     // Other player
@@ -159,7 +161,7 @@ public class Player : MonoBehaviour
         return _currentMana >= cardToDrop.cardManaCost;
     }
 
-    protected bool CanInvokeCardOnBoard()
+    protected bool CanMoveCardOnBoard()
     {
         return _currentMana >= _gameRules.CardMoveManaCost;
     }

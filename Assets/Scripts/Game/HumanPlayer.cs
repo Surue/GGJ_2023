@@ -10,7 +10,6 @@ public class HumanPlayer : Player
 
     // Drawing
     [Header("LINE PARAMETERS")]
-    [SerializeField] private GameObject _lineIcon;
     [SerializeField] private SpriteRenderer _lineIconRenderer;
     [SerializeField] private LineRenderer _lineRenderer;
     [SerializeField] private TMP_Text _iconText;
@@ -129,7 +128,7 @@ public class HumanPlayer : Player
 
             // Check if player click on a slot
             if ((CanDropCardOnBoard(_slotCardController) 
-                 || CanInvokeCardOnBoard() 
+                 || CanMoveCardOnBoard() 
                  || _slotCardController.CanAttack()) 
                  && Input.GetMouseButtonDown(0) 
                  && _slotCardController.isInteractible 
@@ -165,7 +164,8 @@ public class HumanPlayer : Player
 
             if (CanDropCardOnBoard(activeCardController) && !_slotController.containCard && _slotController.PlayerType == EPlayerType.Human)
             {
-                DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorDeplacement, activeCardController.cardManaCost.ToString());
+                DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve,
+                    _lineColorDeplacement, activeCardController.cardManaCost);
 
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -178,8 +178,8 @@ public class HumanPlayer : Player
                 }
             }
             else
-            {
-                DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorNeutral, "");
+            { 
+                DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorNeutral, -1);
             }
         }
         else
@@ -188,7 +188,7 @@ public class HumanPlayer : Player
             _slotController = null;
 
             // [TEST LINE]
-            DrawMovementLine(_cardTransform.position, _hit.point, _offsetYCurve, _lineColorNeutral, "");
+            DrawMovementLine(_cardTransform.position, _hit.point, _offsetYCurve, _lineColorNeutral, -1);
         }
     }
 
@@ -213,24 +213,28 @@ public class HumanPlayer : Player
             _boardSlot = _hit.transform.gameObject;
             _slotController = _hit.transform.GetComponent<SlotController>();
 
-            if (CanInvokeCardOnBoard() && _slotController.PlayerType == EPlayerType.Human && !_slotController.containCard) // Drop card on empty board
+            if (_slotController.PlayerType == EPlayerType.Human && !_slotController.containCard) // Drop card on empty board
             {
-                DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorDeplacement, _gameRules.CardMoveManaCost.ToString());
+                DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorDeplacement, _gameRules.CardMoveManaCost);
 
-                if (Input.GetMouseButtonDown(0))
+                if (CanMoveCardOnBoard())
                 {
-                    currentHandState = HandState.Free;
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        currentHandState = HandState.Free;
                     
-                    MoveCardOnBoard(_slotCardController, _slotController);
+                        MoveCardOnBoard(_slotCardController, _slotController);
                     
-                    _lineRenderer.enabled = false;
-                    _lineIcon.SetActive(false);
+                        _lineRenderer.enabled = false;
+                        _lineIconRenderer.gameObject.SetActive(false);
+                    }
                 }
             }
             else if (CanSwapCards() && _slotController.PlayerType == EPlayerType.Human && _slotController.containCard) // Swap cards
             {
                 _targetCardController = _slotController.cardController;
-                DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve, _lineColorDeplacement, _gameRules.CardSwapManaCost.ToString());
+                DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve,
+                    _lineColorDeplacement, _gameRules.CardSwapManaCost);
 
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -239,14 +243,16 @@ public class HumanPlayer : Player
                     SwapCardOnBoard(_slotCardController, _targetCardController);
 
                     _lineRenderer.enabled = false;
-                    _lineIcon.SetActive(false);
+                    _lineIconRenderer.gameObject.SetActive(false);
                 }
-            }else if (_slotCardController.CanAttack() && _slotController.PlayerType == EPlayerType.CPU && _slotController.containCard) // Attack other card
+            }
+            else if (_slotCardController.CanAttack() && _slotController.PlayerType == EPlayerType.CPU && _slotController.containCard) // Attack other card
             {
                 _targetCardController = _slotController.cardController;
                 if (GetPossibleCardToAttack(_slotCardController).Contains(_targetCardController))
                 {
-                    DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve, _lineColorAttack, _slotCardController.cardAttack.ToString());
+                    DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve,
+                        _lineColorAttack, _slotCardController.cardAttack);
                     if (Input.GetMouseButtonDown(0))
                     {
                         currentHandState = HandState.Free;
@@ -254,22 +260,24 @@ public class HumanPlayer : Player
                         AttackOtherCard(_slotCardController, _targetCardController);
                     
                         _lineRenderer.enabled = false;
-                        _lineIcon.SetActive(false);
+                        _lineIconRenderer.gameObject.SetActive(false);
                     }
                 }
                 else
                 {
-                    DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve, _lineColorNeutral, _slotCardController.cardAttack.ToString());
+                    DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve,
+                        _lineColorNeutral, _slotCardController.cardAttack);
                 }
             }
             else
             {
-                DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorNeutral, "");
+                DrawMovementLine(_cardTransform.position, _hit.point, _offsetYCurve,
+                    _lineColorNeutral, -1);
             }
         }
         else if (layerHitName == "AttackZone" && _slotCardController.CanAttack() && !TryGetCardInFront(_slotCardController, out var _)) // Attack player
         {
-            DrawMovementLine(_cardTransform.position, _hit.point, _offsetYCurve, _lineColorAttack, _slotCardController.cardAttack.ToString());
+            DrawMovementLine(_cardTransform.position, _hit.point, _offsetYCurve, _lineColorAttack, _slotCardController.cardAttack);
             
             // TODO Check line of attack
             if (Input.GetMouseButtonDown(0)) 
@@ -279,7 +287,7 @@ public class HumanPlayer : Player
                 AttackOtherPlayer(_slotCardController);
                     
                 _lineRenderer.enabled = false;
-                _lineIcon.SetActive(false);
+                _lineIconRenderer.gameObject.SetActive(false);
             }
         }
         else
@@ -289,12 +297,12 @@ public class HumanPlayer : Player
             _slotController = null;
 
             // [TEST LINE]
-            DrawMovementLine(_cardTransform.position, _hit.point, _offsetYCurve, _lineColorNeutral,"");
+            DrawMovementLine(_cardTransform.position, _hit.point, _offsetYCurve, _lineColorNeutral,-1);
         }
     }
 
 
-    private void DrawMovementLine(Vector3 startPos, Vector3 endPos, float offsetY, Color lineColor, string value)
+    private void DrawMovementLine(Vector3 startPos, Vector3 endPos, float offsetY, Color lineColor, int value)
     {
         lineTargetEndPos = endPos;
         
@@ -306,7 +314,10 @@ public class HumanPlayer : Player
         //Set le nombre de points du line renderer
         _lineRenderer.positionCount = 15;
 
-        _iconText.SetText(value);
+        var currentMana = GameManager.Instance.GetPlayer(EPlayerType.Human).CurrentMana;
+        _iconText.color = value > currentMana ? Color.red : Color.white;
+
+        _iconText.SetText(value == -1 ? "":value.ToString());
 
         float distanceBetween = Vector3.Distance(startPos, lineCurrentEndPos);
         _lineRenderer.material.SetFloat("_Tiling", distanceBetween * _dotPerUnit);
@@ -315,8 +326,8 @@ public class HumanPlayer : Player
         midPoint.y += offsetY;
 
         //Fix l'icon de la line au milieu de la courbe
-        _lineIcon.SetActive(true);
-        _lineIcon.transform.position = midPoint - Vector3.down * _lineIconOffset;
+        _lineIconRenderer.gameObject.SetActive(true);
+        _lineIconRenderer.transform.position = midPoint - Vector3.down * _lineIconOffset;
 
         // Bezier's curve
         float t = 0f;
@@ -336,7 +347,7 @@ public class HumanPlayer : Player
     private void ResetLine()
     {
         _lineRenderer.enabled = false;
-        _lineIcon.SetActive(false);
+        _lineIconRenderer.gameObject.SetActive(false);
     }
     
     private string CheckRaycastHit()
