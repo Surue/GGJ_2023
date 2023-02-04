@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Card_Hawk
   m_EditorClassIdentifier: 
   cardName: Hawk
-  cardDescription: Description Debug Bis
+  cardDescription: One free move per turn
   initialManaCost: 2
   currentType: 0
   currentAbilty: 0

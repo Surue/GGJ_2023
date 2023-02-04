@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Card_Wizard
   m_EditorClassIdentifier: 
   cardName: Wizard
-  cardDescription: Placeholder
-  initialManaCost: 4
+  cardDescription: His attack touch every enemy on the front line
+  initialManaCost: 5
   currentType: 0
   currentAbilty: 0
   _attackScriptable: {fileID: 11400000, guid: 8b571b915ab937849afca34ae3f03d82, type: 2}
-  initialHealth: 5
+  initialHealth: 4
