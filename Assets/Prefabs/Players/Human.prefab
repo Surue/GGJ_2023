@@ -739,8 +739,11 @@ MonoBehaviour:
   selectedYOffset: 0.7
   selectedZOffset: 0.2
   selectedScale: 1.1
-  lerpSpeed: 8
+  lerpSpeed: 6
   scaleLerpSpeed: 8
+  selectedXOffset: 0.25
+  currentSelectedIndex: 0
+  debug: 1
 --- !u!1 &6252410726316105960
 GameObject:
   m_ObjectHideFlags: 0
