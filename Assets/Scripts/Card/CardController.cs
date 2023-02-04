@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.Rendering;
@@ -194,7 +196,28 @@ public class CardController : MonoBehaviour
         RefreshInteractionCheck();
     }
 
-    public bool CanAttack()
+    public bool AttackSingleTarget()
+    {
+        switch (CardScriptable.AttackScriptable.AttackType)
+        {
+            case EAttackType.Front:
+            case EAttackType.FrontAndBack:
+                return true;
+            case EAttackType.FrontLine:
+                return false;
+            case EAttackType.NoAttack:
+                return false;
+        }
+
+        return false;
+    }
+    
+    public bool CanAttack(List<CardController> possibleCardsToAttack)
+    {
+        return _remainingAttackCharge > 0 && slotController.boardLineType == EBoardLineType.Front && possibleCardsToAttack.Count > 0;
+    }
+    
+    public bool CanAttackOtherPlayer()
     {
         return _remainingAttackCharge > 0 && slotController.boardLineType == EBoardLineType.Front;
     }
