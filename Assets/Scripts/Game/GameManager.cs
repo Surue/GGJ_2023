@@ -93,6 +93,7 @@ public class GameManager : MonoBehaviour
                     _gameState = EGameState.WaitHumanTurnEnd;
                     _hasFinishedInit = false;
                     _hasFinishedWaiting = false;
+                    _isStartingTurn = false;
                 }
                 break;
             case EGameState.WaitHumanTurnEnd:
@@ -119,6 +120,7 @@ public class GameManager : MonoBehaviour
                     _gameState = EGameState.WaitHumanTurnEnd;
                     _hasFinishedInit = false;
                     _hasFinishedWaiting = false;
+                    _isStartingTurn = false;
                 }
                 break;
             case EGameState.WaitCpuTurnEnd:
@@ -189,6 +191,11 @@ public class GameManager : MonoBehaviour
     private void WaitTurnEnd(EPlayerType playerType)
     {
         Debug.Log("[GameManager] Wait en turn of " + playerType);
+    }
+
+    public void OnTurnEnd()
+    {
+        _hasFinishedWaiting = true;
     }
 
     private void EndTurn(EPlayerType playerType)

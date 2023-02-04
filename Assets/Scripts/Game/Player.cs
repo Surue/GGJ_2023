@@ -20,7 +20,11 @@ public class Player : MonoBehaviour
     protected Queue<CardController> _cardsInDeck;
     protected List<CardController> _cardsInHand;
     
-    
+    // Finish turn 
+    protected bool _hasFinishedTurn;
+
+    public bool HasFinishedTurn => _hasFinishedTurn;
+
     public enum HandState
     {
         free, 

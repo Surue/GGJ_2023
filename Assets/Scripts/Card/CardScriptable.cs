@@ -40,16 +40,15 @@ public class CardScriptable : ScriptableObject
     public int initialHealth;
 
     public int initialAttack;
-    [Space]
-
-    // ILLUSTRATION
-    [Header("Card Illustration")]
-    public Sprite characterSprite;
-    public Sprite backgroundElement;
-    public Color backgroundColor;
-    [Space]
-
-    // CARD ILLUSTRATION
-    [Header("Card Aspect")]
-    public Sprite cardSprite;
+    
+    // // ILLUSTRATION
+    // [Header("Card Illustration")]
+    // public Sprite characterSprite;
+    // public Sprite backgroundElement;
+    // public Color backgroundColor;
+    // [Space]
+    //
+    // // CARD ILLUSTRATION
+    // [Header("Card Aspect")]
+    // public Sprite cardSprite;
 }

@@ -49,12 +49,12 @@ public class Card_Custom_Editor : Editor
 
         //________SECTION - VISUAL ELEMENTS
         //Header Foldout - VISUAL
-        EditorGUILayout.Space(smallSpacing);
-        EditorGUILayout.LabelField("VISUAL ELEMENTS", EditorStyles.boldLabel);
-        cardScriptable.cardSprite = (Sprite)EditorGUILayout.ObjectField("Card Aspect", cardScriptable.cardSprite, typeof(Sprite), false, GUILayout.Height(EditorGUIUtility.singleLineHeight));
-        cardScriptable.characterSprite = (Sprite) EditorGUILayout.ObjectField("Main Illu", cardScriptable.characterSprite, typeof(Sprite), false, GUILayout.Height(EditorGUIUtility.singleLineHeight));
-        cardScriptable.backgroundElement = (Sprite)EditorGUILayout.ObjectField("Background Element", cardScriptable.backgroundElement, typeof(Sprite), false, GUILayout.Height(EditorGUIUtility.singleLineHeight));
-        cardScriptable.backgroundColor = EditorGUILayout.ColorField("Background Color", cardScriptable.backgroundColor);
+        // EditorGUILayout.Space(smallSpacing);
+        // EditorGUILayout.LabelField("VISUAL ELEMENTS", EditorStyles.boldLabel);
+        // cardScriptable.cardSprite = (Sprite)EditorGUILayout.ObjectField("Card Aspect", cardScriptable.cardSprite, typeof(Sprite), false, GUILayout.Height(EditorGUIUtility.singleLineHeight));
+        // cardScriptable.characterSprite = (Sprite) EditorGUILayout.ObjectField("Main Illu", cardScriptable.characterSprite, typeof(Sprite), false, GUILayout.Height(EditorGUIUtility.singleLineHeight));
+        // cardScriptable.backgroundElement = (Sprite)EditorGUILayout.ObjectField("Background Element", cardScriptable.backgroundElement, typeof(Sprite), false, GUILayout.Height(EditorGUIUtility.singleLineHeight));
+        // cardScriptable.backgroundColor = EditorGUILayout.ColorField("Background Color", cardScriptable.backgroundColor);
 
         //________SECTION - DEBUG
         //Header Foldout - DEBUG
