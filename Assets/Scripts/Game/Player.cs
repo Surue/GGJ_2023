@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,6 +28,8 @@ public class Player : MonoBehaviour
     [SerializeField] protected List<GameObject> _handSlots;
     [SerializeField] protected List<SlotController> _boardSlots;
     
+    protected bool _isPlaying;
+    
     // Deck
     protected Queue<CardController> _cardsInDeck;
     protected List<CardController> _cardsInHand;
@@ -47,6 +50,8 @@ public class Player : MonoBehaviour
     // Mana
     private int _previousManaGain;
     protected int _currentMana;
+    public int CurrentMana => _currentMana;
+
     public Action<int, int> OnManaChanged;
     
     // Other player
@@ -138,15 +143,27 @@ public class Player : MonoBehaviour
     }
 
 
-    private void TakeDamage(int damage)
+    private void TakeDamage(CardController attackingCard)
     {
-        _currentHealth -= damage;
+        _currentHealth -= attackingCard.cardAttack;
         OnHealthChanged(_currentHealth, _gameRules.MaxHealth);
         
         if(_currentHealth <= 0)
         {
             GameManager.Instance.PlayerDeath(_playerType);
+            _isPlaying = false;
+            StartCoroutine(WaitEndAttackWhenKillingOtherPlayer(attackingCard));
         }
+    }
+
+    private IEnumerator WaitEndAttackWhenKillingOtherPlayer(CardController attackingCard)
+    {
+        while (attackingCard.isTweening)
+        {
+            yield return null;
+        }
+
+        GameManager.Instance.NextTurn();
     }
 
     protected bool CanSwapCards()
@@ -159,7 +176,7 @@ public class Player : MonoBehaviour
         return _currentMana >= cardToDrop.cardManaCost;
     }
 
-    protected bool CanInvokeCardOnBoard()
+    protected bool CanMoveCardOnBoard()
     {
         return _currentMana >= _gameRules.CardMoveManaCost;
     }
@@ -221,7 +238,7 @@ public class Player : MonoBehaviour
         attackingCard.Attack();
         attackingCard.SetCardState(CardController.CardState.onDesk);
         
-        _otherPlayer.TakeDamage(attackingCard.cardAttack);
+        _otherPlayer.TakeDamage(attackingCard);
     }
 
     protected void AttackOtherCard(CardController attackingCard, CardController defendingCard)
