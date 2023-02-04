@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96f2dda0f0fa60b4b890a570efbf4561, type: 3}
   m_Name: GenericGameRules
   m_EditorClassIdentifier: 
-  _maxHealth: 0
-  _maxMana: 0
-  _initialMana: 0
-  _maxCardInHand: 0
-  _cardSwapManaCost: 0
+  _maxHealth: 30
+  _maxMana: 10
+  _initialMana: 3
+  _maxCardInHand: 5
+  _cardSwapManaCost: 1
