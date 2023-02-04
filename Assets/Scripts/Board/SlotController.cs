@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using MiniTools.BetterGizmos;
 
-public class BoardController : MonoBehaviour
+public class SlotController : MonoBehaviour
 {
     [Header("PARAMETERS")]
     public bool containCard = false;
