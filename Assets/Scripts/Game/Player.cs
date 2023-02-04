@@ -175,6 +175,7 @@ public class Player : MonoBehaviour
     protected void AttackOtherPlayer(CardController attackingCard)
     {
         attackingCard.Attack();
+        attackingCard.CardStateSwitch(CardController.CardState.onDesk);
         
         _otherPlayer.TakeDamage(attackingCard.cardAttack);
     }
@@ -182,5 +183,6 @@ public class Player : MonoBehaviour
     protected void AttackOtherCard(CardController attackingCard, CardController defendingCard)
     {
         attackingCard.Attack();
+        attackingCard.CardStateSwitch(CardController.CardState.onDesk);
     }
 }

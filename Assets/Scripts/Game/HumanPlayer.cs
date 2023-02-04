@@ -1,4 +1,3 @@
-using UnityEditor.Rendering;
 using UnityEngine;
 
 public class HumanPlayer : Player
@@ -299,6 +298,8 @@ public class HumanPlayer : Player
         _isPlaying = true;
         
         FillHand();
+        
+        GameManager.Instance.HasFinishedStartingTurn();
     }
     
     private void EndTurn()

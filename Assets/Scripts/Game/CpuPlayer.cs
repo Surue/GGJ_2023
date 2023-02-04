@@ -25,6 +25,8 @@ public class CpuPlayer : Player
         _isPlaying = true;
         
         FillHand();
+        
+        GameManager.Instance.HasFinishedStartingTurn();
     }
     
     private void EndTurn()
