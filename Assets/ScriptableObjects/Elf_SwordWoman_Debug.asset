@@ -22,7 +22,3 @@ MonoBehaviour:
   attackMeleeSprite: {fileID: 0}
   initialHealth: 5
   initialAttack: 3
-  characterSprite: {fileID: 21300000, guid: 2770628414cae0941a9f0b9af782913a, type: 3}
-  backgroundElement: {fileID: 21300000, guid: b62e892cb4bd7524d99c086ae209aedb, type: 3}
-  backgroundColor: {r: 1, g: 1, b: 1, a: 1}
-  cardSprite: {fileID: 21300000, guid: c5cdf4b1532eeb8478a3ae13f8cf330c, type: 3}

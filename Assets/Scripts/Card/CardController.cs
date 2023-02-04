@@ -53,7 +53,7 @@ public class CardController : MonoBehaviour
     private Vector3 _deckPosition;
     private Transform _handSlotTransform;
     //Controllers 
-    private CardDisplay _cardDisplay;
+    private GUI_CardDisplay _cardDisplay;
     public BoardController boardController;
     public BoardController previousBoardController;
     //Highlight
@@ -101,7 +101,7 @@ public class CardController : MonoBehaviour
 
         // --- SETUP DATAS ---
         //Récupère la class de gestion des visuels de la carte et met à jour l'UI
-        _cardDisplay = GetComponent<CardDisplay>();
+        _cardDisplay = GetComponent<GUI_CardDisplay>();
 
         // --- SETUP POSITION / MOVEMENTS (temporaire) ---
 

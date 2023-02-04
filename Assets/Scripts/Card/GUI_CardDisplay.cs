@@ -1,22 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Serialization;
 
-public class CardDisplay : MonoBehaviour
+public class GUI_CardDisplay : MonoBehaviour
 {
     [Space]
     public TMP_Text nameText;
     public TMP_Text descriptionText;
 
     public TMP_Text manaText;
-    public TMP_Text attText;
+    [FormerlySerializedAs("attText")] public TMP_Text attackText;
     public TMP_Text healthText;
 
-    public SpriteRenderer characterArtwork;
-    public SpriteRenderer backgroundElement;
-    public SpriteRenderer backgroundColor;
+    // public SpriteRenderer characterArtwork;
+    // public SpriteRenderer backgroundElement;
+    // public SpriteRenderer backgroundColor;
 
     public SpriteRenderer attackType;
 
@@ -33,15 +31,15 @@ public class CardDisplay : MonoBehaviour
         // Setup Stats
         manaText.text = cardController.cardManaCost.ToString();
 
-        // Setup Illu
-        characterArtwork.sprite = cardController.CardScriptable.characterSprite;
-        backgroundElement.sprite = cardController.CardScriptable.backgroundElement;
-        backgroundColor.color = cardController.CardScriptable.backgroundColor;
+        // // Setup Illu
+        // characterArtwork.sprite = cardController.CardScriptable.characterSprite;
+        // backgroundElement.sprite = cardController.CardScriptable.backgroundElement;
+        // backgroundColor.color = cardController.CardScriptable.backgroundColor;
 
         // Setup Chara Stats
         if (cardController.CardScriptable.currentType == CardScriptable.CardType.Character)
         {
-            attText.text = cardController.cardAttack.ToString();
+            attackText.text = cardController.cardAttack.ToString();
             healthText.text = cardController.cardHealth.ToString();
             if (cardController.CardScriptable.attackType == CardScriptable.AttackType.Melee)
             {
@@ -58,7 +56,7 @@ public class CardDisplay : MonoBehaviour
         }
         else
         {
-            attText.text = null;
+            attackText.text = null;
             healthText.text = null;
             attackType.sprite = null;
         }
