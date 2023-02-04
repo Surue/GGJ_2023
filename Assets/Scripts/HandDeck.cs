@@ -26,6 +26,7 @@ public class HandDeck : MonoBehaviour
     [SerializeField] private float selectedXOffset = 2;
 
     [SerializeField] private int currentSelectedIndex;
+    
     private void Update()
     {
         var cards = GetComponentsInChildren<CardController>().ToList();
@@ -36,7 +37,7 @@ public class HandDeck : MonoBehaviour
         for (int i = 0; i < cardsInHand.Count; i++)
         {
             CalcAlign(i, cardsInHand.Count);
-            cards[i].sortingGroup.sortingOrder = i == currentSelectedIndex ? 200 : 100 - i;
+            cardsInHand[i].sortingGroup.sortingOrder = i == currentSelectedIndex ? 200 : 100 - i;
         }
 
         bool anyCardSelected = cards.Any(x => x.currentCardState == CardController.CardState.isOverride);

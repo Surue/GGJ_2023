@@ -30,6 +30,11 @@ public class HumanPlayer : Player
     private BoardController _boardController;
     private CardController _slotCardController;
     private CardController _targetCardController;
+    
+    // Line
+    private Vector3 lineTargetEndPos;
+    private Vector3 lineCurrentEndPos;
+    [SerializeField] private float lineLerpSpeed;
 
     private void Start()
     {
@@ -62,6 +67,8 @@ public class HumanPlayer : Player
             default:
                 break;
         }
+
+        lineCurrentEndPos = Vector3.Lerp(lineCurrentEndPos, lineTargetEndPos, lineLerpSpeed * Time.deltaTime);
     }
 
     public void NextTurn()
@@ -255,6 +262,8 @@ public class HumanPlayer : Player
 
     private void DrawMovementLine(Vector3 startPos, Vector3 endPos, float offsetY, Color lineColor, string value)
     {
+        lineTargetEndPos = endPos;
+        
         //Modifie la couleur du line Renderer
         _lineRenderer.material.SetColor("_DotColor", lineColor);
         _lineIconRenderer.color = lineColor;
@@ -265,10 +274,10 @@ public class HumanPlayer : Player
 
         _iconText.SetText(value);
 
-        float distanceBetween = Vector3.Distance(startPos, endPos);
+        float distanceBetween = Vector3.Distance(startPos, lineCurrentEndPos);
         _lineRenderer.material.SetFloat("_Tiling", distanceBetween * _dotPerUnit);
 
-        Vector3 midPoint = (startPos + endPos) / 2;
+        Vector3 midPoint = (startPos + lineCurrentEndPos) / 2;
         midPoint.y += offsetY;
 
         //Fix l'icon de la line au milieu de la courbe
@@ -280,12 +289,12 @@ public class HumanPlayer : Player
         Vector3 B = new Vector3(0, 0, 0);
         for (int i = 0; i < _lineRenderer.positionCount; i++)
         {
-            B = (1 - t) * (1 - t) * startPos + 2 * (1 - t) * t * midPoint + t * t * endPos;
+            B = (1 - t) * (1 - t) * startPos + 2 * (1 - t) * t * midPoint + t * t * lineCurrentEndPos;
+            
             _lineRenderer.SetPosition(i, B);
             t += (1 / (float)_lineRenderer.positionCount);
         }
     }
-
 
     private string CheckRaycastHit()
     {

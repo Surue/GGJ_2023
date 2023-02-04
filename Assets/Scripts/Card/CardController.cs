@@ -261,6 +261,8 @@ public class CardController : MonoBehaviour
         //Envoie les infos au Board Controller
         boardController.containCard = true;
         boardController.cardController = this;
+        
+        sortingGroup.sortingOrder = 1;
     }
 
     private void IsSelected()

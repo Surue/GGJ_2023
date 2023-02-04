@@ -480,7 +480,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6252410725828815383}
   m_LocalRotation: {x: 0.7135755, y: -0, z: -0, w: 0.7005784}
-  m_LocalPosition: {x: -1.672, y: -4.825, z: -0.206}
+  m_LocalPosition: {x: -1.93, y: -4.72, z: -1.17}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -743,7 +743,6 @@ MonoBehaviour:
   scaleLerpSpeed: 8
   selectedXOffset: 0.25
   currentSelectedIndex: 0
-  debug: 1
 --- !u!1 &6252410726316105960
 GameObject:
   m_ObjectHideFlags: 0
@@ -933,9 +932,10 @@ MonoBehaviour:
   _lineIconOffset: -0.8
   _offsetYCurve: 1.5
   _dotPerUnit: 2
-  _lineColorDeplacement: {r: 0, g: 0.5294118, b: 0.83137256, a: 1}
+  _lineColorDeplacement: {r: 0.21791564, g: 0.370026, b: 0.7830189, a: 1}
   _lineColorAttack: {r: 1, g: 0.67058825, b: 0.05882353, a: 1}
   _lineColorNeutral: {r: 0.5294118, g: 0.5294118, b: 0.5294118, a: 1}
+  lineLerpSpeed: 12
 --- !u!120 &6252410726464767106
 LineRenderer:
   m_ObjectHideFlags: 0
