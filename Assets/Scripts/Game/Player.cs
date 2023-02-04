@@ -49,6 +49,7 @@ public class Player : MonoBehaviour
         GameManager.Instance.onGameInit += Init;
 
         _cardsInHand = new List<CardController>();
+        _cardsOnBoard = new List<CardController>();
 
         _currentHealth = _gameRules.MaxHealth;
         _currentMana = _gameRules.InitialMana;
@@ -100,6 +101,31 @@ public class Player : MonoBehaviour
     public void TakeDamage(int damage)
     {
         _currentHealth -= damage;
+    }
+
+    protected bool CanSwapCards()
+    {
+        return _currentMana >= _gameRules.CardSwapManaCost;
+    }
+    
+    protected bool CanDropCardOnBoard(CardController cardToDrop)
+    {
+        return _currentMana >= cardToDrop.cardManaCost;
+    }
+
+    protected bool CanMoveCardOnBoard()
+    {
+        return _currentMana >= _gameRules.CardMoveManaCost;
+    }
+    
+    protected void MoveCardOnBoard(CardController cardToMove, BoardController slot)
+    {
+        cardToMove.UpdatePreviousSlot(slot);
+
+        cardToMove.CardStateSwitch(CardController.CardState.onDesk);
+        cardToMove.PlayAnimationCard("IdleAnim");
+
+        UseMana(_gameRules.CardMoveManaCost);
     }
 
     protected void DropCardOnBoard(CardController cardToMove, BoardController slot)

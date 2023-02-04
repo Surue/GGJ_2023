@@ -17,3 +17,4 @@ MonoBehaviour:
   _initialMana: 3
   _maxCardInHand: 5
   _cardSwapManaCost: 1
+  _cardMoveManaCost: 1
