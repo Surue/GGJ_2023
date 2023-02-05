@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,6 +17,7 @@ public class MainUI : MonoBehaviour
     [SerializeField] private TMP_Text _healthTextCpu;
 
     [Header("Turn Transition")] 
+    [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private GameObject _panel;
     [SerializeField] private TMP_Text _textTurnTransition;
     [SerializeField] private Image _imageTurnTransition;
@@ -125,54 +127,24 @@ public class MainUI : MonoBehaviour
 
     private void OnHumanStartTurn()
     {
-        StartCoroutine(DisplayTurnTransition("Your Turn"));
+        StartCoroutine(DisplayTurnTransition("Your turn"));
     }
 
     private void OnCpuStartTurn()
     {
-        StartCoroutine(DisplayTurnTransition("Enemy Turn"));
+        StartCoroutine(DisplayTurnTransition("Enemy turn"));
     }
 
     private IEnumerator DisplayTurnTransition(string textToDisplay)
     {
-        _panel.SetActive(true);
-        
-        _textTurnTransition.SetText("");
-
-        float timer = 0;
-
-        Color currentColor = Color.black;
-
-        while (timer < _timeFadeTurnTransition)
-        {
-            timer += Time.deltaTime;
-            currentColor = _imageTurnTransition.color;
-            currentColor.a = timer;
-            _imageTurnTransition.color = currentColor;
-            yield return null;
-        }
-
-        currentColor.a = 1;
-        _imageTurnTransition.color = currentColor;
-        
         _textTurnTransition.SetText(textToDisplay);
-
-        yield return new WaitForSeconds(_timeOnScreenTurnTransition);
         
-        _textTurnTransition.SetText("");
-        
-        timer = 0;
-        while (timer < _timeFadeTurnTransition)
+        canvasGroup.gameObject.SetActive(true);
+        canvasGroup.DOFade(1f, _timeFadeTurnTransition);
+        yield return new WaitForSeconds(1.5f);
+        canvasGroup.DOFade(0f, _timeFadeTurnTransition*1.5f).OnComplete(() =>
         {
-            timer += Time.deltaTime;
-            currentColor = _imageTurnTransition.color;
-            currentColor.a = 1 - timer;
-            _imageTurnTransition.color = currentColor;
-            yield return null;
-        }
-        
-        currentColor.a = 0;
-        _imageTurnTransition.color = currentColor;
-        _panel.SetActive(false);
+            canvasGroup.gameObject.SetActive(false);
+        });
     }
 }
