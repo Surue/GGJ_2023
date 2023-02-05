@@ -161,7 +161,7 @@ public class Player : MonoBehaviour
     }
 
 
-    private void TakeDamage(CardController attackingCard)
+    protected virtual void TakeDamage(CardController attackingCard)
     {
         _currentHealth -= attackingCard.cardAttack;
         OnHealthChanged(_currentHealth, _gameRules.MaxHealth);
@@ -265,10 +265,35 @@ public class Player : MonoBehaviour
         OnManaChanged(_currentMana, _gameRules.MaxMana);
     }
 
-    protected void AttackOtherPlayer(CardController attackingCard)
+    protected IEnumerator AttackOtherPlayer(CardController attackingCard)
     {
         attackingCard.Attack();
         attackingCard.SetCardState(CardController.CardState.onDesk);
+        
+        attackingCard.transform.DOMove(attackingCard.transform.position + Vector3.up, 0.4f)
+            .SetEase(Ease.OutBack)
+            .OnComplete(() =>
+            {
+                var playerCardPosition = GameManager.Instance.GetPlayer(this is CpuPlayer ? EPlayerType.Human : EPlayerType.CPU)._playerCharacterIllu.transform.position;
+                
+                var direction = playerCardPosition - attackingCard.transform.position;
+                var endpos = attackingCard.transform.position + (direction * 0.2f);
+                
+                attackingCard.transform.DOLocalMove(endpos, 0.5f)
+                    .SetEase(attackCurve)
+                    .SetDelay(0.3f)
+                    .OnComplete((() =>
+                    {
+                        DOVirtual.DelayedCall(UnityEngine.Random.Range(0.4f,0.6f), (() =>
+                        {
+                            attackingCard.TweenMoveCardOnBoard(attackingCard.slotController, attackingCard.UpdateFade);
+                        }));
+                    }));
+            });
+        
+        
+        yield return new WaitForSeconds(0.8f);
+        GameObject.Find("CAMERA").transform.DOShakePosition(0.4f, 0.05f, 10);
         
         _otherPlayer.TakeDamage(attackingCard);
     }
