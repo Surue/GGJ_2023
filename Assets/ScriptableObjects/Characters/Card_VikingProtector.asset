@@ -58,7 +58,7 @@ MonoBehaviour:
       Entry: 8
       Data: 
   cardName: Viking
-  cardDescription: Gain +2 Health if near a Viking
+  cardDescription: Gain <b><color=#F01D22>+2 HP </color></b> if near an ally
   initialManaCost: 3
   currentType: 0
   currentAbilty: 0

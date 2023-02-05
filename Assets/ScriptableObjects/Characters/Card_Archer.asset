@@ -58,7 +58,7 @@ MonoBehaviour:
       Entry: 8
       Data: 
   cardName: Archer
-  cardDescription: Can attack enemy in the Backline
+  cardDescription: Can attack enemy in the <b>Backline</b>
   initialManaCost: 3
   currentType: 0
   currentAbilty: 0

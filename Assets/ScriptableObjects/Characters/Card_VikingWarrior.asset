@@ -58,7 +58,7 @@ MonoBehaviour:
       Entry: 8
       Data: 
   cardName: Viking Warrior
-  cardDescription: Gain +2 Attack if near a Viking
+  cardDescription: Gain <b> <color=#FFAC00>+2 Att</color></b> if near a Viking
   initialManaCost: 2
   currentType: 0
   currentAbilty: 0

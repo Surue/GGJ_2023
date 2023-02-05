@@ -15,7 +15,8 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects: []
+    ReferencedUnityObjects:
+    - {fileID: 0}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -37,8 +38,8 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: Owner
-      Entry: 6
-      Data: 
+      Entry: 10
+      Data: 0
     - Name: Amount
       Entry: 3
       Data: 1
@@ -55,8 +56,8 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: Owner
-      Entry: 6
-      Data: 
+      Entry: 10
+      Data: 0
     - Name: Amount
       Entry: 3
       Data: 1
@@ -94,8 +95,8 @@ MonoBehaviour:
       Entry: 8
       Data: 
   cardName: Red Drake
-  cardDescription: When place on desk, give <color=#56456>+2 Att</color> +1 Health
-    to every allies on desk
+  cardDescription: Give <b> <color=#FFAC00>+2 Att</color> and <color=#F01D22>+1 HP
+    </color></b>to every allies on board
   initialManaCost: 7
   currentType: 0
   currentAbilty: 0

@@ -58,7 +58,7 @@ MonoBehaviour:
       Entry: 8
       Data: 
   cardName: Hawk
-  cardDescription: gain one free move per turn
+  cardDescription: Gain <b>1 free move</b> per turn
   initialManaCost: 2
   currentType: 0
   currentAbilty: 0

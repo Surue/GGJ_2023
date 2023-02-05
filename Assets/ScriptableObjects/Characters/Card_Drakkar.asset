@@ -58,7 +58,7 @@ MonoBehaviour:
       Entry: 8
       Data: 
   cardName: Drakkar
-  cardDescription: Can move on the whole line
+  cardDescription: Can move on the <b>whole line</b>
   initialManaCost: 6
   currentType: 0
   currentAbilty: 0
