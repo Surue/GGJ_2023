@@ -26,7 +26,25 @@ MonoBehaviour:
       Data: 0|System.Collections.Generic.List`1[[Effect, Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
-      Data: 0
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 1|BuffHealth, Assembly-CSharp
+    - Name: Target
+      Entry: 7
+      Data: 2|AdjacentCards, Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Owner
+      Entry: 6
+      Data: 
+    - Name: Amount
+      Entry: 3
+      Data: 2
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: 
       Entry: 13
       Data: 
@@ -35,16 +53,16 @@ MonoBehaviour:
       Data: 
     - Name: EffectsOnNewTurn
       Entry: 7
-      Data: 1|System.Collections.Generic.List`1[[Effect, Assembly-CSharp]], mscorlib
+      Data: 3|System.Collections.Generic.List`1[[Effect, Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
       Data: 1
     - Name: 
       Entry: 7
-      Data: 2|BuffHealth, Assembly-CSharp
+      Data: 4|BuffHealth, Assembly-CSharp
     - Name: Target
       Entry: 7
-      Data: 3|AdjacentCards, Assembly-CSharp
+      Data: 5|AdjacentCards, Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 
@@ -65,7 +83,7 @@ MonoBehaviour:
       Data: 
     - Name: EffectsPassive
       Entry: 7
-      Data: 4|System.Collections.Generic.List`1[[Effect, Assembly-CSharp]], mscorlib
+      Data: 6|System.Collections.Generic.List`1[[Effect, Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
       Data: 0
@@ -76,8 +94,8 @@ MonoBehaviour:
       Entry: 8
       Data: 
   cardName: Eikthyrnir
-  cardDescription: Each turn, gives  <b> <color=#FFAC00>+1 Att</color> and <color=#F01D22>+2
-    HP</color></b> to nearby allies.
+  cardDescription: Each turn, gives  <b><color=#F01D22>+2 HP</color></b> to nearby
+    allies.
   initialManaCost: 5
   _attackScriptable: {fileID: 11400000, guid: 3f0891cbd694dfa45b6eadad08385c55, type: 2}
   _movementDescriptionScriptable: {fileID: 11400000, guid: 0084bb0bef187704b84009fc533dffec, type: 2}
