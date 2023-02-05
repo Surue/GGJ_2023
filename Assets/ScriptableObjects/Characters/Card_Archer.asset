@@ -63,4 +63,4 @@ MonoBehaviour:
   _attackScriptable: {fileID: 11400000, guid: eae43ffd3e584b5498688d1a403d1e4a, type: 2}
   _movementDescriptionScriptable: {fileID: 11400000, guid: 0084bb0bef187704b84009fc533dffec, type: 2}
   IsBig: 0
-  initialHealth: 6
+  initialHealth: 7
