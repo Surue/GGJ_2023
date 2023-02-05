@@ -1725,6 +1725,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Owner: 0
   card: {fileID: 8821135303853838801}
+  cardBalayage: {fileID: 8821135304915527679}
   _cardScriptable: {fileID: 0}
   handPosition: {fileID: 0}
   moveToAreaDuration: 0.5
