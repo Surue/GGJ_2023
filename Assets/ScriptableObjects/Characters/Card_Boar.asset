@@ -63,4 +63,4 @@ MonoBehaviour:
   currentType: 0
   currentAbilty: 0
   _attackScriptable: {fileID: 11400000, guid: 50fd5c01f36feea4db576fdc79eedae9, type: 2}
-  initialHealth: 2
+  initialHealth: 50

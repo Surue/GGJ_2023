@@ -291,7 +291,7 @@ public class Player : MonoBehaviour
                     {
                         DOVirtual.DelayedCall(UnityEngine.Random.Range(0.4f,0.6f), (() =>
                         {
-                            attackingCard.TweenMoveCardOnBoard(attackingCard.slotController);
+                            attackingCard.TweenMoveCardOnBoard(attackingCard.slotController, attackingCard.UpdateFade);
                         }));
                     }));
             });

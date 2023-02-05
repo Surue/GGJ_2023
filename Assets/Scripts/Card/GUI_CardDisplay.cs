@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using TMPro;
 
@@ -78,5 +80,22 @@ public class GUI_CardDisplay : MonoBehaviour
     public void SetManaActive(bool enabled)
     {
         manaGroup.SetActive(enabled);
+    }
+
+    public List<SpriteRenderer> sprites;
+    public GameObject visualParent;
+    public Color fadedColor;
+    
+    public void Fade(bool faded)
+    {
+        foreach (var sprite in sprites)
+        {
+            sprite.DOColor(faded ? fadedColor : Color.white, 0.3f);
+        }
+        var additionalSprites = visualParent.GetComponentsInChildren<SpriteRenderer>();
+        foreach (var sprite in additionalSprites)
+        {
+            sprite.DOColor(faded ? fadedColor : Color.white, 0.3f);
+        }
     }
 }

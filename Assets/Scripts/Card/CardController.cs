@@ -58,7 +58,7 @@ public class CardController : MonoBehaviour, ITargetable
     private Vector3 _deckPosition;
     private Transform _handSlotTransform;
     //Controllers 
-    private GUI_CardDisplay _cardDisplay;
+    public GUI_CardDisplay _cardDisplay;
     [FormerlySerializedAs("boardController")] public SlotController slotController;
     [FormerlySerializedAs("previousBoardController")] public SlotController previousSlotController;
     //Highlight
@@ -255,6 +255,7 @@ public class CardController : MonoBehaviour, ITargetable
     public void ResetStartTurn()
     {
         _remainingAttackCharge = _maxAttackCharge;
+        UpdateFade();
     }
 
     #region STATES
@@ -330,15 +331,21 @@ public class CardController : MonoBehaviour, ITargetable
     #endregion
 
     #region MOVEMENTS
-    public void TweenMoveCardOnBoard(SlotController slot)
+    public void TweenMoveCardOnBoard(SlotController slot, Action callback = null)
     {
         var jumpHeight = (slot == previousSlotController) || (previousSlotController == null) ? 0 : 1.2f;
         DOTween.Kill(transform);
         transform.DOLocalJump(slot.transform.position, jumpHeight, 1, 0.4f).SetEase(Ease.InOutSine).OnComplete(() =>
         {
             RefreshInteractionCheck();
+            callback?.Invoke();
             // GameObject.Find("CAMERA").transform.DOShakePosition(0.4f, 0.05f, 10);
         });
+    }
+
+    public void UpdateFade()
+    {
+        _cardDisplay.Fade(_remainingAttackCharge == 0);
     }
     
     public void TweenPlaceCard(SlotController slotController)
