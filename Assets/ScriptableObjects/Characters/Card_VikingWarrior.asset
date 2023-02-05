@@ -26,7 +26,31 @@ MonoBehaviour:
       Data: 0|System.Collections.Generic.List`1[[Effect, Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
-      Data: 0
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 1|AttackEffect, Assembly-CSharp
+    - Name: Target
+      Entry: 7
+      Data: 2|AdjacentCards, Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Owner
+      Entry: 6
+      Data: 
+    - Name: OverrideDescription
+      Entry: 5
+      Data: false
+    - Name: OverridedDescription
+      Entry: 6
+      Data: 
+    - Name: Damage
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: 
       Entry: 13
       Data: 
@@ -35,7 +59,7 @@ MonoBehaviour:
       Data: 
     - Name: EffectsOnNewTurn
       Entry: 7
-      Data: 1|System.Collections.Generic.List`1[[Effect, Assembly-CSharp]], mscorlib
+      Data: 3|System.Collections.Generic.List`1[[Effect, Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
       Data: 0
@@ -47,7 +71,7 @@ MonoBehaviour:
       Data: 
     - Name: EffectsPassive
       Entry: 7
-      Data: 2|System.Collections.Generic.List`1[[Effect, Assembly-CSharp]], mscorlib
+      Data: 4|System.Collections.Generic.List`1[[Effect, Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
       Data: 0
@@ -58,7 +82,8 @@ MonoBehaviour:
       Entry: 8
       Data: 
   cardName: Viking Warrior
-  cardDescription: Gain <b> <color=#FFAC00>+2 Att</color></b> if near a Viking
+  cardDescription: Gives <b> <color=#FFAC00>+1 Att</color></b> to nearby allies when
+    invoked
   initialManaCost: 2
   _attackScriptable: {fileID: 11400000, guid: c8c92ac6c2c8f5b4ba6edadc6af04472, type: 2}
   _movementDescriptionScriptable: {fileID: 11400000, guid: 0084bb0bef187704b84009fc533dffec, type: 2}
