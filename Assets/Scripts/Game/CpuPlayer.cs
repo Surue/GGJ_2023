@@ -516,6 +516,8 @@ public class CpuPlayer : Player
 
             return playerActions;
         }
+        
+        
 
         private bool CardHasTarget(SimulatedCard attackingCard, SimulatedPlayer otherPlayer, out List<SimulatedCard> cardToAttack)
         {
@@ -529,6 +531,38 @@ public class CpuPlayer : Player
                     hasTarget = true;
                     cardToAttack.Add(defendingCard);   
                 }
+                
+            //     bool TryGetCardFacing(SimulatedPlayer otherPlayer, SimulatedCard cardController, out SimulatedCard result)
+            //     {
+            //         if (cardController.simulatedSlot.isFront)
+            //         {
+            //             result = otherPlayer.simulatedSlots[3 - cardController.simulatedSlot.columnID].simulatedCard;
+            //             return _boardSlots[cardController.slotController.columnID].containCard;
+            //         }
+            //
+            //         result = null;
+            //         return false;
+            //     }
+            //     
+            //     switch (attackingCard.cardController.CardScriptable.AttackScriptable.AttackType)
+            //     {
+            //         case EAttackType.Front:
+            //             if (TryGetCardFacing(attackingCard, out var card))
+            //             {
+            //                 cardToAttack.Add(card);
+            //             }
+            //             break;
+            //         case EAttackType.FrontAndBack:
+            //             cardToAttack.AddRange(GetColumnInFront(attackingCard));
+            //             break;
+            //         case EAttackType.FrontLine:
+            //             cardToAttack.AddRange(_otherPlayer.GetLine(EBoardLineType.Front));
+            //             break;
+            //         case EAttackType.NoAttack:
+            //             break;
+            //         default:
+            //             throw new ArgumentOutOfRangeException();
+            //     }
             }
 
             return hasTarget;
