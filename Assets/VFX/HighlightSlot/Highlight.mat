@@ -37,7 +37,7 @@ Material:
     m_Floats:
     - _BUILTIN_QueueControl: 0
     - _BUILTIN_QueueOffset: 0
-    - _GlobalAlpha: 0.23
+    - _GlobalAlpha: 0.39
     - _HoloSpeed: 0.022
     - _HoloThickness: 100
     - _PulseSpeed: -0.108
@@ -46,5 +46,5 @@ Material:
     - _StepEdge2: 1.46
     - _Steps: 4.1
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

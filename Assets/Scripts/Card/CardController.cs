@@ -349,7 +349,7 @@ public class CardController : MonoBehaviour, ITargetable
         sortingGroup.sortingOrder = 1;
     }
 
-    private void OnSelected()
+    public void OnSelected()
     {
         PlayAnimationCard("ActiveAnim");
 
@@ -407,6 +407,15 @@ public class CardController : MonoBehaviour, ITargetable
                 {
                     GameObject.Find("CAMERA").transform.DOShakePosition(0.4f, 0.1f, 10);
                     cardBalayage.material.DOFloat(-0.2f, "_ShineLocation", 0.8f).From(1).SetDelay(0.2f);
+
+                    DOVirtual.DelayedCall(.8f, () =>
+                    {
+                        foreach (var effect in slotController.cardController.CardScriptable.EffectsOnInvoke)
+                        {
+                            effect.Owner = slotController.cardController;
+                            effect.Execute();
+                        }
+                    });
                             
                     slotController.PlayRandomSmokeParticle();
                 });
@@ -547,7 +556,12 @@ public class CardController : MonoBehaviour, ITargetable
 
     public void IncreaseDamage(int amount)
     {
+        if (slotController.buffParticle != null)
+        {
+            slotController.buffParticle.Play();
+        }
         cardAttack += amount;
+        _cardDisplay.Init();
     }
     
     [Serializable]
@@ -593,6 +607,10 @@ public class CardController : MonoBehaviour, ITargetable
 
     public void Heal(int healAmount, ITargetable owner)
     {
+        if (slotController.healParticle != null)
+        {
+            slotController.healParticle.Play();
+        }
         cardHealth += healAmount;
         _cardDisplay.Init();
     }
