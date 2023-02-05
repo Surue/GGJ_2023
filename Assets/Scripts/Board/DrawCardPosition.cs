@@ -9,6 +9,7 @@ public class DrawCardPosition : MonoBehaviour
     public float arrowSize = 0.5f;
     public Transform facingCard = null;
 
+#if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
@@ -20,4 +21,5 @@ public class DrawCardPosition : MonoBehaviour
             BetterGizmos.DrawViewFacingArrow(Color.red, transform.position, facingCard.position, arrowSize);
         }
     }
+#endif
 }

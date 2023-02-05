@@ -55,6 +55,7 @@ public class SlotController : MonoBehaviour
         }
     }
     
+#if UNITY_EDITOR
     void OnDrawGizmosSelected()
     {
         // dessin de l'overlapBox pour faciliter la visualisation
@@ -66,6 +67,8 @@ public class SlotController : MonoBehaviour
             BetterGizmos.DrawViewFacingArrow(Color.red, transform.position, facingCard.position, arrowSize);
         }
     }
+#endif
+
 
     private Tween pulseTween;
 

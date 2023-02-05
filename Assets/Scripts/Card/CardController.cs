@@ -262,15 +262,6 @@ public class CardController : MonoBehaviour, ITargetable
         return _remainingAttackCharge <= 0;
     }
     
-    private void OnDrawGizmos()
-    {
-        var direction = Owner == EPlayerType.CPU ? -transform.up : transform.up;
-
-        var endpos = transform.position + direction * 1.2f;
-        
-        BetterGizmos.DrawArrow(Color.blue, transform.position, endpos, Vector3.up, 0.2f);
-    }
-    
     public void Attack()
     {
         _remainingAttackCharge--;
