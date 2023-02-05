@@ -298,18 +298,12 @@ public class CardController : MonoBehaviour, ITargetable
 
     public void UpdateGlow()
     {
-        if (currentCardState == CardState.inDeck)
+        if (currentCardState == CardState.inDeck || _remainingAttackCharge == 0 || Owner == EPlayerType.CPU)
         {
             UnHighlightCard();
             return;
         }   
-        
-        if (Owner == EPlayerType.CPU)
-        {
-            UnHighlightCard();
-            return;
-        }
-        
+
         //Highlight la carte de base
         if (OwnerPlayer.CurrentMana >= _cardScriptable.initialManaCost)
         {

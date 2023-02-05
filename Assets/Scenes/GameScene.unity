@@ -4664,6 +4664,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7050967156363404718, guid: 2955273b23406754baa1f1c0c7ad517d, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7050967156363404718, guid: 2955273b23406754baa1f1c0c7ad517d, type: 3}
       propertyPath: simulationSpeed
       value: 2
       objectReference: {fileID: 0}

@@ -336,6 +336,11 @@ public class Player : MonoBehaviour
         attackingCard.Attack();
         attackingCard.SetCardState(CardController.CardState.onDesk);
         
+        foreach (var boardSlot in _boardSlots)
+        {
+            boardSlot.SetHighlighted(false);
+        }
+        
         attackingCard.transform.DOMove(attackingCard.transform.position + Vector3.up, 0.4f)
             .SetEase(Ease.OutBack)
             .OnComplete(() =>
@@ -372,6 +377,11 @@ public class Player : MonoBehaviour
         attackingCard.Attack();
         attackingCard.SetCardState(CardController.CardState.onDesk);
 
+        foreach (var boardSlot in _boardSlots)
+        {
+            boardSlot.SetHighlighted(false);
+        }
+        
         attackingCard.transform.DOMove(attackingCard.transform.position + Vector3.up, 0.4f)
             .SetEase(Ease.OutBack)
             .OnComplete(() =>
@@ -421,6 +431,7 @@ public class Player : MonoBehaviour
         GameObject.Find("CAMERA").transform.DOShakePosition(0.4f, 0.05f, 10);
         attackingCard.PlaySlashVFX();
         defendingCard.PlaySlashVFX();
+
         
         attackingCard.CardTakeDamage(defendingCard.cardAttack);
         defendingCard.CardTakeDamage(attackingCard.cardAttack);
