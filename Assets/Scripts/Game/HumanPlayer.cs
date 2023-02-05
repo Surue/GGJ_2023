@@ -165,7 +165,7 @@ public class HumanPlayer : Player
     {
         foreach (var boardSlot in _boardSlots)
         {
-            boardSlot.SetHighlighted(true);
+            boardSlot.SetHighlighted(!boardSlot.containCard);
         }
         
         if (Input.GetMouseButtonDown(1))
@@ -176,6 +176,11 @@ public class HumanPlayer : Player
             SetHandState(HandState.Free);
             
             ResetLine();
+            
+            foreach (var boardSlot in _boardSlots)
+            {
+                boardSlot.SetHighlighted(false);
+            }
             return;
         }
         
@@ -222,7 +227,8 @@ public class HumanPlayer : Player
         var layerHitName = CheckRaycastHit();
 
         var possibleSlotToMoveTo = GetSlotPossibleToMoveTo(_slotCardController);
-
+        // var possibleCardToAcctack = GetPossibleCardToAttack(_slotCardController);
+        
         foreach (var boardSlot in _boardSlots)
         {
             boardSlot.SetHighlighted(false);
@@ -231,6 +237,12 @@ public class HumanPlayer : Player
         {
             boardSlot.SetHighlighted(true);
         }
+        
+        // foreach (var cardToAttack in possibleCardToAcctack)
+        // {
+            // cardToAttack.slotController.SetHighlighted(true);
+        // }
+
         
         if (Input.GetMouseButtonDown(1))
         {
