@@ -2,7 +2,7 @@
 using Sirenix.OdinInspector;
 
 [Serializable]
-public class AttackEffect : TargetEffect
+public class AttackEffect : Effect
 {
     public bool OverrideDescription = false;
     [ShowIf("@OverrideDescription")]
