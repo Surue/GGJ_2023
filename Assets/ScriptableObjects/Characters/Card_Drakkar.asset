@@ -12,6 +12,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec44e3a9aecffa744b52f3120ac5e3d3, type: 3}
   m_Name: Card_Drakkar
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: EffectsOnInvoke
+      Entry: 7
+      Data: 0|System.Collections.Generic.List`1[[Effect, Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: EffectsOnNewTurn
+      Entry: 7
+      Data: 1|System.Collections.Generic.List`1[[Effect, Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: EffectsPassive
+      Entry: 7
+      Data: 2|System.Collections.Generic.List`1[[Effect, Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
   cardName: Drakkar
   cardDescription: Can move on the whole line
   initialManaCost: 6

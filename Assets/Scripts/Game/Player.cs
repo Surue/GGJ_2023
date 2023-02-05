@@ -30,6 +30,8 @@ public class Player : MonoBehaviour
     [SerializeField] protected List<SlotController> _boardSlots;
     
     protected bool _isPlaying;
+
+    private int _cardInHands;
     
     // Deck
     protected Queue<CardController> _cardsInDeck;
@@ -98,6 +100,8 @@ public class Player : MonoBehaviour
         {
             _boardSlots[i].Setup(i);
         }
+
+        _cardInHands = _gameRules.MaxCardInHand;
     }
 
     private void Init()
@@ -123,6 +127,14 @@ public class Player : MonoBehaviour
         {
             cardController.ResetStartTurn();
         }
+        
+        foreach (var card in _cardsOnBoard)
+        {
+            foreach (var effect in card.CardScriptable.EffectsOnNewTurn)
+            {
+                effect.Execute();
+            }
+        }
     }
 
     protected void AddManaStartTurn()
@@ -140,6 +152,8 @@ public class Player : MonoBehaviour
     protected void FillHand()
     {
         var cardToAdd = _gameRules.MaxCardInHand - _cardsInHand.Count;
+
+        cardToAdd = Mathf.Max(cardToAdd, 0);
 
         for (int i = 0; i < cardToAdd; i++)
         {
@@ -211,6 +225,11 @@ public class Player : MonoBehaviour
         _cardsOnBoard.Add(cardToMove);
 
         UseMana(cardToMove.cardManaCost);
+
+        foreach (var effect in cardToMove.CardScriptable.EffectsOnInvoke)
+        {
+            effect.Execute();
+        }
     }
 
     protected void SwapCardOnBoard(CardController card1, CardController card2)
@@ -598,4 +617,21 @@ public class Player : MonoBehaviour
         }
     }
     #endregion
+
+    public void ReduceMaxDrawnCard(int amount)
+    {
+        _cardInHands -= amount;
+    }
+
+    public void DrawCard()
+    {
+        if (_cardsInHand.Count < _handSlots.Count)
+        {
+            var card = _cardsInDeck.Dequeue();
+            card.SetHandSlot(_handSlots[_cardsInHand.Count].transform);
+            card.SetCardState(CardController.CardState.inHand);
+            card.Owner = GetPlayerType();
+            _cardsInHand.Add(card);
+        }
+    }
 }

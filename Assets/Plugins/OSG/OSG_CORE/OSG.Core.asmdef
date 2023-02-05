@@ -1,0 +1,14 @@
+{
+    "name": "OSG.Core",
+    "references": [
+        "GUID:8637bf49895f89d468d2c6da5d0c7568"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}
