@@ -99,5 +99,5 @@ MonoBehaviour:
   initialManaCost: 7
   currentType: 0
   currentAbilty: 0
-  _attackScriptable: {fileID: 11400000, guid: dcfa1d123f968a54d92838d70e28a79f, type: 2}
+  _attackScriptable: {fileID: 11400000, guid: bffcf0f6a28f8354caa5ebd156c5f66f, type: 2}
   initialHealth: 5
