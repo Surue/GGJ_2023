@@ -24,6 +24,7 @@ public class CardController : MonoBehaviour, ITargetable
     public float moveToDeskDuration;
     public float moveOnDeskDuration;
     public float moveToDefausseDuration;
+    private int _movementThisTurnCount;
     [Space]
     //HIGHLIGHT PARAMETERS
     [Header("Highlight Parameters")]
@@ -255,6 +256,7 @@ public class CardController : MonoBehaviour, ITargetable
     public void ResetStartTurn()
     {
         _remainingAttackCharge = _maxAttackCharge;
+        _movementThisTurnCount = 0;
         UpdateFade();
     }
 
@@ -538,13 +540,19 @@ public class CardController : MonoBehaviour, ITargetable
         CardTakeDamage(damage);
     }
 
-    public void Die()
-    {
-    }
-
     public void Heal(int healAmount)
     {
         cardHealth += healAmount;
         _cardDisplay.Init();
+    }
+
+    public void IncreaseMoveCount()
+    {
+        _movementThisTurnCount++;
+    }
+
+    public bool HasFreeMovement()
+    {
+        return _movementThisTurnCount < _cardScriptable.MovementDescriptionScriptable.FreeMovementCount;
     }
 }

@@ -85,7 +85,7 @@ public class CpuPlayer : Player
             var freeSlot = freeSlots[Random.Range(0, freeSlots.Count)];
             freeSlots.Remove(freeSlot);
             
-            DropCardOnBoard(cardController, freeSlot);
+            InvokeCardOnBoard(cardController, freeSlot);
             
             yield return null;
             
