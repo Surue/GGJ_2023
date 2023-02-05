@@ -3,7 +3,12 @@ guid: e5cf3155a6db4d4409f1fa5cda8f07e2
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pasted__Lambert_Cercle
+    second: {fileID: 2100000, guid: 349bbef9169deef4dbcc321fdb48dfa6, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
