@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using OSG.Core;
 using UnityEngine;
 
 public enum EBoardLineType
@@ -64,6 +65,8 @@ public class Player : MonoBehaviour
     
     // Other player
     private Player _otherPlayer;
+    
+    public List<ParticleSystem> bloodVFXs = new List<ParticleSystem>();
 
     public enum HandState
     {
@@ -164,14 +167,16 @@ public class Player : MonoBehaviour
         }
     }
 
+
     protected virtual void TakeDamage(CardController attackingCard)
     {
         _currentHealth -= attackingCard.cardAttack;
         OnHealthChanged(_currentHealth, _gameRules.MaxHealth);
 
+        
         _lifeIcon.transform.DOScale(transform.localScale * 1.35f, 0.25f).SetEase(EaseExtensions.FadeInFadeOutCurve);
         _playerCharacterIllu.DOColor(Color.red, 0.25f).SetEase(EaseExtensions.FadeInFadeOutCurve).From(Color.white);
-
+        bloodVFXs.GetElementAtRandomIndex().Play();
 
         if (_currentHealth <= 0)
         {
@@ -364,7 +369,7 @@ public class Player : MonoBehaviour
         
         
         yield return new WaitForSeconds(0.8f);
-        GameObject.Find("CAMERA").transform.DOShakePosition(0.4f, 0.05f, 10);
+        GameObject.Find("CAMERA").transform.DOShakePosition(0.6f, 0.2f, 10);
         
         _otherPlayer.TakeDamage(attackingCard);
     }
