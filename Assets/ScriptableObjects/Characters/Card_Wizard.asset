@@ -60,7 +60,6 @@ MonoBehaviour:
   cardName: Wizard
   cardDescription: His attack touch every enemy on the front line
   initialManaCost: 5
-  currentType: 0
-  currentAbilty: 0
   _attackScriptable: {fileID: 11400000, guid: 9b4ddbaa6e21e1e40beb7ce740fad394, type: 2}
+  _movementDescriptionScriptable: {fileID: 11400000, guid: 0084bb0bef187704b84009fc533dffec, type: 2}
   initialHealth: 4

@@ -60,7 +60,6 @@ MonoBehaviour:
   cardName: Viking Scout
   cardDescription: Can move 2 Slot distance
   initialManaCost: 1
-  currentType: 0
-  currentAbilty: 0
   _attackScriptable: {fileID: 11400000, guid: 50fd5c01f36feea4db576fdc79eedae9, type: 2}
+  _movementDescriptionScriptable: {fileID: 11400000, guid: 9d3420e665e71b74da6f0c06dfa6c208, type: 2}
   initialHealth: 2
