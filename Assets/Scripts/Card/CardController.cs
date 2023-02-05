@@ -537,12 +537,12 @@ public class CardController : MonoBehaviour, ITargetable
         ActiveBuffs.Remove(ActiveBuffs.Find(x => x.Effect == buffEffect));
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage, ITargetable owner)
     {
         CardTakeDamage(damage);
     }
 
-    public void Heal(int healAmount)
+    public void Heal(int healAmount, ITargetable owner)
     {
         cardHealth += healAmount;
         _cardDisplay.Init();

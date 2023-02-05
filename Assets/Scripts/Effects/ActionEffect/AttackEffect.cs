@@ -20,7 +20,7 @@ public class AttackEffect : Effect
         if (target == null)
             return;
 
-        target.TakeDamage(Damage);
+        target.TakeDamage(Damage, Owner);
     }
 
     public override void Execute()

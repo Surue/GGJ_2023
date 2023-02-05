@@ -8,11 +8,11 @@
 
     public override void Execute(ITargetable target)
     {
-        target.Heal(HealAmount);
+        target.Heal(HealAmount, Owner);
     }
 
     public override void Execute()
     {
-        
+        Target.Heal(HealAmount, Owner);
     }
 }
