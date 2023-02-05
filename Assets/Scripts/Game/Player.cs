@@ -118,6 +118,14 @@ public class Player : MonoBehaviour
         {
             cardController.ResetStartTurn();
         }
+        
+        foreach (var card in _cardsOnBoard)
+        {
+            foreach (var effect in card.CardScriptable.EffectsOnNewTurn)
+            {
+                effect.Execute();
+            }
+        }
     }
 
     protected void AddManaStartTurn()
