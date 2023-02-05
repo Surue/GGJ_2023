@@ -378,19 +378,20 @@ public class CpuPlayer : Player
             
             health = player.CurrentHealth;
             mana = player.CurrentMana;
+            manaNextTurn = player.PreviousMana;
         }
         
         public SimulatedPlayer(SimulatedPlayer player)
         {
             health = player.health;
             mana = player.mana;
+            manaNextTurn = player.manaNextTurn + 1;
 
             minimumCardInHand = player.minimumCardInHand;
-            manaNextTurn = player.manaNextTurn + 1;
         
             cardsInHand = player.cardsInHand.ToList();
             cardsInDeck = new Queue<SimulatedCard>(player.cardsInDeck);
-            cardsOnBoard = player.cardsOnBoard.ToList();
+            cardsOnBoard = new List<SimulatedCard>(player.cardsOnBoard);
             cardsDiscarded = player.cardsDiscarded.ToList();
 
             simulatedSlots = player.simulatedSlots; 
@@ -408,6 +409,10 @@ public class CpuPlayer : Player
 
             // Increase mana
             mana = manaNextTurn;
+            if (mana > gameRulesScriptable.MaxMana)
+            {
+                mana = gameRulesScriptable.MaxMana;
+            }
             
             // Reset remaining attack
             foreach (var simulatedCard in cardsOnBoard)
@@ -515,8 +520,6 @@ public class CpuPlayer : Player
 
             return playerActions;
         }
-        
-        
 
         private bool CardHasTarget(SimulatedCard attackingCard, SimulatedPlayer otherPlayer, out List<SimulatedCard> cardToAttack)
         {
@@ -658,7 +661,7 @@ public class CpuPlayer : Player
             player.cardsInHand.Remove(cardToInvoke);
             player.cardsOnBoard.Add(cardToInvoke);
             
-            Debug.Log("Invoke card");
+            // Debug.Log("Invoke card");
 
             return cardToInvoke.manaCost;
         }
@@ -676,7 +679,7 @@ public class CpuPlayer : Player
             cardToMove.simulatedSlot = newSlot;
             newSlot.simulatedCard = cardToMove;
 
-            Debug.Log("Move card");
+            // Debug.Log("Move card");
             
             // TODO use correct cost
             return 1;
@@ -698,7 +701,7 @@ public class CpuPlayer : Player
             cardToSwap.simulatedSlot = tmpSlot;
             tmpSlot.simulatedCard = cardToSwap;
             
-            Debug.Log("Swap card");
+            // Debug.Log("Swap card");
 
             // TODO use correct cost
             return 1;
@@ -723,7 +726,6 @@ public class CpuPlayer : Player
             }
 
             var message = "Attack card";
-            Debug.Log("Attack card");
 
             if (defendingCard.IsDead())
             {
@@ -738,7 +740,7 @@ public class CpuPlayer : Player
                 attackingPlayer.cardsOnBoard.Remove(attackingCard);
                 attackingPlayer.cardsDiscarded.Add(attackingCard);
             }
-            Debug.Log(message);
+            // Debug.Log(message);
                 
             return 0;
         }
@@ -753,7 +755,7 @@ public class CpuPlayer : Player
         {
             attackingCard.remainingAttackCount--;
             defendingPlayer.TakeDamage(attackingCard);
-            Debug.Log("Attack other player HP(" + defendingPlayer.health + ")");
+            // Debug.Log("Attack other player HP(" + defendingPlayer.health + ")");
             return 0;
         }
     }
@@ -807,13 +809,14 @@ public class CpuPlayer : Player
         // Simulation
         public SimulatedTurn SimulateFullTurn()
         {
-            Debug.Log("Start simulating turns");
+            // Debug.Log("Start simulating turns");
             // CPU turn
             actions = new List<PlayerAction>(SimulateTurnOfPlayer(simulatedCpu, simulatedHuman, out var simulatedCpuNextTurn, out var simulatedHumanNextTurn));
 
+            simulatedCpuNextTurn.manaNextTurn--;
             if (simulatedHumanNextTurn.IsDead())
             {
-                Debug.Log("Human is dead");
+                // Debug.Log("Human is dead");
                 var finalTurn = new SimulatedTurn(simulatedHumanNextTurn, simulatedCpuNextTurn, this)
                 {
                     cpuWin = true
@@ -823,10 +826,11 @@ public class CpuPlayer : Player
             
             // Human turn
             SimulateTurnOfPlayer(simulatedHumanNextTurn, simulatedCpuNextTurn, out simulatedHumanNextTurn, out simulatedCpuNextTurn);
+            simulatedHumanNextTurn.manaNextTurn--;
             
             if (simulatedCpuNextTurn.IsDead())
             {
-                Debug.Log("CPU is dead");
+                // Debug.Log("CPU is dead");
                 var finalTurn = new SimulatedTurn(simulatedHumanNextTurn, simulatedCpuNextTurn, this)
                 {
                     cpuWin = false
@@ -834,17 +838,17 @@ public class CpuPlayer : Player
                 return finalTurn;
             }
 
-            Debug.Log("Simulate new turns");
-            return new SimulatedTurn(simulatedHumanNextTurn, simulatedCpuNextTurn, this);
+            // Debug.Log("Simulate new turns");
+            return new SimulatedTurn(simulatedHumanNextTurn, simulatedCpuNextTurn, this).SimulateFullTurn();
         }
 
         public List<PlayerAction> SimulateTurnOfPlayer(SimulatedPlayer player, SimulatedPlayer otherPlayer, out SimulatedPlayer outNewPlayer, out SimulatedPlayer outNewOtherPlayer)
         {
             // Fill Hand
             outNewPlayer = new SimulatedPlayer(player);
-            outNewOtherPlayer= new SimulatedPlayer(otherPlayer);
+            outNewOtherPlayer = new SimulatedPlayer(otherPlayer);
             outNewPlayer.StartTurn();
-            Debug.Log("Start turn");
+            // Debug.Log("Start turn");
             
             var playerActions = new List<PlayerAction>();
             playerActions.AddRange(outNewPlayer.GetInvokeCardAction());
@@ -860,7 +864,7 @@ public class CpuPlayer : Player
                 
                 var mana = action.ExecuteAndGetManaCost();
                 outNewPlayer.mana -= mana;
-                Debug.Log("Remaining mana == " + outNewPlayer.mana);
+                // Debug.Log("Remaining mana == " + outNewPlayer.mana);
                 
                 // Check for remaining action
                 playerActions.Clear();
@@ -869,7 +873,7 @@ public class CpuPlayer : Player
                 playerActions.AddRange(outNewPlayer.GetAttackAction(outNewOtherPlayer));
             }
             
-            Debug.Log("End turn");
+            // Debug.Log("End turn");
 
             return actionDone;
         }
@@ -907,6 +911,8 @@ public class CpuPlayer : Player
         while (timer < _maxTComputationTime)
         {
             var initialTurn = new SimulatedTurn(humanPlayer, this);
+            initialTurn.simulatedCpu.manaNextTurn -= 1;
+            initialTurn.simulatedHuman.manaNextTurn -= 1;
             _endSimulationTurn.Add(initialTurn.SimulateFullTurn());
             timer += Time.deltaTime;
             yield return null;
