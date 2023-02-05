@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 using MiniTools.BetterGizmos;
 
@@ -6,6 +7,7 @@ public class SlotController : MonoBehaviour
     [Header("PARAMETERS")]
     public bool containCard = false;
     public GameObject highlight;
+    public SpriteRenderer spriteRenderer;
     [SerializeField] private EPlayerType playerType;
     public EPlayerType PlayerType => playerType;
 
@@ -35,6 +37,11 @@ public class SlotController : MonoBehaviour
 
         columnID = index % 4;
     }
+
+    public void SetHighlighted(bool enabled)
+    {
+        highlight.SetActive(enabled);
+    }
     
     void OnDrawGizmosSelected()
     {
@@ -45,6 +52,32 @@ public class SlotController : MonoBehaviour
         if (facingCard)
         {
             BetterGizmos.DrawViewFacingArrow(Color.red, transform.position, facingCard.position, arrowSize);
+        }
+    }
+
+    private Tween pulseTween;
+    public void SetHovered(bool hovered)
+    {
+        if (hovered)
+        {
+            if (pulseTween == null)
+            {
+                pulseTween = spriteRenderer.DOFade(1f, 0.6f)
+                    .SetEase(EaseExtensions.FadeInFadeOutCurve)
+                    .From(0.5f)
+                    .SetLoops(-1, LoopType.Restart);
+            }
+        }
+        else
+        {
+            if (pulseTween != null)
+            {
+                pulseTween = null;
+                pulseTween.Complete();
+                DOTween.Kill(spriteRenderer, true);
+                
+                spriteRenderer.color = new Color(1,1,1,0.5f);
+            }
         }
     }
 }

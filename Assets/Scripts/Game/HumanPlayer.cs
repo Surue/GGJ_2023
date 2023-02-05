@@ -25,7 +25,21 @@ public class HumanPlayer : Player
     
     // Board
     private GameObject _boardSlot;
-    private SlotController _slotController;
+
+    private SlotController _slotController
+    {
+        get => __slotController;
+
+        set
+        {
+            if (__slotController != null && value != __slotController)
+                __slotController.SetHovered(false);
+            
+            __slotController = value;
+        }
+    }
+
+    private SlotController __slotController;
     private CardController _slotCardController;
     private CardController _targetCardController;
     
@@ -54,10 +68,10 @@ public class HumanPlayer : Player
                 OnFreeState();
                 break;
             case HandState.CardSelectedOnBoard:
-                OnCardSelectedState();
+                OnCardSelectedOnBoard();
                 break;
             case HandState.CardSelectedInHand:
-                OnCardInvokeOnDesk();
+                OnCardSelectedInHand();
                 break;
             case HandState.WaitingTurn:
                 break;
@@ -143,8 +157,13 @@ public class HumanPlayer : Player
         }
     }
     
-    private void OnCardInvokeOnDesk()
+    private void OnCardSelectedInHand()
     {
+        foreach (var boardSlot in _boardSlots)
+        {
+            boardSlot.SetHighlighted(true);
+        }
+        
         if (Input.GetMouseButtonDown(1))
         {
             activeCardController.SetCardState(CardController.CardState.inHand);
@@ -163,6 +182,7 @@ public class HumanPlayer : Player
 
             if (CanDropCardOnBoard(activeCardController) && !_slotController.containCard && _slotController.PlayerType == EPlayerType.Human)
             {
+                _slotController.SetHovered(true);
                 DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve,
                     _lineColorDeplacement, activeCardController.cardManaCost);
 
@@ -174,6 +194,9 @@ public class HumanPlayer : Player
                     SetHandState(HandState.Free);
 
                     ResetLine();
+                    
+                    _slotController.SetHovered(false);
+
                 }
             }
             else
@@ -191,9 +214,14 @@ public class HumanPlayer : Player
         }
     }
 
-    private void OnCardSelectedState()
+    private void OnCardSelectedOnBoard()
     {
         var layerHitName = CheckRaycastHit();
+
+        foreach (var boardSlot in _boardSlots)
+        {
+            boardSlot.SetHighlighted(true);
+        }
         
         if (Input.GetMouseButtonDown(1))
         {
@@ -201,6 +229,11 @@ public class HumanPlayer : Player
             
             _slotCardController = null;
             SetHandState(HandState.Free);
+            
+            foreach (var boardSlot in _boardSlots)
+            {
+                boardSlot.SetHighlighted(false);
+            }
             
             ResetLine();
             return;
@@ -216,6 +249,8 @@ public class HumanPlayer : Player
             {
                 DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorDeplacement, _gameRules.CardMoveManaCost);
 
+                _slotController.SetHovered(true);
+
                 if (CanMoveCardOnBoard())
                 {
                     if (Input.GetMouseButtonDown(0))
@@ -226,6 +261,8 @@ public class HumanPlayer : Player
                     
                         _lineRenderer.enabled = false;
                         _lineIconRenderer.gameObject.SetActive(false);
+                        
+                        _slotController.SetHovered(false);
                     }
                 }
             }
