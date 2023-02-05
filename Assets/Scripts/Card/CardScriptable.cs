@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public enum SpecialAbilities
@@ -6,7 +8,7 @@ public enum SpecialAbilities
 }
 
 [CreateAssetMenu(fileName = "NewCard", menuName = "ScriptableObjects/Card")]
-public class CardScriptable : ScriptableObject
+public class CardScriptable : SerializedScriptableObject
 {
     public enum CardType
     {
@@ -37,4 +39,9 @@ public class CardScriptable : ScriptableObject
     [SerializeField] private AttackScriptable _attackScriptable;
     public AttackScriptable AttackScriptable => _attackScriptable;
     public int initialHealth;
+    
+    [Header("Effects")]
+    [SerializeField] public List<Effect> EffectsOnInvoke = new List<Effect>();
+    [SerializeField] public List<Effect> EffectsOnNewTurn = new List<Effect>();
+    [SerializeField] public List<Effect> EffectsPassive = new List<Effect>();
 }

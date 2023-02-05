@@ -5,7 +5,7 @@ using DG.Tweening;
 using UnityEngine.Rendering;
 using UnityEngine.Serialization;
 
-public class CardController : MonoBehaviour
+public class CardController : MonoBehaviour, ITargetable
 {
     public EPlayerType Owner;
     
@@ -67,6 +67,7 @@ public class CardController : MonoBehaviour
     // Attack
     private int _remainingAttackCharge;
     private int _maxAttackCharge;
+    private int _attackDamange;
     
     public enum CardState
     {
@@ -135,6 +136,19 @@ public class CardController : MonoBehaviour
         // Setup selection area and discard area
         _selectionAreaTransform = selectionTransform;
         _discardTransform = discardTransform;
+
+        foreach (var effect in CardScriptable.EffectsOnInvoke)
+        {
+            effect.Owner = this;
+        }
+        foreach (var effect in CardScriptable.EffectsPassive)
+        {
+            effect.Owner = this;
+        }
+        foreach (var effect in CardScriptable.EffectsOnNewTurn)
+        {
+            effect.Owner = this;
+        }
     }
     
     public void SetHandSlot(Transform handSlotTransform)
@@ -460,4 +474,59 @@ public class CardController : MonoBehaviour
         AnimComponent.PlayQueued(animationName);
     }
     #endregion
+
+    public void IncreaseDamage(int amount)
+    {
+        cardAttack += amount;
+    }
+    
+    [Serializable]
+    public struct ActiveBuff
+    {
+        public ActiveBuff(BuffEffect effect, ITargetable owner)
+        {
+            Effect = effect;
+            Owner = owner;
+        }
+
+        public BuffEffect Effect;
+        public ITargetable Owner;
+    }
+    
+    [HideInInspector]
+    public List<ActiveBuff> ActiveBuffs = new List<ActiveBuff>();
+    
+    public void AddBuff(BuffEffect buffEffect, ITargetable owner)
+    {
+        buffEffect.Execute(this);
+        ActiveBuffs.Add(new ActiveBuff(buffEffect, owner));
+    }
+
+    public void RemoveBuff(BuffEffect buffEffect)
+    {
+        foreach (var activeBuff in ActiveBuffs)
+        {
+            if (activeBuff.Effect == buffEffect)
+            {
+                activeBuff.Effect.Debuff(this);
+            }
+        }
+
+        ActiveBuffs.Remove(ActiveBuffs.Find(x => x.Effect == buffEffect));
+    }
+
+    public void TakeDamage(int damage)
+    {
+        CardTakeDamage(damage);
+    }
+
+    public void Die()
+    {
+    }
+
+    public void Heal(int healAmount)
+    {
+        cardHealth += healAmount;
+        _cardDisplay.Init();
+    }
 }

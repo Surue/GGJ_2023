@@ -33,6 +33,10 @@ public class GameManager : MonoBehaviour
     public Action<EPlayerType> onGameEnded;
 
     private EPlayerType _currentPlayerType;
+    private Player _currentPlayer;
+    public Player CurrentPlayer => _currentPlayer;
+    private Player _enemyPlayer;
+    public Player EnemyPlayer => _enemyPlayer;
 
     // Init state
     private bool _hasFinishedInit;
@@ -114,6 +118,8 @@ public class GameManager : MonoBehaviour
             case EGameState.StartHumanTurn:
                 if (!_isStartingTurn)
                 {
+                    _currentPlayer = GetPlayer(EPlayerType.Human);
+                    _enemyPlayer = GetPlayer(EPlayerType.CPU);
                     _hasFinishedStartingTurn = false;
                     _currentPlayerType = EPlayerType.Human;
                     StartTurn(EPlayerType.Human);
@@ -142,6 +148,8 @@ public class GameManager : MonoBehaviour
             case EGameState.StartCpuTurn:
                 if (!_isStartingTurn)
                 {
+                    _enemyPlayer = GetPlayer(EPlayerType.Human);
+                    _currentPlayer = GetPlayer(EPlayerType.CPU);
                     _hasFinishedStartingTurn = false;
                     _currentPlayerType = EPlayerType.CPU;
                     StartTurn(EPlayerType.CPU);
