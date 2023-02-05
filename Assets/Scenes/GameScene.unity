@@ -6356,6 +6356,10 @@ PrefabInstance:
       propertyPath: _lifeIcon
       value: 
       objectReference: {fileID: 661012746}
+    - target: {fileID: 4737758271955670831, guid: 6c4e05a5d2a1df348a8a2e96b2dbb947, type: 3}
+      propertyPath: _playerCharacterIllu
+      value: 
+      objectReference: {fileID: 1393930087}
     - target: {fileID: 4737758271979231347, guid: 6c4e05a5d2a1df348a8a2e96b2dbb947, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.9700003
@@ -6551,6 +6555,10 @@ PrefabInstance:
       propertyPath: _CPUCardTransform
       value: 
       objectReference: {fileID: 967670380}
+    - target: {fileID: 6252410726464767105, guid: c1de8bbcf491dec4488c8f1edccba256, type: 3}
+      propertyPath: _playerCharacterIllu
+      value: 
+      objectReference: {fileID: 228607475}
     - target: {fileID: 6252410726464767135, guid: c1de8bbcf491dec4488c8f1edccba256, type: 3}
       propertyPath: m_Name
       value: Human
