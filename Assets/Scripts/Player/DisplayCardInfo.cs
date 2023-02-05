@@ -10,9 +10,15 @@ public class DisplayCardInfo : MonoBehaviour
     private CardController _cardController;
     private GameObject currentDisplayedCard;
     private CardController currentCardControler;
+    private Vector3 _InitCardInfoScale;
 
 
     // Update is called once per frame
+    private void Start()
+    {
+        _InitCardInfoScale = cardInfoTransform.localScale;
+    }
+
     void Update()
     {
         var layerHitName = _humanPlayer.CheckRaycastHit(out RaycastHit hit);
@@ -68,13 +74,17 @@ public class DisplayCardInfo : MonoBehaviour
         {
             Destroy(currentDisplayedCard);
         }
-        currentDisplayedCard = Instantiate(cardController.gameObject, cardInfoTransform.position, cardInfoTransform.rotation, cardInfoTransform);
-        cardInfoTransform.DOScale(cardInfoTransform.localScale * 1.15f, 0.25f).SetEase(EaseExtensions.FadeInFadeOutCurve);
-        currentCardControler = currentDisplayedCard.GetComponent<CardController>();
-        currentCardControler.UnHighlightCard(0f);
-        currentCardControler.PlayAnimationCard("ActiveAnim");
-        Collider cardCollider = currentDisplayedCard.GetComponent<Collider>();
-        cardCollider.enabled = false;
+        if (!DOTween.IsTweening(cardInfoTransform))
+        {
+            currentDisplayedCard = Instantiate(cardController.gameObject, cardInfoTransform.position, cardInfoTransform.rotation, cardInfoTransform);
+            cardInfoTransform.DOScale(_InitCardInfoScale * 1.15f, 0.25f).SetEase(EaseExtensions.FadeInFadeOutCurve);
+            currentCardControler = currentDisplayedCard.GetComponent<CardController>();
+            currentCardControler.UnHighlightCard(0f);
+            currentCardControler.PlayAnimationCard("ActiveAnim");
+            Collider cardCollider = currentDisplayedCard.GetComponent<Collider>();
+            cardCollider.enabled = false;
+        }
+
     }
     private void DestroyCardInfo()
     {
