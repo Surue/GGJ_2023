@@ -129,7 +129,7 @@ public class CpuPlayer : Player
             }
             else if(cardsToAttack.Count == 0 && cardController.slotController.boardLineType == EBoardLineType.Front)
             {
-                AttackOtherPlayer(cardController);
+                StartCoroutine(AttackOtherPlayer(cardController));
             }
 
             yield return null;

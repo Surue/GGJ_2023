@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using UnityEngine;
 using TMPro;
 
@@ -336,7 +337,7 @@ public class HumanPlayer : Player
             {
                 currentHandState = HandState.Free;
                     
-                AttackOtherPlayer(_slotCardController);
+                StartCoroutine(AttackOtherPlayer(_slotCardController));
                     
                 _lineRenderer.enabled = false;
                 _lineIconRenderer.gameObject.SetActive(false);
@@ -353,6 +354,14 @@ public class HumanPlayer : Player
         }
     }
 
+
+    protected override void TakeDamage(CardController attackingCard)
+    {
+        base.TakeDamage(attackingCard);
+        hurtVignet.DOFade(1, 0.4f).SetEase(EaseExtensions.FadeInFadeOutCurve).From(0);
+    }
+
+    public CanvasGroup hurtVignet;
 
     private void DrawMovementLine(Vector3 startPos, Vector3 endPos, float offsetY, Color lineColor, int value)
     {
