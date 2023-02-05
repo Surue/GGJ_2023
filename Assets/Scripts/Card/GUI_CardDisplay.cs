@@ -45,27 +45,18 @@ public class GUI_CardDisplay : MonoBehaviour
         manaText.text = cardController.cardManaCost.ToString();
 
         // Setup Chara Stats
-        if (cardController.CardScriptable.currentType == CardScriptable.CardType.Character)
+        attackText.text = cardController.cardAttack.ToString();
+        healthText.text = cardController.cardHealth.ToString();
+        switch (cardController.CardScriptable.AttackScriptable.AttackType)
         {
-            attackText.text = cardController.cardAttack.ToString();
-            healthText.text = cardController.cardHealth.ToString();
-            switch (cardController.CardScriptable.AttackScriptable.AttackType)
-            {
-                case EAttackType.Front:
-                    break;
-                case EAttackType.FrontAndBack:
-                    break;
-                case EAttackType.FrontLine:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-        else
-        {
-            attackText.text = null;
-            healthText.text = null;
-            attackType.sprite = null;
+            case EAttackType.Front:
+                break;
+            case EAttackType.FrontAndBack:
+                break;
+            case EAttackType.FrontLine:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 

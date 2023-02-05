@@ -2,24 +2,10 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public enum SpecialAbilities
-{
-    None, Ability1, Ability2
-}
 
 [CreateAssetMenu(fileName = "NewCard", menuName = "ScriptableObjects/Card")]
 public class CardScriptable : SerializedScriptableObject
 {
-    public enum CardType
-    {
-        Character, Spell
-    }
-    
-    public enum SpecialAbilities
-    {
-        None, Ability1, Ability2
-    }
-
     // STRING
     [Header("Card Information")]
     public string cardName;
@@ -29,15 +15,14 @@ public class CardScriptable : SerializedScriptableObject
     // SPECS
     [Header("General Specs")]
     public int initialManaCost;
-    public CardType currentType;
-    public SpecialAbilities currentAbilty;
 
     [Space]
-
     // CHARACTER STATS
     [Header("Character Stats")]
     [SerializeField] private AttackScriptable _attackScriptable;
     public AttackScriptable AttackScriptable => _attackScriptable;
+    [SerializeField] private MovementDescriptionScriptable _movementDescriptionScriptable;
+    public MovementDescriptionScriptable MovementDescriptionScriptable => _movementDescriptionScriptable;
     public int initialHealth;
     
     [Header("Effects")]
