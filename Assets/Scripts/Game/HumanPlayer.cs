@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 using TMPro;
@@ -221,7 +222,13 @@ public class HumanPlayer : Player
     {
         var layerHitName = CheckRaycastHit();
 
+        var possibleSlotToMoveTo = GetSlotPossibleToMoveTo(_slotCardController);
+
         foreach (var boardSlot in _boardSlots)
+        {
+            boardSlot.SetHighlighted(false);
+        }
+        foreach (var boardSlot in possibleSlotToMoveTo)
         {
             boardSlot.SetHighlighted(true);
         }
@@ -233,7 +240,7 @@ public class HumanPlayer : Player
             _slotCardController = null;
             SetHandState(HandState.Free);
             
-            foreach (var boardSlot in _boardSlots)
+            foreach (var boardSlot in possibleSlotToMoveTo)
             {
                 boardSlot.SetHighlighted(false);
             }
@@ -248,11 +255,9 @@ public class HumanPlayer : Player
             _boardSlot = _hit.transform.gameObject;
             _slotController = _hit.transform.GetComponent<SlotController>();
 
-            var possibleSlotToMoveTo = GetSlotPossibleToMoveTo(_slotCardController);
 
             if (_slotController.PlayerType == EPlayerType.Human && !_slotController.containCard) // Move card
             {
-
                 if (CanMoveCardOnBoard(_slotCardController, _slotController))
                 {
                     DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorDeplacement, GetMoveCost(_slotCardController));
@@ -269,12 +274,22 @@ public class HumanPlayer : Player
                         _lineIconRenderer.gameObject.SetActive(false);
                         
                         _slotController.SetHovered(false);
+                        
+                        foreach (var boardSlot in _boardSlots)
+                        {
+                            boardSlot.SetHighlighted(false);
+                        }
                     }
+                }
+                else if (GetSlotPossibleToMoveTo(_slotCardController).Contains(_slotController))
+                {
+                    DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorDeplacement, _gameRules.CardMoveManaCost);
+
+                    _slotController.SetHovered(false);
                 }
                 else
                 {
                     DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorNeutral, -1);
-
                     _slotController.SetHovered(false);
                 }
             }
