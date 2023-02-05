@@ -60,7 +60,7 @@ MonoBehaviour:
   cardName: "J\xF6rmungand"
   cardDescription: Move randomly the cards on the board
   initialManaCost: 8
-  currentType: 0
-  currentAbilty: 0
   _attackScriptable: {fileID: 11400000, guid: dcfa1d123f968a54d92838d70e28a79f, type: 2}
+  _movementDescriptionScriptable: {fileID: 0}
+  IsBig: 1
   initialHealth: 12

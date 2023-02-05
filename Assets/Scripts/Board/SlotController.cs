@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 using MiniTools.BetterGizmos;
+using OSG.Core;
 
 public class SlotController : MonoBehaviour
 {
@@ -16,6 +18,9 @@ public class SlotController : MonoBehaviour
     public Vector3 slotSize;
     public Transform facingCard = null;
 
+    [SerializeField] private ParticleSystem particleExplo;
+    public List<ParticleSystem> particles;
+    
     // --- PRIVATE ---
     public CardController cardController;
 
@@ -56,6 +61,7 @@ public class SlotController : MonoBehaviour
     }
 
     private Tween pulseTween;
+
     public void SetHovered(bool hovered)
     {
         if (hovered)
@@ -78,6 +84,18 @@ public class SlotController : MonoBehaviour
                 
                 spriteRenderer.color = new Color(1,1,1,0.5f);
             }
+        }
+    }
+
+    public void PlayRandomSmokeParticle()
+    {
+        if (cardController.CardScriptable.IsBig)
+        {
+            particleExplo.Play();
+        }
+        else
+        {
+            particles.GetElementAtRandomIndex().Play();
         }
     }
 }

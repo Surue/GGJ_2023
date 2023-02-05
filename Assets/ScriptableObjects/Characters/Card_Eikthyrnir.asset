@@ -60,7 +60,7 @@ MonoBehaviour:
   cardName: Eikthyrnir
   cardDescription: 'Gives +1 Att +2 Health to close allies '
   initialManaCost: 4
-  currentType: 0
-  currentAbilty: 0
   _attackScriptable: {fileID: 11400000, guid: 3f0891cbd694dfa45b6eadad08385c55, type: 2}
+  _movementDescriptionScriptable: {fileID: 0}
+  IsBig: 0
   initialHealth: 5

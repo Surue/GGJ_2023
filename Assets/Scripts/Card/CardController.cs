@@ -372,6 +372,8 @@ public class CardController : MonoBehaviour, ITargetable
                     .OnComplete(() =>
                 {
                     GameObject.Find("CAMERA").transform.DOShakePosition(0.4f, 0.1f, 10);
+                    
+                    slotController.PlayRandomSmokeParticle();
                 });
             });
         transform.DORotateQuaternion(slotController.transform.localRotation, 1).SetEase(Ease.InOutSine);

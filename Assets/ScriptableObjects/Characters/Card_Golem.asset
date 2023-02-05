@@ -60,7 +60,7 @@ MonoBehaviour:
   cardName: Golem
   cardDescription: Big Golem grrr
   initialManaCost: 7
-  currentType: 0
-  currentAbilty: 0
   _attackScriptable: {fileID: 11400000, guid: 1a109f14e0686054ca153ed4fe7734ab, type: 2}
+  _movementDescriptionScriptable: {fileID: 0}
+  IsBig: 1
   initialHealth: 15

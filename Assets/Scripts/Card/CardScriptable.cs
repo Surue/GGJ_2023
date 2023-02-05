@@ -23,6 +23,8 @@ public class CardScriptable : SerializedScriptableObject
     public AttackScriptable AttackScriptable => _attackScriptable;
     [SerializeField] private MovementDescriptionScriptable _movementDescriptionScriptable;
     public MovementDescriptionScriptable MovementDescriptionScriptable => _movementDescriptionScriptable;
+    public bool IsBig;
+
     public int initialHealth;
     
     [Header("Effects")]

@@ -97,7 +97,7 @@ MonoBehaviour:
   cardName: Red Drake
   cardDescription: When place on desk, give +2 Att +1 Health to every allies on desk
   initialManaCost: 7
-  currentType: 0
-  currentAbilty: 0
   _attackScriptable: {fileID: 11400000, guid: bffcf0f6a28f8354caa5ebd156c5f66f, type: 2}
+  _movementDescriptionScriptable: {fileID: 0}
+  IsBig: 1
   initialHealth: 5
