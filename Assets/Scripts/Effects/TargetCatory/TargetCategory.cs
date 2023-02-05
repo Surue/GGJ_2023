@@ -2,11 +2,11 @@
 
 public abstract class TargetCategory : ITargetable
 {
-    public virtual void TakeDamage(int damage)
+    public virtual void TakeDamage(int damage, ITargetable owner)
     {
     }
 
-    public virtual void Heal(int healAmount)
+    public virtual void Heal(int healAmount, ITargetable owner)
     {
     }
 

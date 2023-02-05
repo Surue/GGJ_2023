@@ -127,6 +127,7 @@ public class Player : MonoBehaviour
         {
             foreach (var effect in card.CardScriptable.EffectsOnNewTurn)
             {
+                effect.Owner = card;
                 effect.Execute();
             }
         }
@@ -609,7 +610,7 @@ public class Player : MonoBehaviour
         return result;
     }
 
-    protected List<CardController> GetCrossNeighbors(CardController cardController)
+    public List<CardController> GetCrossNeighbors(CardController cardController)
     {
         var result = new List<CardController>();
 

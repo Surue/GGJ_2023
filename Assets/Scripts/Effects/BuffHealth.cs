@@ -11,7 +11,7 @@ public class BuffHealth : BuffEffect
 
     public override void Execute(ITargetable target)
     {
-        target.AddBuff(this, Owner, (x) => {x.Heal(Amount);});
+        target.AddBuff(this, Owner, (x) => {x.Heal(Amount, Owner);});
     }
     
     public override void Debuff(ITargetable target)

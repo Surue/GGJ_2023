@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
-public class AllSelfCards : TargetCategory, ITargetable
+public class AdjacentCards : TargetCategory, ITargetable
 {
     public override void TakeDamage(int damage, ITargetable owner)
     {
-        foreach (var card in GetAllCards())
+        foreach (var card in GetAdjacentCards(owner))
         {
             card.CardTakeDamage(damage);
         }
@@ -13,17 +13,15 @@ public class AllSelfCards : TargetCategory, ITargetable
 
     public override void Heal(int healAmount, ITargetable owner)
     {
-        var allEnemies = GetAllCards();
-        foreach (var enemy in allEnemies)
+        foreach (var card in GetAdjacentCards(owner))
         {
-            enemy.Heal(healAmount, owner);
+            card.Heal(healAmount, owner);
         }
     }
     
     public override void AddBuff(BuffEffect buffEffect, ITargetable owner, Action<CardController> act)
     {
-        var cards = GetAllCards();
-        foreach (var card in cards)
+        foreach (var card in GetAdjacentCards(owner))
         {
             if (card == (CardController)owner)
             {
@@ -37,8 +35,8 @@ public class AllSelfCards : TargetCategory, ITargetable
         }
     }
     
-    public List<CardController> GetAllCards()
+    public List<CardController> GetAdjacentCards(ITargetable owner)
     {
-        return GameManager.Instance.CurrentPlayer.CardsOnBoard;
+        return GameManager.Instance.CurrentPlayer.GetCrossNeighbors((CardController)owner);
     }
 }
