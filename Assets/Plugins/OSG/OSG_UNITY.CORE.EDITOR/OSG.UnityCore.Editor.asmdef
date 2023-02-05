@@ -1,0 +1,18 @@
+{
+    "name": "OSG.UnityCore.Editor",
+    "references": [
+        "GUID:2426cb7dd4ec1bb46ba8018759b01aba",
+        "GUID:22166b0dcf1007049a1963daa7a183f5",
+        "GUID:8637bf49895f89d468d2c6da5d0c7568"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}
