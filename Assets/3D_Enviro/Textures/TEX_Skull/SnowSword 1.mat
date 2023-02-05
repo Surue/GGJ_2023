@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SnowSkull
+  m_Name: SnowSword 1
   m_Shader: {fileID: -6465566751694194690, guid: 55c3371c1416bf846b923ef11dfe4509, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -21,25 +21,25 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _TEX_Base:
-        m_Texture: {fileID: 2800000, guid: d246a0ac3e6ad1a49900a650c23259b5, type: 3}
+        m_Texture: {fileID: 2800000, guid: 56c1966510126d146b3982f08df85a3f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TEX_Normal:
-        m_Texture: {fileID: 2800000, guid: adffe8c648c3b3342a135682281f0782, type: 3}
+        m_Texture: {fileID: 2800000, guid: a151b7627616bc7459c4bea09ad9fd01, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _BUILTIN_QueueControl: 0
     - _BUILTIN_QueueOffset: 0
-    - _NoiseDetail: 1000
-    - _NormalStrenght: 0.0385
-    - _SnowIntensity: 1.1
+    - _NoiseDetail: 500
+    - _NormalStrenght: 0.0045
+    - _SnowIntensity: 1.2
     m_Colors:
-    - _SnowColor: {r: 0.43102527, g: 0.46199712, b: 0.5471698, a: 0}
-    - _SnowDirection: {r: 0.3, g: 1, b: 0.3, a: 0}
+    - _SnowColor: {r: 1, g: 1, b: 1, a: 0}
+    - _SnowDirection: {r: -0.33, g: 0.46, b: 0.14, a: 0}
   m_BuildTextureStacks: []
---- !u!114 &9122991206559224349
+--- !u!114 &4834058900738131279
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
