@@ -113,7 +113,7 @@ public class CpuPlayer : Player
             if (action is SwapCardsPlayerAction swapCardsPlayerAction)
             {
                 var cardToMove = swapCardsPlayerAction.cardToMove.cardController;
-                var cardToSwap = swapCardsPlayerAction.cardToMove.cardController;
+                var cardToSwap = swapCardsPlayerAction.cardToSwap.cardController;
                 
                 SwapCardOnBoard(cardToMove, cardToSwap);
 
