@@ -271,7 +271,8 @@ public class HumanPlayer : Player
                     
                         _lineRenderer.enabled = false;
                         _lineIconRenderer.gameObject.SetActive(false);
-                        
+                        _lineCrossHair.gameObject.SetActive(false);
+
                         _slotController.SetHovered(false);
                         
                         foreach (var boardSlot in _boardSlots)
@@ -309,6 +310,7 @@ public class HumanPlayer : Player
 
                         _lineRenderer.enabled = false;
                         _lineIconRenderer.gameObject.SetActive(false);
+                        _lineCrossHair.gameObject.SetActive(false);
                     }
                 }
                 else
@@ -332,6 +334,7 @@ public class HumanPlayer : Player
                 
                         _lineRenderer.enabled = false;
                         _lineIconRenderer.gameObject.SetActive(false);
+                        _lineCrossHair.gameObject.SetActive(false);
                     }
                 }
                 else if(!_slotCardController.AttackSingleTarget()) // Target multiple cards
@@ -348,6 +351,7 @@ public class HumanPlayer : Player
                 
                         _lineRenderer.enabled = false;
                         _lineIconRenderer.gameObject.SetActive(false);
+                        _lineCrossHair.gameObject.SetActive(false);
                     }
                 }
                 else
@@ -374,6 +378,7 @@ public class HumanPlayer : Player
                     
                 _lineRenderer.enabled = false;
                 _lineIconRenderer.gameObject.SetActive(false);
+                _lineCrossHair.gameObject.SetActive(false);
             }
         }
         else
@@ -408,7 +413,7 @@ public class HumanPlayer : Player
         //Set le nombre de points du line renderer
         _lineRenderer.positionCount = 15;
 
-        _lineCrossHair.enabled = true;
+        _lineCrossHair.gameObject.SetActive(true);
         _lineCrossHair.transform.position = lineCurrentEndPos;
         _lineCrossHair.color = lineColor;
 
@@ -454,7 +459,7 @@ public class HumanPlayer : Player
     {
         _lineRenderer.enabled = false;
         _lineIconRenderer.gameObject.SetActive(false);
-        _lineCrossHair.enabled = false;
+        _lineCrossHair.gameObject.SetActive(false);
     }
     
     private string CheckRaycastHit()
