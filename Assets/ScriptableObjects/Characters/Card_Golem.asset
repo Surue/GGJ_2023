@@ -58,7 +58,7 @@ MonoBehaviour:
       Entry: 8
       Data: 
   cardName: Golem
-  cardDescription: Big Golem grrr
+  cardDescription: 
   initialManaCost: 7
   currentType: 0
   currentAbilty: 0

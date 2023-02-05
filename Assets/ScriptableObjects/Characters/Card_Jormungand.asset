@@ -58,7 +58,7 @@ MonoBehaviour:
       Entry: 8
       Data: 
   cardName: "J\xF6rmungand"
-  cardDescription: Move randomly the cards on the board
+  cardDescription: Randomly <b>shuffle</b> the cards on both sides.
   initialManaCost: 8
   currentType: 0
   currentAbilty: 0
