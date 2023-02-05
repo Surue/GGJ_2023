@@ -72,7 +72,7 @@ public class GameManager : MonoBehaviour
     {
         get
         {
-            if (!_isInit)
+            if (!_isInit || _instance == null)
             {
                 _instance = FindObjectOfType<GameManager>();
                 _isInit = true;

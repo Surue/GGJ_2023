@@ -187,9 +187,60 @@ public class Player : MonoBehaviour
         GameManager.Instance.NextTurn();
     }
 
-    protected bool CanSwapCards()
+    protected List<SlotController> GetSlotPossibleToMoveTo(CardController cardToMove)
     {
-        return _currentMana >= _gameRules.CardSwapManaCost;
+        var columnID = cardToMove.slotController.columnID;
+
+        var lineOffset = cardToMove.slotController.boardLineType == EBoardLineType.Front ? 0 : 4;
+
+        var lineMaxMovement = cardToMove.CardScriptable.MovementDescriptionScriptable.MaxMovementLineCount;
+
+        if (lineMaxMovement < 0)
+        {
+            lineMaxMovement = int.MaxValue;
+        }
+
+        var result = new List<SlotController>();
+        // Left
+        for (int i = columnID - 1, count = 0; i >= 0 && count < lineMaxMovement; i--, count++)
+        {
+            result.Add(_boardSlots[i + lineOffset]);
+        }
+        
+        // Right
+        for (int i = columnID + 1, count = 0; i < 4 && count < lineMaxMovement; i++, count++)
+        {
+            result.Add(_boardSlots[i + lineOffset]);
+        }
+
+        if (cardToMove.CardScriptable.MovementDescriptionScriptable.MaxMovementColumnCount > 0)
+        {
+            if (cardToMove.slotController.boardLineType == EBoardLineType.Front)
+            {
+                result.Add(_boardSlots[columnID + 4]);
+            }
+            else
+            {
+                result.Add(_boardSlots[columnID]);
+            }
+        }
+
+        return result;
+    }
+
+    protected int GetSwapCost(CardController cardToMove)
+    {
+        return !cardToMove.HasFreeMovement() ? _gameRules.CardSwapManaCost : 0;
+    }
+    
+    protected int GetMoveCost(CardController cardToMove)
+    {
+        return !cardToMove.HasFreeMovement() ? _gameRules.CardMoveManaCost : 0;
+    }
+
+    protected bool CanSwapCards(CardController cardToMove, SlotController slotController)
+    {
+        return _currentMana >= _gameRules.CardSwapManaCost && GetSlotPossibleToMoveTo(cardToMove).Contains(slotController);
     }
     
     protected bool CanDropCardOnBoard(CardController cardToDrop)
@@ -197,9 +248,9 @@ public class Player : MonoBehaviour
         return _currentMana >= cardToDrop.cardManaCost;
     }
 
-    protected bool CanMoveCardOnBoard()
+    protected bool CanMoveCardOnBoard(CardController cardToMove, SlotController slotController)
     {
-        return _currentMana >= _gameRules.CardMoveManaCost;
+        return _currentMana >= _gameRules.CardMoveManaCost && GetSlotPossibleToMoveTo(cardToMove).Contains(slotController);
     }
     
     protected void MoveCardOnBoard(CardController cardToMove, SlotController slot)
@@ -209,13 +260,13 @@ public class Player : MonoBehaviour
         cardToMove.SetCardState(CardController.CardState.onDesk);
         cardToMove.PlayAnimationCard("IdleAnim");
 
-        if(cardToMove.HasFreeMovement()){
+        if(!cardToMove.HasFreeMovement()){
             UseMana(_gameRules.CardMoveManaCost);
         }
         cardToMove.IncreaseMoveCount();
     }
 
-    protected void DropCardOnBoard(CardController cardToMove, SlotController slot)
+    protected void InvokeCardOnBoard(CardController cardToMove, SlotController slot)
     {
         foreach (var boardSlot in _boardSlots)
         {
@@ -249,7 +300,7 @@ public class Player : MonoBehaviour
 
         cardSwapped.SetCardState(CardController.CardState.onDesk);
 
-        if (cardToMove.HasFreeMovement())
+        if (!cardToMove.HasFreeMovement())
         {
             UseMana(_gameRules.CardSwapManaCost);
         }

@@ -58,7 +58,7 @@ MonoBehaviour:
       Entry: 8
       Data: 
   cardName: "J\xF6rmungand"
-  cardDescription: Move randomly the cards on the board
+  cardDescription: Randomly <b>shuffle</b> the cards on both sides.
   initialManaCost: 8
   _attackScriptable: {fileID: 11400000, guid: dcfa1d123f968a54d92838d70e28a79f, type: 2}
   _movementDescriptionScriptable: {fileID: 0}

@@ -143,7 +143,8 @@ public class HumanPlayer : Player
 
             // Check if player click on a slot
             if ((CanDropCardOnBoard(_slotCardController) 
-                 || CanMoveCardOnBoard() 
+                 || _currentMana >= _gameRules.CardMoveManaCost 
+                 || _currentMana >= _gameRules.CardSwapManaCost
                  || _slotCardController.CanAttackOtherPlayer()) 
                  && Input.GetMouseButtonDown(0) 
                  && _slotCardController.isInteractible 
@@ -177,7 +178,7 @@ public class HumanPlayer : Player
             return;
         }
         
-        if (CheckRaycastHit() == "Slot")
+        if (CheckRaycastHit() == "Slot") // Invoke
         {
             _boardSlot = _hit.transform.gameObject;
             _slotController = _hit.transform.GetComponent<SlotController>();
@@ -190,7 +191,7 @@ public class HumanPlayer : Player
 
                 if (Input.GetMouseButtonDown(0))
                 {
-                    DropCardOnBoard(activeCardController, _slotController);
+                    InvokeCardOnBoard(activeCardController, _slotController);
 
                     activeCardController = null;
                     SetHandState(HandState.Free);
@@ -247,14 +248,17 @@ public class HumanPlayer : Player
             _boardSlot = _hit.transform.gameObject;
             _slotController = _hit.transform.GetComponent<SlotController>();
 
-            if (_slotController.PlayerType == EPlayerType.Human && !_slotController.containCard) // Drop card on empty board
+            var possibleSlotToMoveTo = GetSlotPossibleToMoveTo(_slotCardController);
+
+            if (_slotController.PlayerType == EPlayerType.Human && !_slotController.containCard) // Move card
             {
-                DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorDeplacement, _gameRules.CardMoveManaCost);
 
-                _slotController.SetHovered(true);
-
-                if (CanMoveCardOnBoard())
+                if (CanMoveCardOnBoard(_slotCardController, _slotController))
                 {
+                    DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorDeplacement, GetMoveCost(_slotCardController));
+
+                    _slotController.SetHovered(true);
+                    
                     if (Input.GetMouseButtonDown(0))
                     {
                         currentHandState = HandState.Free;
@@ -267,21 +271,36 @@ public class HumanPlayer : Player
                         _slotController.SetHovered(false);
                     }
                 }
+                else
+                {
+                    DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorNeutral, -1);
+
+                    _slotController.SetHovered(false);
+                }
             }
-            else if (CanSwapCards() && _slotController.PlayerType == EPlayerType.Human && _slotController.containCard) // Swap cards
+            else if (_slotController.PlayerType == EPlayerType.Human && _slotController.containCard) // Swap cards
             {
                 _targetCardController = _slotController.cardController;
-                DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve,
-                    _lineColorDeplacement, _gameRules.CardSwapManaCost);
 
-                if (Input.GetMouseButtonDown(0))
+                if (CanSwapCards(_slotCardController, _slotController))
                 {
-                    currentHandState = HandState.Free;
-                    
-                    SwapCardOnBoard(_slotCardController, _targetCardController);
+                    DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve,
+                        _lineColorDeplacement, GetSwapCost(_slotCardController));
 
-                    _lineRenderer.enabled = false;
-                    _lineIconRenderer.gameObject.SetActive(false);
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        currentHandState = HandState.Free;
+                    
+                        SwapCardOnBoard(_slotCardController, _targetCardController);
+
+                        _lineRenderer.enabled = false;
+                        _lineIconRenderer.gameObject.SetActive(false);
+                    }
+                }
+                else
+                {
+                    DrawMovementLine(_cardTransform.position, _targetCardController.transform.position, _offsetYCurve,
+                        _lineColorNeutral, -1);
                 }
             }
             else if (_slotCardController.CanAttack(GetPossibleCardToAttack(_slotCardController)) && _slotController.PlayerType == EPlayerType.CPU) // Attack other card

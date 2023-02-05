@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1b035fad1d6f0343b9e6cf2b9fcd960, type: 3}
   m_Name: FullLineMovement
   m_EditorClassIdentifier: 
-  _maxMovementLineCount: 0
-  _maxMovementColumnCount: 0
+  _maxMovementLineCount: -1
+  _maxMovementColumnCount: 1
   _freeMovementCount: 0

@@ -58,7 +58,8 @@ MonoBehaviour:
       Entry: 8
       Data: 
   cardName: Eikthyrnir
-  cardDescription: 'Gives +1 Att +2 Health to close allies '
+  cardDescription: Gives  <b> <color=#FFAC00>+1 Att</color> and <color=#F01D22>+2
+    HP</color></b> to nearby allies.
   initialManaCost: 4
   _attackScriptable: {fileID: 11400000, guid: 3f0891cbd694dfa45b6eadad08385c55, type: 2}
   _movementDescriptionScriptable: {fileID: 0}
