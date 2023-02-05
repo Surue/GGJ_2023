@@ -26,7 +26,7 @@ public class PrismSharpen : MonoBehaviour {
 	[Header("Mouse over the variables for tips")]
 
 	[Tooltip("The strength of the sharpening effect")]
-	[Range(0f,2f)]
+	[Range(0f,1000f)]
 	public float sharpenAmount = 0.65f;
 
 	[Range(0f,1f)]
