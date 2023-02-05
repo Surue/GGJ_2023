@@ -15,7 +15,8 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects: []
+    ReferencedUnityObjects:
+    - {fileID: 0}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -37,8 +38,8 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: Owner
-      Entry: 6
-      Data: 
+      Entry: 10
+      Data: 0
     - Name: Amount
       Entry: 3
       Data: 2
@@ -67,8 +68,8 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: Owner
-      Entry: 6
-      Data: 
+      Entry: 10
+      Data: 0
     - Name: Amount
       Entry: 3
       Data: 2
@@ -94,7 +95,7 @@ MonoBehaviour:
       Entry: 8
       Data: 
   cardName: Eikthyrnir
-  cardDescription: Each turn, gives  <b><color=#F01D22>+2 HP</color></b> to nearby
+  cardDescription: Each turn, gives  <b><color=#F01D22>+2 HP</color></b> to adjacents
     allies.
   initialManaCost: 5
   _attackScriptable: {fileID: 11400000, guid: 3f0891cbd694dfa45b6eadad08385c55, type: 2}

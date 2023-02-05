@@ -59,8 +59,8 @@ MonoBehaviour:
       Data: 
   cardName: Archer
   cardDescription: Can attack enemy in the <b>Backline</b>
-  initialManaCost: 3
-  _attackScriptable: {fileID: 11400000, guid: 3b4f8d3b4ed6e6a41b8e0402f6b90db9, type: 2}
+  initialManaCost: 4
+  _attackScriptable: {fileID: 11400000, guid: eae43ffd3e584b5498688d1a403d1e4a, type: 2}
   _movementDescriptionScriptable: {fileID: 11400000, guid: 0084bb0bef187704b84009fc533dffec, type: 2}
   IsBig: 0
-  initialHealth: 3
+  initialHealth: 6
