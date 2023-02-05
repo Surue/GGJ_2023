@@ -160,7 +160,6 @@ public class Player : MonoBehaviour
         }
     }
 
-
     protected virtual void TakeDamage(CardController attackingCard)
     {
         _currentHealth -= attackingCard.cardAttack;
@@ -210,7 +209,10 @@ public class Player : MonoBehaviour
         cardToMove.SetCardState(CardController.CardState.onDesk);
         cardToMove.PlayAnimationCard("IdleAnim");
 
-        UseMana(_gameRules.CardMoveManaCost);
+        if(cardToMove.HasFreeMovement()){
+            UseMana(_gameRules.CardMoveManaCost);
+        }
+        cardToMove.IncreaseMoveCount();
     }
 
     protected void DropCardOnBoard(CardController cardToMove, SlotController slot)
@@ -236,18 +238,23 @@ public class Player : MonoBehaviour
         }
     }
 
-    protected void SwapCardOnBoard(CardController card1, CardController card2)
+    protected void SwapCardOnBoard(CardController cardToMove, CardController cardSwapped)
     {
-        card1.UpdatePreviousSlot(card2.slotController);
-        card2.UpdatePreviousSlot(card1.previousSlotController);
-        card2.moveJumpHeight = 0.15f;
-        card1.moveJumpHeight = 0.5f;
-        card1.SetCardState(CardController.CardState.onDesk);
-        card1.PlayAnimationCard("IdleAnim");
+        cardToMove.UpdatePreviousSlot(cardSwapped.slotController);
+        cardSwapped.UpdatePreviousSlot(cardToMove.previousSlotController);
+        cardSwapped.moveJumpHeight = 0.15f;
+        cardToMove.moveJumpHeight = 0.5f;
+        cardToMove.SetCardState(CardController.CardState.onDesk);
+        cardToMove.PlayAnimationCard("IdleAnim");
 
-        card2.SetCardState(CardController.CardState.onDesk);
-        
-        UseMana(_gameRules.CardSwapManaCost);
+        cardSwapped.SetCardState(CardController.CardState.onDesk);
+
+        if (cardToMove.HasFreeMovement())
+        {
+            UseMana(_gameRules.CardSwapManaCost);
+        }
+
+        cardToMove.IncreaseMoveCount();
     }
 
     protected void SetCardWaiting(CardController cardController)
