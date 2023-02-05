@@ -15,7 +15,8 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects: []
+    ReferencedUnityObjects:
+    - {fileID: 0}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -29,7 +30,7 @@ MonoBehaviour:
       Data: 1
     - Name: 
       Entry: 7
-      Data: 1|HealEffect, Assembly-CSharp
+      Data: 1|BuffHealth, Assembly-CSharp
     - Name: Target
       Entry: 7
       Data: 2|AdjacentCards, Assembly-CSharp
@@ -37,9 +38,9 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: Owner
-      Entry: 6
-      Data: 
-    - Name: HealAmount
+      Entry: 10
+      Data: 0
+    - Name: Amount
       Entry: 3
       Data: 2
     - Name: 
@@ -75,7 +76,7 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  cardName: Viking
+  cardName: Protector
   cardDescription: Give <b><color=#F01D22>+2 HP </color></b> to nearby allies when
     invoked
   initialManaCost: 3
