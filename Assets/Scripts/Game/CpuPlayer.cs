@@ -390,6 +390,10 @@ public class CpuPlayer : Player
             minimumCardInHand = player.minimumCardInHand;
         
             cardsInHand = player.cardsInHand.ToList();
+            if (player.cardsInDeck.Count <= 0)
+            {
+                Debug.Log(player.cardsInDeck.Count);   
+            }
             cardsInDeck = new Queue<SimulatedCard>(player.cardsInDeck);
             cardsOnBoard = new List<SimulatedCard>(player.cardsOnBoard);
             cardsDiscarded = player.cardsDiscarded.ToList();
@@ -458,13 +462,61 @@ public class CpuPlayer : Player
 
             return playerActions;
         }
+
+        public List<SimulatedSlot> GetPossibleSlot(SimulatedCard cardToMove)
+        {
+            if (cardToMove.cardController.CardScriptable.MovementDescriptionScriptable == null)
+                return null;
+        
+            var columnID = cardToMove.simulatedSlot.columnID;
+
+            var lineOffset = cardToMove.simulatedSlot.isFront ? 0 : 4;
+
+            var lineMaxMovement = cardToMove.cardController.CardScriptable.MovementDescriptionScriptable.MaxMovementLineCount;
+
+            if (lineMaxMovement < 0)
+            {
+                lineMaxMovement = int.MaxValue;
+            }
+
+            var result = new List<SimulatedSlot>();
+            // Left
+            for (int i = columnID - 1, count = 0; i >= 0 && count < lineMaxMovement; i--, count++)
+            {
+                result.Add(simulatedSlots[i + lineOffset]);
+            }
+        
+            // Right
+            for (int i = columnID + 1, count = 0; i < 4 && count < lineMaxMovement; i++, count++)
+            {
+                result.Add(simulatedSlots[i + lineOffset]);
+            }
+
+            if (cardToMove.cardController.CardScriptable.MovementDescriptionScriptable.MaxMovementColumnCount > 0)
+            {
+                if (cardToMove.simulatedSlot.isFront)
+                {
+                    result.Add(simulatedSlots[columnID + 4]);
+                }
+                else
+                {
+                    result.Add(simulatedSlots[columnID]);
+                }
+            }
+
+            return result;
+        }
         
         public List<PlayerAction> GetMoveAndSwapAction()
         {
             var playerActions = new List<PlayerAction>();
-            foreach (var slot in simulatedSlots)
+            
+            foreach (var card in cardsOnBoard)
             {
-                foreach (var card in cardsOnBoard)
+                if(!CanAttack(card)) continue;
+
+                var possibleSlots = GetPossibleSlot(card);
+                foreach (var slot in possibleSlots)
                 {
                     if (slot.HasCard() && CanSwapCard()) // Swap
                     {
@@ -472,15 +524,15 @@ public class CpuPlayer : Player
                         {
                             cardToMove = card,
                             cardToSwap = slot.simulatedCard
-                        }); 
+                        });
                     }
-                    else if(!slot.HasCard() && CanMoveCard()) // Move
+                    else if (!slot.HasCard() && CanMoveCard()) // Move
                     {
                         playerActions.Add(new MovePlayerAction()
                         {
                             cardToMove = card,
                             newSlot = slot
-                        });   
+                        });
                     }
                 }
             }
@@ -836,6 +888,11 @@ public class CpuPlayer : Player
                     cpuWin = false
                 };
                 return finalTurn;
+            }
+            
+            if (turnCount > 199)
+            {
+                return new SimulatedTurn(simulatedHumanNextTurn, simulatedCpuNextTurn, this);
             }
 
             // Debug.Log("Simulate new turns");
