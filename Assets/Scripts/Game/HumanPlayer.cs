@@ -149,7 +149,8 @@ public class HumanPlayer : Player
                  || _slotCardController.CanAttackOtherPlayer()) 
                  && Input.GetMouseButtonDown(0) 
                  && _slotCardController.isInteractible 
-                 && _slotCardController.slotController.PlayerType == EPlayerType.Human)
+                 && _slotCardController.slotController.PlayerType == EPlayerType.Human
+                 && !_slotController.cardController.HasAttacked())
             {
                 _slotCardController.moveToPositon = _slotCardController.transform.localPosition + Vector3.up * 0.25f;
                 _slotCardController.SetCardState(CardController.CardState.isSelected);
@@ -187,8 +188,7 @@ public class HumanPlayer : Player
             if (CanDropCardOnBoard(activeCardController) && !_slotController.containCard && _slotController.PlayerType == EPlayerType.Human)
             {
                 _slotController.SetHovered(true);
-                DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve,
-                    _lineColorDeplacement, activeCardController.cardManaCost);
+                DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorDeplacement, activeCardController.cardManaCost);
 
                 if (Input.GetMouseButtonDown(0))
                 {

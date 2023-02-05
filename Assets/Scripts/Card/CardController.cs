@@ -257,6 +257,10 @@ public class CardController : MonoBehaviour, ITargetable
         return _remainingAttackCharge > 0 && slotController.boardLineType == EBoardLineType.Front;
     }
 
+    public bool HasAttacked()
+    {
+        return _remainingAttackCharge <= 0;
+    }
     
     private void OnDrawGizmos()
     {
