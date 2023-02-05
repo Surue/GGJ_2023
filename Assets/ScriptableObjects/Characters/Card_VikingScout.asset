@@ -58,8 +58,9 @@ MonoBehaviour:
       Entry: 8
       Data: 
   cardName: Viking Scout
-  cardDescription: Can move 2 Slot distance
+  cardDescription: Can move 2 cell away
   initialManaCost: 1
   _attackScriptable: {fileID: 11400000, guid: 50fd5c01f36feea4db576fdc79eedae9, type: 2}
   _movementDescriptionScriptable: {fileID: 11400000, guid: 9d3420e665e71b74da6f0c06dfa6c208, type: 2}
+  IsBig: 0
   initialHealth: 2
