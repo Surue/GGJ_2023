@@ -79,14 +79,7 @@ public class Player : MonoBehaviour
 
         _currentHealth = _gameRules.MaxHealth;
 
-        if (this is CpuPlayer)
-        {
-            _currentMana = 3;
-        }
-        else
-        {
-            _currentMana = _gameRules.InitialMana;
-        }
+        _currentMana = _gameRules.InitialMana;
         _previousManaGain = _currentMana;
 
         foreach (var player in FindObjectsOfType<Player>())
