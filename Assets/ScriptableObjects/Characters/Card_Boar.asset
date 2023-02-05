@@ -60,7 +60,7 @@ MonoBehaviour:
   cardName: Boar
   cardDescription: 
   initialManaCost: 1
-  currentType: 0
-  currentAbilty: 0
   _attackScriptable: {fileID: 11400000, guid: 50fd5c01f36feea4db576fdc79eedae9, type: 2}
+  _movementDescriptionScriptable: {fileID: 11400000, guid: 0084bb0bef187704b84009fc533dffec, type: 2}
+  IsBig: 0
   initialHealth: 3

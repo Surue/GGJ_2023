@@ -60,7 +60,7 @@ MonoBehaviour:
   cardName: Viking
   cardDescription: Gain <b><color=#F01D22>+2 HP </color></b> if near an ally
   initialManaCost: 3
-  currentType: 0
-  currentAbilty: 0
   _attackScriptable: {fileID: 11400000, guid: 9b4ddbaa6e21e1e40beb7ce740fad394, type: 2}
+  _movementDescriptionScriptable: {fileID: 11400000, guid: 0084bb0bef187704b84009fc533dffec, type: 2}
+  IsBig: 0
   initialHealth: 4

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class AllEnemiesCards : TargetCategory, ITargetable
 {
-    public override void TakeDamage(int damage)
+    public override void TakeDamage(int damage, ITargetable owner)
     {
         foreach (var card in GetAllEnemiesCards())
         {
@@ -11,11 +11,11 @@ public class AllEnemiesCards : TargetCategory, ITargetable
         }
     }
 
-    public override void Heal(int healAmount)
+    public override void Heal(int healAmount, ITargetable owner)
     {
         foreach (var card in GetAllEnemiesCards())
         {
-            card.Heal(healAmount);
+            card.Heal(healAmount, owner);
         }
     }
     

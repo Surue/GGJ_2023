@@ -60,7 +60,7 @@ MonoBehaviour:
   cardName: Viking Warrior
   cardDescription: Gain <b> <color=#FFAC00>+2 Att</color></b> if near a Viking
   initialManaCost: 2
-  currentType: 0
-  currentAbilty: 0
   _attackScriptable: {fileID: 11400000, guid: c8c92ac6c2c8f5b4ba6edadc6af04472, type: 2}
+  _movementDescriptionScriptable: {fileID: 11400000, guid: 0084bb0bef187704b84009fc533dffec, type: 2}
+  IsBig: 0
   initialHealth: 3
