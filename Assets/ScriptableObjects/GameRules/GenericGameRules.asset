@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96f2dda0f0fa60b4b890a570efbf4561, type: 3}
   m_Name: GenericGameRules
   m_EditorClassIdentifier: 
-  _maxHealth: 30
+  _maxHealth: 40
   _maxMana: 10
   _initialMana: 3
   _maxCardInHand: 5
