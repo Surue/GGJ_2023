@@ -786,6 +786,8 @@ MonoBehaviour:
   _discardObject: {fileID: 4737758271979231340}
   _selectionObject: {fileID: 4737758271999401799}
   _cardParent: {fileID: 4737758270540763096}
+  _lifeIcon: {fileID: 0}
+  _playerCharacterIllu: {fileID: 0}
   _handSlots:
   - {fileID: 4737758270308257544}
   - {fileID: 4737758271774073676}
@@ -801,6 +803,9 @@ MonoBehaviour:
   - {fileID: 1873260651404088789}
   - {fileID: 1873260651284623422}
   - {fileID: 1873260651118300641}
+  bloodVFXs:
+  - {fileID: 0}
+  - {fileID: 0}
   currentHandState: 0
   attackCurve:
     serializedVersion: 2

@@ -502,6 +502,10 @@ public class CardController : MonoBehaviour, ITargetable
     // Fonction qui Highlight la carte
     public void HighlightCard(Color highlitghtColor)
     {
+        if (glowed)
+            return;
+        
+        glowed = true;
         _highlightRenderer.material.SetColor("_Color", highlitghtColor);
         _highlightRenderer.material.DOFloat(highlightAlphaMax, "_Alpha", 0.3f);
     }
@@ -509,10 +513,18 @@ public class CardController : MonoBehaviour, ITargetable
     // Fonction qui enlève le highlight de la carte
     public void UnHighlightCard()
     {
+        if (!glowed)
+            return;
+        
+        glowed = false;
         _highlightRenderer.material.DOFloat(0, "_Alpha", 0.3f);
     }
     public void UnHighlightCard(float duration)
     {
+        if (!glowed)
+            return;
+
+        glowed = false;
         _highlightRenderer.material.DOFloat(0, "_Alpha", duration);
     }
     #endregion
@@ -553,7 +565,9 @@ public class CardController : MonoBehaviour, ITargetable
     
     [HideInInspector]
     public List<ActiveBuff> ActiveBuffs = new List<ActiveBuff>();
-    
+
+    private bool glowed;
+
     public void AddBuff(BuffEffect buffEffect, ITargetable owner, Action<CardController> action)
     {
         ActiveBuffs.Add(new ActiveBuff(buffEffect, owner));
