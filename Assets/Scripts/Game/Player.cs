@@ -33,6 +33,7 @@ public class Player : MonoBehaviour
     [SerializeField] protected SpriteRenderer _playerCharacterIllu;
     [SerializeField] protected List<GameObject> _handSlots;
     [SerializeField] protected List<SlotController> _boardSlots;
+    public List<SlotController> BoardSlots => _boardSlots;
     
     protected bool _isPlaying;
 
