@@ -60,7 +60,7 @@ MonoBehaviour:
   cardName: Hawk
   cardDescription: Gain <b>1 free move</b> per turn
   initialManaCost: 2
-  currentType: 0
-  currentAbilty: 0
   _attackScriptable: {fileID: 11400000, guid: c8c92ac6c2c8f5b4ba6edadc6af04472, type: 2}
+  _movementDescriptionScriptable: {fileID: 11400000, guid: 08f92e4f2563f104abefc339fbb52aa5, type: 2}
+  IsBig: 0
   initialHealth: 5

@@ -61,6 +61,6 @@ MonoBehaviour:
   cardDescription: 
   initialManaCost: 7
   _attackScriptable: {fileID: 11400000, guid: 1a109f14e0686054ca153ed4fe7734ab, type: 2}
-  _movementDescriptionScriptable: {fileID: 0}
+  _movementDescriptionScriptable: {fileID: 11400000, guid: 0084bb0bef187704b84009fc533dffec, type: 2}
   IsBig: 1
   initialHealth: 15

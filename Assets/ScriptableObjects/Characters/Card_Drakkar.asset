@@ -60,7 +60,7 @@ MonoBehaviour:
   cardName: Drakkar
   cardDescription: Can move on the <b>whole line</b>
   initialManaCost: 6
-  currentType: 0
-  currentAbilty: 0
   _attackScriptable: {fileID: 11400000, guid: dcfa1d123f968a54d92838d70e28a79f, type: 2}
+  _movementDescriptionScriptable: {fileID: 11400000, guid: 9ea5720858c73e4499d0ca7f46d0a089, type: 2}
+  IsBig: 0
   initialHealth: 8
