@@ -23,7 +23,9 @@ public class CardScriptable : SerializedScriptableObject
     // STRING
     [Header("Card Information")]
     public string cardName;
+    [Multiline]
     public string cardDescription;
+
     [Space]
 
     // SPECS

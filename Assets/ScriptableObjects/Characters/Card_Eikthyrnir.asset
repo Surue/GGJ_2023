@@ -58,7 +58,7 @@ MonoBehaviour:
       Entry: 8
       Data: 
   cardName: Eikthyrnir
-  cardDescription: 'Gives +1 Att +2 Health to close allies '
+  cardDescription: Gives +1 Att +2 Health to nearby allies.
   initialManaCost: 4
   currentType: 0
   currentAbilty: 0
