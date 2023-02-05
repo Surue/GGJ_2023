@@ -532,37 +532,73 @@ public class CpuPlayer : Player
                     cardToAttack.Add(defendingCard);   
                 }
                 
-            //     bool TryGetCardFacing(SimulatedPlayer otherPlayer, SimulatedCard cardController, out SimulatedCard result)
-            //     {
-            //         if (cardController.simulatedSlot.isFront)
-            //         {
-            //             result = otherPlayer.simulatedSlots[3 - cardController.simulatedSlot.columnID].simulatedCard;
-            //             return _boardSlots[cardController.slotController.columnID].containCard;
-            //         }
-            //
-            //         result = null;
-            //         return false;
-            //     }
-            //     
-            //     switch (attackingCard.cardController.CardScriptable.AttackScriptable.AttackType)
-            //     {
-            //         case EAttackType.Front:
-            //             if (TryGetCardFacing(attackingCard, out var card))
-            //             {
-            //                 cardToAttack.Add(card);
-            //             }
-            //             break;
-            //         case EAttackType.FrontAndBack:
-            //             cardToAttack.AddRange(GetColumnInFront(attackingCard));
-            //             break;
-            //         case EAttackType.FrontLine:
-            //             cardToAttack.AddRange(_otherPlayer.GetLine(EBoardLineType.Front));
-            //             break;
-            //         case EAttackType.NoAttack:
-            //             break;
-            //         default:
-            //             throw new ArgumentOutOfRangeException();
-            //     }
+                bool TryGetCardFacing(SimulatedCard cardController, out SimulatedCard result)
+                {
+                    if (cardController.simulatedSlot.isFront)
+                    {
+                        var slot = otherPlayer.simulatedSlots[3 - cardController.simulatedSlot.columnID];
+                        result = slot.simulatedCard;
+                        return slot.HasCard();
+                    }
+                
+                    result = null;
+                    return false;
+                }
+
+                List<SimulatedCard> TryGetFrontAndBack(SimulatedCard cardController)
+                {
+                    var result = new List<SimulatedCard>();
+                    
+                    var frontSlot = otherPlayer.simulatedSlots[3 - cardController.simulatedSlot.columnID];
+                    if (frontSlot.HasCard())
+                    {
+                        result.Add(frontSlot.simulatedCard);
+                    }
+                    
+                    var backSlot = otherPlayer.simulatedSlots[3 - cardController.simulatedSlot.columnID + 4];
+                    if (backSlot.HasCard())
+                    {
+                        result.Add(backSlot.simulatedCard);
+                    }
+                    
+                    return result;
+                }
+                
+                List<SimulatedCard> TryGetFrontLine(SimulatedCard cardController)
+                {
+                    var result = new List<SimulatedCard>();
+
+                    for (int i = 0; i < 4; i++)
+                    {
+                        var slot = otherPlayer.simulatedSlots[i];
+                        if (slot.HasCard())
+                        {
+                            result.Add(slot.simulatedCard);
+                        }
+                    }
+                    
+                    return result;
+                }
+                
+                switch (attackingCard.cardController.CardScriptable.AttackScriptable.AttackType)
+                {
+                    case EAttackType.Front:
+                        if (TryGetCardFacing(attackingCard, out var card))
+                        {
+                            cardToAttack.Add(card);
+                        }
+                        break;
+                    case EAttackType.FrontAndBack:
+                        cardToAttack.AddRange(TryGetFrontAndBack(attackingCard));
+                        break;
+                    case EAttackType.FrontLine:
+                        cardToAttack.AddRange(TryGetFrontLine(attackingCard));
+                        break;
+                    case EAttackType.NoAttack:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             }
 
             return hasTarget;
@@ -595,7 +631,7 @@ public class CpuPlayer : Player
 
         public bool CanAttack(SimulatedCard simulatedCard)
         {
-            return simulatedCard.remainingAttackCount > 0 && simulatedCard.simulatedSlot.isFront;
+            return simulatedCard.remainingAttackCount > 0 && simulatedCard.simulatedSlot.isFront && simulatedCard.cardController.CardScriptable.AttackScriptable.AttackType != EAttackType.NoAttack;
         }
 
         public void Attack(SimulatedCard simulatedCard)
