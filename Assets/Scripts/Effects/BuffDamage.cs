@@ -11,7 +11,7 @@ public class BuffDamage : BuffEffect
 
     public override void Execute(ITargetable target)
     {
-        Owner.IncreaseDamage(Amount);
+        target.AddBuff(this, Owner, (x) => {x.IncreaseDamage(Amount);});
     }
     
     public override void Debuff(ITargetable target)
@@ -21,6 +21,6 @@ public class BuffDamage : BuffEffect
 
     public override void Execute()
     {        
-        Owner.AddBuff(this, Owner);
+        Execute(Target);
     }
 }
