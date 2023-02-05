@@ -110,19 +110,19 @@ public class CpuPlayer : Player
             {
                 if (cardsToAttack.Count == 1)
                 {
-                    AttackOtherCard(cardController, cardsToAttack[0]);
+                    StartCoroutine(AttackOtherCard(cardController, cardsToAttack[0]));
                 }
                 else
                 {
                     if (cardController.AttackSingleTarget())
                     {
-                        AttackOtherCard(cardController, cardsToAttack[Random.Range(0, cardsToAttack.Count)]);
+                        StartCoroutine(AttackOtherCard(cardController, cardsToAttack[Random.Range(0, cardsToAttack.Count)]));
                     }
                     else
                     {
                         foreach (var controller in cardsToAttack)
                         {
-                            AttackOtherCard(cardController, controller);
+                            StartCoroutine(AttackOtherCard(cardController, controller));
                         }
                     }
                 }

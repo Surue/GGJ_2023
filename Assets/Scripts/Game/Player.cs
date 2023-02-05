@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public enum EBoardLineType
@@ -75,7 +76,15 @@ public class Player : MonoBehaviour
         _cardsDiscarded = new List<CardController>();
 
         _currentHealth = _gameRules.MaxHealth;
-        _currentMana = _gameRules.InitialMana;
+
+        if (this is CpuPlayer)
+        {
+            _currentMana = 3;
+        }
+        else
+        {
+            _currentMana = _gameRules.InitialMana;
+        }
         _previousManaGain = _currentMana;
 
         foreach (var player in FindObjectsOfType<Player>())
@@ -241,18 +250,64 @@ public class Player : MonoBehaviour
         _otherPlayer.TakeDamage(attackingCard);
     }
 
-    protected void AttackOtherCard(CardController attackingCard, CardController defendingCard)
+
+    public AnimationCurve attackCurve;
+
+    protected IEnumerator AttackOtherCard(CardController attackingCard, CardController defendingCard)
     {
         attackingCard.Attack();
         attackingCard.SetCardState(CardController.CardState.onDesk);
 
-        defendingCard.CardTakeDamage(attackingCard.cardAttack);
+        attackingCard.transform.DOMove(attackingCard.transform.position + Vector3.up, 0.4f)
+            .SetEase(Ease.OutBack)
+            .OnComplete(() =>
+            {
+                var direction = this is CpuPlayer ? -attackingCard.transform.up : attackingCard.transform.up;
+                var endpos = attackingCard.transform.position + (direction * 0.6f);
+                
+                attackingCard.transform.DOLocalMove(endpos, 0.5f)
+                    .SetEase(attackCurve)
+                    .SetDelay(0.3f)
+                    .OnComplete((() =>
+                    {
+                        DOVirtual.DelayedCall(UnityEngine.Random.Range(0.4f,0.6f), (() =>
+                        {
+                            attackingCard.TweenMoveCardOnBoard(attackingCard.slotController);
+                        }));
+                    }));
+            });
+        
 
         bool cardExists = _otherPlayer.TryGetCardInFront(defendingCard, out var result);
         if (defendingCard.slotController.boardLineType == EBoardLineType.Front && cardExists && result == attackingCard)
         {
-            attackingCard.CardTakeDamage(defendingCard.cardAttack);
+            
+            defendingCard.transform.DOMove(defendingCard.transform.position + Vector3.up, 0.4f)
+                .SetEase(Ease.OutBack)
+                .OnComplete(() =>
+                {
+                    var direction = this is CpuPlayer ? defendingCard.transform.up : -defendingCard.transform.up;
+                    var endpos = defendingCard.transform.position + (direction * 0.6f);
+                
+                    defendingCard.transform.DOLocalMove(endpos, 0.5f)
+                        .SetEase(attackCurve)
+                        .SetDelay(0.3f)
+                        .OnComplete((() =>
+                        {
+                            DOVirtual.DelayedCall(UnityEngine.Random.Range(0.4f,0.6f), (() =>
+                            {
+                                defendingCard.TweenMoveCardOnBoard(defendingCard.slotController);
+                            }));
+                        }));
+                });
+            
         }
+        
+        yield return new WaitForSeconds(0.8f);
+        GameObject.Find("CAMERA").transform.DOShakePosition(0.4f, 0.05f, 10);
+        
+        attackingCard.CardTakeDamage(defendingCard.cardAttack);
+        defendingCard.CardTakeDamage(attackingCard.cardAttack);
 
         if (attackingCard.cardHealth <= 0)
         {
@@ -260,18 +315,18 @@ public class Player : MonoBehaviour
             attackingCard.slotController.cardController = null;
 
             attackingCard.slotController = null;
-            
+        
             _cardsOnBoard.Remove(attackingCard);
             _cardsDiscarded.Add(attackingCard);
         }
-        
+    
         if (defendingCard.cardHealth <= 0)
         {
             defendingCard.slotController.containCard = false;
             defendingCard.slotController.cardController = null;
 
             defendingCard.slotController = null;
-            
+        
             _otherPlayer._cardsOnBoard.Remove(defendingCard);
             _otherPlayer._cardsDiscarded.Add(defendingCard);
         }
