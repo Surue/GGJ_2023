@@ -9,6 +9,19 @@ using UnityEngine.Serialization;
 public class CardController : MonoBehaviour, ITargetable
 {
     public EPlayerType Owner;
+    public Player OwnerPlayer
+    {
+        get
+        {
+            if (_ownerPlayer == null)
+            {
+                _ownerPlayer = GameManager.Instance.GetPlayer(Owner);
+            }
+            return _ownerPlayer;
+        }
+    }
+
+    private Player _ownerPlayer;
     
     // --- PUBLIC ---
     // ScriptableObject
@@ -39,8 +52,6 @@ public class CardController : MonoBehaviour, ITargetable
     // --- PUBLIC DEBUG ---
     //STATE PARAMETERS
     [Header("STATE PARAMETERS")]
-    public bool isInteractible = true;
-    public bool isOverride;
     public bool isTweening;
     private Transform _selectionAreaTransform;
     private Transform _discardTransform;
@@ -68,6 +79,8 @@ public class CardController : MonoBehaviour, ITargetable
     private Vector2 _highlightOffset;
 
 
+    public bool isInteractible;
+    
     public ParticleSystem slashVFX;
     
     // Attack
@@ -121,6 +134,8 @@ public class CardController : MonoBehaviour, ITargetable
 
     private void Update()
     {
+        UpdateGlow();
+        
         isTweening = DOTween.IsTweening(transform);
         //Anim la texture de highlight
         _highlightOffset = _highlightRenderer.material.GetTextureOffset("_FadeTex");
@@ -242,6 +257,10 @@ public class CardController : MonoBehaviour, ITargetable
         return _remainingAttackCharge > 0 && slotController.boardLineType == EBoardLineType.Front;
     }
 
+    public bool HasAttacked()
+    {
+        return _remainingAttackCharge <= 0;
+    }
     
     private void OnDrawGizmos()
     {
@@ -272,8 +291,27 @@ public class CardController : MonoBehaviour, ITargetable
     
     private void OnInHandState()
     {
+        UpdateGlow();
+        //Remet la carte a sa place
+        //TweenMoveCard(_handSlotTransform.position, _handSlotTransform.rotation, 0.18f, MoveType.simpleMoveRotate);
+    }
+
+    public void UpdateGlow()
+    {
+        if (currentCardState == CardState.inDeck)
+        {
+            UnHighlightCard();
+            return;
+        }   
+        
+        if (Owner == EPlayerType.CPU)
+        {
+            UnHighlightCard();
+            return;
+        }
+        
         //Highlight la carte de base
-        if (isInteractible)
+        if (OwnerPlayer.CurrentMana >= _cardScriptable.initialManaCost)
         {
             HighlightCard(Color.white);
         }
@@ -281,8 +319,6 @@ public class CardController : MonoBehaviour, ITargetable
         {
             UnHighlightCard();
         }
-        //Remet la carte a sa place
-        //TweenMoveCard(_handSlotTransform.position, _handSlotTransform.rotation, 0.18f, MoveType.simpleMoveRotate);
     }
 
     private void OnIsOverrideState()
