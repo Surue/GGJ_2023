@@ -67,6 +67,8 @@ public class CpuPlayer : Player
             {
                 var cardController = invokeCardPlayerAction.cardToInvoke.cardController;
                 
+                if(_currentMana - cardController.cardManaCost < 0) continue;
+
                 SetCardWaiting(cardController);
 
                 yield return null;
@@ -99,6 +101,8 @@ public class CpuPlayer : Player
                 var cardController = movePlayerAction.cardToMove.cardController;
                 var slot = movePlayerAction.newSlot.slotController;
                 
+                if(_currentMana - 1 < 0) continue;
+                
                 MoveCardOnBoard(cardController, slot);
 
                 yield return null;
@@ -113,6 +117,8 @@ public class CpuPlayer : Player
             {
                 var cardToMove = swapCardsPlayerAction.cardToMove.cardController;
                 var cardToSwap = swapCardsPlayerAction.cardToSwap.cardController;
+                
+                if(_currentMana - 1 < 0) continue;
                 
                 SwapCardOnBoard(cardToMove, cardToSwap);
 
