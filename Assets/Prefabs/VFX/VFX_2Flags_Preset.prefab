@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9019066791973838475}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: VFX_2Flags_Preset
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 3516794496444241179}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4.58, y: -0.19, z: 1.48}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2.2728, y: 2.2728, z: 2.2728}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7482141892657421084}
@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 7482141892657421083}
   - component: {fileID: 7482141892657421082}
   - component: {fileID: 7482141892657421081}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: FlagPole
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -145,7 +145,7 @@ GameObject:
   - component: {fileID: 7482141892697699436}
   - component: {fileID: 7482141892697699435}
   - component: {fileID: 7482141892697699434}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: FlagCloth
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -255,8 +255,8 @@ Cloth:
   m_UseTethers: 1
   m_UseGravity: 1
   m_Damping: 0
-  m_ExternalAcceleration: {x: 40, y: 5, z: 20}
-  m_RandomAcceleration: {x: 20, y: 0, z: 0}
+  m_ExternalAcceleration: {x: 15, y: 5, z: 20}
+  m_RandomAcceleration: {x: 2, y: 2, z: 2}
   m_WorldVelocityScale: 0.5
   m_WorldAccelerationScale: 1
   m_Friction: 0.5
@@ -531,7 +531,7 @@ GameObject:
   - component: {fileID: 7482141893203937355}
   - component: {fileID: 7482141893203937354}
   - component: {fileID: 7482141893203937353}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: FlagCloth
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -916,13 +916,13 @@ GameObject:
   - component: {fileID: 7482141893245395166}
   - component: {fileID: 7482141893245395165}
   - component: {fileID: 7482141893245395164}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SmallFlag
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7482141893245395167
 Transform:
   m_ObjectHideFlags: 0
@@ -931,7 +931,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7482141893245395163}
   m_LocalRotation: {x: -0, y: -0, z: -0.03492245, w: 0.99939007}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.09, y: -0.01, z: 0.04}
   m_LocalScale: {x: 0.056665603, y: 1.41664, z: 0.0566656}
   m_ConstrainProportionsScale: 0
   m_Children:
