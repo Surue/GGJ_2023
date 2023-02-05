@@ -1,12 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
-public enum MovementType
-{
-    Adjacent,
-    FullBoard,
-}
 
 [CreateAssetMenu(fileName = "NewMovementDescription", menuName = "ScriptableObjects/Movement Description")]
 public class MovementDescriptionScriptable : ScriptableObject
