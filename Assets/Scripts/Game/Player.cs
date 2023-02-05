@@ -209,6 +209,11 @@ public class Player : MonoBehaviour
 
     protected void DropCardOnBoard(CardController cardToMove, SlotController slot)
     {
+        foreach (var boardSlot in _boardSlots)
+        {
+            boardSlot.SetHighlighted(false);
+        }
+        
         cardToMove.UpdatePreviousSlot(slot);
 
         cardToMove.SetCardState(CardController.CardState.onDesk);
