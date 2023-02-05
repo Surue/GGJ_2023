@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 public class AllEnemiesCards : TargetCategory, ITargetable
 {
     public override void TakeDamage(int damage)
     {
-        foreach (var card in GetAllEnemies())
+        foreach (var card in GetAllEnemiesCards())
         {
             card.CardTakeDamage(damage);
         }
@@ -12,14 +13,29 @@ public class AllEnemiesCards : TargetCategory, ITargetable
 
     public override void Heal(int healAmount)
     {
-        var allEnemies = GetAllEnemies();
-        foreach (var enemy in allEnemies)
+        foreach (var card in GetAllEnemiesCards())
         {
-            enemy.Heal(healAmount);
+            card.Heal(healAmount);
         }
     }
     
-    public List<CardController> GetAllEnemies()
+    public override void AddBuff(BuffEffect buffEffect, ITargetable owner, Action<CardController> act)
+    {
+        foreach (var card in GetAllEnemiesCards())
+        {
+            if (card == (CardController)owner)
+            {
+                continue;
+            }
+            else
+            {
+                act(card);
+                card.AddBuff(buffEffect, owner, act);
+            }
+        }
+    }
+    
+    public List<CardController> GetAllEnemiesCards()
     {
         return GameManager.Instance.EnemyPlayer.CardsOnBoard;
     }

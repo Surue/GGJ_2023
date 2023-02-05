@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 public class AllSelfCards : TargetCategory, ITargetable
 {
@@ -16,6 +17,23 @@ public class AllSelfCards : TargetCategory, ITargetable
         foreach (var enemy in allEnemies)
         {
             enemy.Heal(healAmount);
+        }
+    }
+    
+    public override void AddBuff(BuffEffect buffEffect, ITargetable owner, Action<CardController> act)
+    {
+        var cards = GetAllCards();
+        foreach (var card in cards)
+        {
+            if (card == (CardController)owner)
+            {
+                continue;
+            }
+            else
+            {
+                act(card);
+                card.AddBuff(buffEffect, owner, act);
+            }
         }
     }
     

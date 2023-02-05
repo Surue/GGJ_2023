@@ -496,9 +496,8 @@ public class CardController : MonoBehaviour, ITargetable
     [HideInInspector]
     public List<ActiveBuff> ActiveBuffs = new List<ActiveBuff>();
     
-    public void AddBuff(BuffEffect buffEffect, ITargetable owner)
+    public void AddBuff(BuffEffect buffEffect, ITargetable owner, Action<CardController> action)
     {
-        buffEffect.Execute(this);
         ActiveBuffs.Add(new ActiveBuff(buffEffect, owner));
     }
 
