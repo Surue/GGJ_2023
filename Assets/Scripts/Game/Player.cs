@@ -26,6 +26,7 @@ public class Player : MonoBehaviour
     [SerializeField] protected GameObject _discardObject;
     [SerializeField] protected GameObject _selectionObject;
     [SerializeField] protected GameObject _cardParent;
+    [SerializeField] protected GameObject _lifeIcon;
     [SerializeField] protected List<GameObject> _handSlots;
     [SerializeField] protected List<SlotController> _boardSlots;
     
@@ -163,8 +164,11 @@ public class Player : MonoBehaviour
     {
         _currentHealth -= attackingCard.cardAttack;
         OnHealthChanged(_currentHealth, _gameRules.MaxHealth);
-        
-        if(_currentHealth <= 0)
+
+        _lifeIcon.transform.DOScale(transform.localScale * 1.15f, 0.25f).SetEase(EaseExtensions.FadeInFadeOutCurve);
+
+
+        if (_currentHealth <= 0)
         {
             GameManager.Instance.PlayerDeath(_playerType);
             _isPlaying = false;

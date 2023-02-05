@@ -18,7 +18,8 @@ public class HumanPlayer : Player
     [SerializeField] private Color _lineColorDeplacement;
     [SerializeField] private Color _lineColorAttack;
     [SerializeField] private Color _lineColorNeutral;
-    
+    [SerializeField] private Transform _CPUCardTransform;
+
     // Raycast
     private RaycastHit _hit;
     private Transform _cardTransform;
@@ -328,7 +329,7 @@ public class HumanPlayer : Player
         }
         else if (layerHitName == "AttackZone" && _slotCardController.CanAttackOtherPlayer() && !TryGetCardInFront(_slotCardController, out var _)) // Attack player
         {
-            DrawMovementLine(_cardTransform.position, _hit.point, _offsetYCurve, _lineColorAttack, _slotCardController.cardAttack);
+            DrawMovementLine(_cardTransform.position, _CPUCardTransform.position, _offsetYCurve, _lineColorAttack, _slotCardController.cardAttack);
             
             // TODO Check line of attack
             if (Input.GetMouseButtonDown(0)) 

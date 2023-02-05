@@ -930,7 +930,7 @@ GameObject:
   - component: {fileID: 499051034}
   - component: {fileID: 499051035}
   m_Layer: 3
-  m_Name: PlayerCard (1)
+  m_Name: CPUCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2228,7 +2228,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh249210
+  m_Name: pb_Mesh306252
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -2403,7 +2403,7 @@ GameObject:
   - component: {fileID: 967670382}
   - component: {fileID: 967670381}
   m_Layer: 3
-  m_Name: PlayerCard
+  m_Name: CPUCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6352,6 +6352,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CPU
       objectReference: {fileID: 0}
+    - target: {fileID: 4737758271955670831, guid: 6c4e05a5d2a1df348a8a2e96b2dbb947, type: 3}
+      propertyPath: _lifeIcon
+      value: 
+      objectReference: {fileID: 661012746}
     - target: {fileID: 4737758271979231347, guid: 6c4e05a5d2a1df348a8a2e96b2dbb947, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.9700003
@@ -6539,6 +6543,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6252410726464767105, guid: c1de8bbcf491dec4488c8f1edccba256, type: 3}
+      propertyPath: _lifeIcon
+      value: 
+      objectReference: {fileID: 2045331194}
+    - target: {fileID: 6252410726464767105, guid: c1de8bbcf491dec4488c8f1edccba256, type: 3}
+      propertyPath: _CPUCardTransform
+      value: 
+      objectReference: {fileID: 967670380}
     - target: {fileID: 6252410726464767135, guid: c1de8bbcf491dec4488c8f1edccba256, type: 3}
       propertyPath: m_Name
       value: Human
