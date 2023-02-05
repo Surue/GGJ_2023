@@ -73,56 +73,15 @@ public class MainUI : MonoBehaviour
 
     private IEnumerator DisplayEndGameScreen(EPlayerType winningPlayerType)
     {
-        _panel.SetActive(true);
+        _textTurnTransition.SetText(winningPlayerType == EPlayerType.Human ? "You won!" : "You lose...");
         
-        _textTurnTransition.SetText("");
-
-        float timer = 0;
-
-        Color currentColor = Color.black;
-
-        while (timer < _timeFadeTurnTransition)
+        canvasGroup.gameObject.SetActive(true);
+        canvasGroup.DOFade(1f, _timeFadeTurnTransition);
+        yield return new WaitForSeconds(2.5f);
+        canvasGroup.DOFade(0f, _timeFadeTurnTransition*1.5f).OnComplete(() =>
         {
-            timer += Time.deltaTime;
-            currentColor = _imageTurnTransition.color;
-            currentColor.a = timer;
-            _imageTurnTransition.color = currentColor;
-            yield return null;
-        }
-
-        currentColor.a = 1;
-        _imageTurnTransition.color = currentColor;
-        
-        
-        switch (winningPlayerType)
-        {
-            case EPlayerType.Human:
-                _textTurnTransition.SetText("You Win");
-                break;
-            case EPlayerType.CPU:
-                _textTurnTransition.SetText("Bah alors Martin, on est un looser?");
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(winningPlayerType), winningPlayerType, null);
-        }
-
-        yield return new WaitForSeconds(_timeOnScreenTurnTransition);
-        
-        _textTurnTransition.SetText("");
-        
-        timer = 0;
-        while (timer < _timeFadeTurnTransition)
-        {
-            timer += Time.deltaTime;
-            currentColor = _imageTurnTransition.color;
-            currentColor.a = 1 - timer;
-            _imageTurnTransition.color = currentColor;
-            yield return null;
-        }
-        
-        currentColor.a = 0;
-        _imageTurnTransition.color = currentColor;
-        _panel.SetActive(false);
+            canvasGroup.gameObject.SetActive(false);
+        });
     }
 
     private void OnHumanStartTurn()
