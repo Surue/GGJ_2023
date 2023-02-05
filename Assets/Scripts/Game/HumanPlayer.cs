@@ -19,6 +19,7 @@ public class HumanPlayer : Player
     [SerializeField] private Color _lineColorAttack;
     [SerializeField] private Color _lineColorNeutral;
     [SerializeField] private Transform _CPUCardTransform;
+    [SerializeField] private SpriteRenderer _lineCrossHair;
 
     // Raycast
     private RaycastHit _hit;
@@ -282,7 +283,8 @@ public class HumanPlayer : Player
                     
                         _lineRenderer.enabled = false;
                         _lineIconRenderer.gameObject.SetActive(false);
-                        
+                        _lineCrossHair.gameObject.SetActive(false);
+
                         _slotController.SetHovered(false);
                         
                         foreach (var boardSlot in _boardSlots)
@@ -320,6 +322,7 @@ public class HumanPlayer : Player
 
                         _lineRenderer.enabled = false;
                         _lineIconRenderer.gameObject.SetActive(false);
+                        _lineCrossHair.gameObject.SetActive(false);
                     }
                 }
                 else
@@ -343,6 +346,7 @@ public class HumanPlayer : Player
                 
                         _lineRenderer.enabled = false;
                         _lineIconRenderer.gameObject.SetActive(false);
+                        _lineCrossHair.gameObject.SetActive(false);
                     }
                 }
                 else if(!_slotCardController.AttackSingleTarget()) // Target multiple cards
@@ -359,6 +363,7 @@ public class HumanPlayer : Player
                 
                         _lineRenderer.enabled = false;
                         _lineIconRenderer.gameObject.SetActive(false);
+                        _lineCrossHair.gameObject.SetActive(false);
                     }
                 }
                 else
@@ -385,6 +390,7 @@ public class HumanPlayer : Player
                     
                 _lineRenderer.enabled = false;
                 _lineIconRenderer.gameObject.SetActive(false);
+                _lineCrossHair.gameObject.SetActive(false);
             }
         }
         else
@@ -410,7 +416,7 @@ public class HumanPlayer : Player
     private void DrawMovementLine(Vector3 startPos, Vector3 endPos, float offsetY, Color lineColor, int value)
     {
         lineTargetEndPos = endPos;
-        
+
         //Modifie la couleur du line Renderer
         _lineRenderer.material.SetColor("_DotColor", lineColor);
         _lineIconRenderer.color = lineColor;
@@ -418,6 +424,11 @@ public class HumanPlayer : Player
         _lineRenderer.enabled = true;
         //Set le nombre de points du line renderer
         _lineRenderer.positionCount = 15;
+
+        _lineCrossHair.gameObject.SetActive(true);
+        _lineCrossHair.transform.position = lineCurrentEndPos;
+        _lineCrossHair.color = lineColor;
+
 
         if (lineColor != _lineColorAttack)
         {
@@ -460,6 +471,7 @@ public class HumanPlayer : Player
     {
         _lineRenderer.enabled = false;
         _lineIconRenderer.gameObject.SetActive(false);
+        _lineCrossHair.gameObject.SetActive(false);
     }
     
     private string CheckRaycastHit()

@@ -59,7 +59,8 @@ MonoBehaviour:
       Data: 
   cardName: Magic Rock
   cardDescription: Can't Attack
-  initialManaCost: 4
+  initialManaCost: 3
   _attackScriptable: {fileID: 11400000, guid: f4b4f5d3fbf96f042b40550bc37dabe1, type: 2}
   _movementDescriptionScriptable: {fileID: 11400000, guid: 0084bb0bef187704b84009fc533dffec, type: 2}
+  IsBig: 0
   initialHealth: 16

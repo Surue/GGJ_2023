@@ -15,7 +15,8 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects: []
+    ReferencedUnityObjects:
+    - {fileID: 0}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -37,8 +38,8 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: Owner
-      Entry: 6
-      Data: 
+      Entry: 10
+      Data: 0
     - Name: OverrideDescription
       Entry: 5
       Data: false
@@ -88,4 +89,4 @@ MonoBehaviour:
   _attackScriptable: {fileID: 11400000, guid: bffcf0f6a28f8354caa5ebd156c5f66f, type: 2}
   _movementDescriptionScriptable: {fileID: 11400000, guid: 0084bb0bef187704b84009fc533dffec, type: 2}
   IsBig: 1
-  initialHealth: 10
+  initialHealth: 11

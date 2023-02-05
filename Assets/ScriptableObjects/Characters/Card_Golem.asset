@@ -58,9 +58,9 @@ MonoBehaviour:
       Entry: 8
       Data: 
   cardName: Golem
-  cardDescription: 
-  initialManaCost: 7
-  _attackScriptable: {fileID: 11400000, guid: 1a109f14e0686054ca153ed4fe7734ab, type: 2}
+  cardDescription: Can attack twice per turn
+  initialManaCost: 8
+  _attackScriptable: {fileID: 11400000, guid: 95bed521c062e9b41bc1dc71349633ac, type: 2}
   _movementDescriptionScriptable: {fileID: 11400000, guid: 0084bb0bef187704b84009fc533dffec, type: 2}
   IsBig: 1
-  initialHealth: 15
+  initialHealth: 7
