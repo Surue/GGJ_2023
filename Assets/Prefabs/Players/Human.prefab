@@ -937,7 +937,39 @@ MonoBehaviour:
   - {fileID: 1046463237943504824}
   - {fileID: 1046463238226510815}
   currentHandState: 0
-  _lineIcon: {fileID: 6252410725100379906}
+  attackCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: -5.5072017
+      outSlope: -5.5072017
+      tangentMode: 0
+      weightedMode: 3
+      inWeight: 0
+      outWeight: 0.36308187
+    - serializedVersion: 3
+      time: 0.37219238
+      value: 1.0389252
+      inSlope: 0.02887499
+      outSlope: 0.02887499
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.13797319
+    - serializedVersion: 3
+      time: 1.001648
+      value: 0
+      inSlope: 0.17576794
+      outSlope: 0.17576794
+      tangentMode: 0
+      weightedMode: 3
+      inWeight: 0.90603846
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   _lineIconRenderer: {fileID: 6252410725100379908}
   _lineRenderer: {fileID: 6252410726464767106}
   _iconText: {fileID: 4146783033854525038}
@@ -960,6 +992,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8a95d2a02fbcf42bf7f1437a65adb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _humanPlayer: {fileID: 0}
+  cardInfoTransform: {fileID: 0}
+  cardDisplay: {fileID: 0}
 --- !u!120 &6252410726464767106
 LineRenderer:
   m_ObjectHideFlags: 0

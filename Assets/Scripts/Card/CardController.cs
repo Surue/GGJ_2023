@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using MiniTools.BetterGizmos;
 using UnityEngine.Rendering;
 using UnityEngine.Serialization;
 
@@ -236,6 +237,16 @@ public class CardController : MonoBehaviour, ITargetable
         return _remainingAttackCharge > 0 && slotController.boardLineType == EBoardLineType.Front;
     }
 
+    
+    private void OnDrawGizmos()
+    {
+        var direction = Owner == EPlayerType.CPU ? -transform.up : transform.up;
+
+        var endpos = transform.position + direction * 1.2f;
+        
+        BetterGizmos.DrawArrow(Color.blue, transform.position, endpos, Vector3.up, 0.2f);
+    }
+    
     public void Attack()
     {
         _remainingAttackCharge--;
@@ -319,10 +330,11 @@ public class CardController : MonoBehaviour, ITargetable
     #endregion
 
     #region MOVEMENTS
-    public void TweenMoveCardOnBoard(SlotController slotController)
+    public void TweenMoveCardOnBoard(SlotController slot)
     {
+        var jumpHeight = (slot == previousSlotController) || (previousSlotController == null) ? 0 : 1.2f;
         DOTween.Kill(transform);
-        transform.DOLocalJump(slotController.transform.position, 1.2f, 1, 0.4f).SetEase(Ease.InOutSine).OnComplete(() =>
+        transform.DOLocalJump(slot.transform.position, jumpHeight, 1, 0.4f).SetEase(Ease.InOutSine).OnComplete(() =>
         {
             RefreshInteractionCheck();
             // GameObject.Find("CAMERA").transform.DOShakePosition(0.4f, 0.05f, 10);

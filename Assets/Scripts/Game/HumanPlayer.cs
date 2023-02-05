@@ -256,7 +256,7 @@ public class HumanPlayer : Player
                     {
                         currentHandState = HandState.Free;
                 
-                        AttackOtherCard(_slotCardController, _targetCardController);
+                        StartCoroutine(AttackOtherCard(_slotCardController, _targetCardController));
                 
                         _lineRenderer.enabled = false;
                         _lineIconRenderer.gameObject.SetActive(false);
@@ -271,7 +271,7 @@ public class HumanPlayer : Player
 
                         foreach (var cardController in GetPossibleCardToAttack(_slotCardController))
                         {
-                            AttackOtherCard(_slotCardController, cardController);
+                            StartCoroutine(AttackOtherCard(_slotCardController, cardController));
                         }
                 
                         _lineRenderer.enabled = false;
@@ -328,8 +328,15 @@ public class HumanPlayer : Player
         //Set le nombre de points du line renderer
         _lineRenderer.positionCount = 15;
 
-        var currentMana = GameManager.Instance.GetPlayer(EPlayerType.Human).CurrentMana;
-        _iconText.color = value > currentMana ? Color.red : Color.white;
+        if (lineColor != _lineColorAttack)
+        {
+            var currentMana = GameManager.Instance.GetPlayer(EPlayerType.Human).CurrentMana;
+            _iconText.color = value > currentMana ? Color.red : Color.white;
+        }
+        else
+        {
+            _iconText.color = Color.white;
+        }
 
         _iconText.SetText(value == -1 ? "":value.ToString());
 
