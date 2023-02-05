@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -19,9 +20,8 @@ public class GenericButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
     }
 
     public Animator animator => GetComponent<Animator>();
-    private readonly int pressedID = Animator.StringToHash("pressed");
-    private readonly int normalID = Animator.StringToHash("normal");
-    private readonly int interactableID = Animator.StringToHash("interactable");
+    private readonly int pressedID = Animator.StringToHash("Clicked");
+    private readonly int normalID = Animator.StringToHash("Released");
 
     private bool isInButton;
 
@@ -45,12 +45,6 @@ public class GenericButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
             return;
 
         animator.SetTrigger(normalID);
-    }
-
-    public virtual void SetInteractable(bool value)
-    {
-        button.interactable = value;
-        animator.SetBool(interactableID, value);
     }
 
     public void SetAnimator(Animator animator, RuntimeAnimatorController controller)
