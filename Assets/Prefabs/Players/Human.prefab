@@ -921,6 +921,8 @@ MonoBehaviour:
   _discardObject: {fileID: 6252410725183325273}
   _selectionObject: {fileID: 6252410727155716011}
   _cardParent: {fileID: 6252410726140323544}
+  _lifeIcon: {fileID: 0}
+  _playerCharacterIllu: {fileID: 0}
   _handSlots:
   - {fileID: 6252410726581115101}
   - {fileID: 6252410726316105960}
@@ -936,6 +938,7 @@ MonoBehaviour:
   - {fileID: 1046463237165712760}
   - {fileID: 1046463237943504824}
   - {fileID: 1046463238226510815}
+  bloodVFXs: []
   currentHandState: 0
   attackCurve:
     serializedVersion: 2
@@ -979,7 +982,9 @@ MonoBehaviour:
   _lineColorDeplacement: {r: 0, g: 0.5294118, b: 0.83137256, a: 1}
   _lineColorAttack: {r: 1, g: 0.67058825, b: 0.05882353, a: 1}
   _lineColorNeutral: {r: 0.5294118, g: 0.5294118, b: 0.5294118, a: 1}
+  _CPUCardTransform: {fileID: 0}
   lineLerpSpeed: 18
+  hurtVignet: {fileID: 0}
 --- !u!114 &2447317999179322112
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1782,6 +1787,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6252410725389308007}
     m_Modifications:
+    - target: {fileID: 1628363635564398768, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6359309897482650565, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
+      propertyPath: buffParticle
+      value: 
+      objectReference: {fileID: 4637610804897688441}
+    - target: {fileID: 6359309897482650565, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
+      propertyPath: healParticle
+      value: 
+      objectReference: {fileID: 5341633810912566792}
     - target: {fileID: 6359309897482650585, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
       propertyPath: m_Name
       value: BoardSlot (0)
@@ -1846,6 +1863,16 @@ MonoBehaviour:
 --- !u!4 &1046463238052388882 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6359309897482650587, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
+  m_PrefabInstance: {fileID: 6252410726762832841}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &4637610804897688441 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 1628363635564398768, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
+  m_PrefabInstance: {fileID: 6252410726762832841}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &5341633810912566792 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 2081874465198882241, guid: 98069aac1285c4547b2179dc1c58761a, type: 3}
   m_PrefabInstance: {fileID: 6252410726762832841}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6252410726936952858

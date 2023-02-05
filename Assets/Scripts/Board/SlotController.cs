@@ -19,7 +19,8 @@ public class SlotController : MonoBehaviour
     public Transform facingCard = null;
 
     public List<ParticleSystem> particles;
-    public List<ParticleSystem> particles2;
+    public ParticleSystem healParticle;
+    public ParticleSystem buffParticle;
     
     // --- PRIVATE ---
     public CardController cardController;
@@ -45,7 +46,13 @@ public class SlotController : MonoBehaviour
 
     public void SetHighlighted(bool enabled)
     {
+        spriteRenderer.DOFade(enabled ? 0.8f : 0.1f, 0.4f);
         highlight.SetActive(enabled);
+
+        if (enabled)
+        {
+            highlight.GetComponent<MeshRenderer>().material.SetFloat("_GlobalAlpha", containCard ? 1f : 0.39f);
+        }
     }
     
     void OnDrawGizmosSelected()
@@ -90,15 +97,5 @@ public class SlotController : MonoBehaviour
     public void PlayRandomSmokeParticle()
     {
         particles.GetElementAtRandomIndex().Play();
-        return;
-        
-        if (cardController.CardScriptable.IsBig)
-        {
-            particles2.GetElementAtRandomIndex().Play();
-        }
-        else
-        {
-            particles.GetElementAtRandomIndex().Play();
-        }
     }
 }

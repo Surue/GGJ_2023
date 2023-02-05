@@ -173,7 +173,6 @@ public class Player : MonoBehaviour
         _currentHealth -= attackingCard.cardAttack;
         OnHealthChanged(_currentHealth, _gameRules.MaxHealth);
 
-        
         _lifeIcon.transform.DOScale(transform.localScale * 1.35f, 0.25f).SetEase(EaseExtensions.FadeInFadeOutCurve);
         _playerCharacterIllu.DOColor(Color.red, 0.25f).SetEase(EaseExtensions.FadeInFadeOutCurve).From(Color.white);
         bloodVFXs.GetElementAtRandomIndex().Play();
@@ -294,12 +293,12 @@ public class Player : MonoBehaviour
         _cardsOnBoard.Add(cardToMove);
 
         UseMana(cardToMove.cardManaCost);
-
-        foreach (var effect in cardToMove.CardScriptable.EffectsOnInvoke)
-        {
-            effect.Owner = cardToMove;
-            effect.Execute();
-        }
+        //
+        // foreach (var effect in cardToMove.CardScriptable.EffectsOnInvoke)
+        // {
+        //     effect.Owner = cardToMove;
+        //     effect.Execute();
+        // }
     }
 
     protected void SwapCardOnBoard(CardController cardToMove, CardController cardSwapped)
@@ -326,7 +325,7 @@ public class Player : MonoBehaviour
         cardController.SetCardState(CardController.CardState.isWaiting);
         cardController.PlayAnimationCard("ActiveAnim");
         currentHandState = HandState.CardSelectedInHand;
-
+        
         cardController.sortingGroup.sortingOrder = 999;
     }
 
