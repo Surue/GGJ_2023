@@ -18,8 +18,8 @@ public class SlotController : MonoBehaviour
     public Vector3 slotSize;
     public Transform facingCard = null;
 
-    [SerializeField] private ParticleSystem particleExplo;
     public List<ParticleSystem> particles;
+    public List<ParticleSystem> particles2;
     
     // --- PRIVATE ---
     public CardController cardController;
@@ -89,9 +89,12 @@ public class SlotController : MonoBehaviour
 
     public void PlayRandomSmokeParticle()
     {
+        particles.GetElementAtRandomIndex().Play();
+        return;
+        
         if (cardController.CardScriptable.IsBig)
         {
-            particleExplo.Play();
+            particles2.GetElementAtRandomIndex().Play();
         }
         else
         {

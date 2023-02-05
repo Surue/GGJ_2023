@@ -190,6 +190,9 @@ public class Player : MonoBehaviour
 
     protected List<SlotController> GetSlotPossibleToMoveTo(CardController cardToMove)
     {
+        if (cardToMove.CardScriptable.MovementDescriptionScriptable == null)
+            return null;
+        
         var columnID = cardToMove.slotController.columnID;
 
         var lineOffset = cardToMove.slotController.boardLineType == EBoardLineType.Front ? 0 : 4;
@@ -412,6 +415,8 @@ public class Player : MonoBehaviour
         
         yield return new WaitForSeconds(0.8f);
         GameObject.Find("CAMERA").transform.DOShakePosition(0.4f, 0.05f, 10);
+        attackingCard.PlaySlashVFX();
+        defendingCard.PlaySlashVFX();
         
         attackingCard.CardTakeDamage(defendingCard.cardAttack);
         defendingCard.CardTakeDamage(attackingCard.cardAttack);

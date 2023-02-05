@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class CpuPlayer : Player
@@ -81,6 +82,14 @@ public class CpuPlayer : Player
             {
                 yield return null;
             }
+            
+            // random wait time
+            float timer = Random.Range(0.5f, 1.5f);
+            while (timer > 0)
+            {
+                timer -= Time.deltaTime;
+                yield return null;
+            }
 
             var freeSlot = freeSlots[Random.Range(0, freeSlots.Count)];
             freeSlots.Remove(freeSlot);
@@ -149,8 +158,42 @@ public class CpuPlayer : Player
         
         GameManager.Instance.NextTurn();
     }
+    
+    #region Game Simulation
 
-    #region AI
+    private float _maxTComputationTime = 10.0f;
+
+    private class SimulatedPlayer
+    {
+        public int health;
+    }
+    
+    private class GameStatus
+    {
+        // Tree
+        public GameStatus parentStatus;
+        public List<GameStatus> childStatus = new();
+        
+        // Values
+        public SimulatedPlayer humanPlayer;
+        public SimulatedPlayer cpuPlayer;
+        
+
+        // Utilities
+        public bool IsWinner()
+        {
+            return humanPlayer.health < 0;
+        }
+    }
+    
+    private IEnumerator SimulateGames()
+    {
+        yield return null;
+    }
+    
+    #endregion
+
+    #region AI Utilities
 
     private List<CardController> GetCardsToInvoke(int freeSlotCount)
     {

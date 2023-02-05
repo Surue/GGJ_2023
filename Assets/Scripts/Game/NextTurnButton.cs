@@ -17,7 +17,6 @@ public class NextTurnButton : GenericButton
     {
         GameManager.Instance.onHumanTurnStarted -= OnHumanTurnStarted;
         GameManager.Instance.onHumanTurnFinished -= OnHumanTurnFinished;
-
     }
 
     private void OnHumanTurnFinished()

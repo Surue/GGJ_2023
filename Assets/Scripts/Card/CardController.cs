@@ -66,6 +66,9 @@ public class CardController : MonoBehaviour, ITargetable
     private Renderer _highlightRenderer;
     private Vector2 _highlightOffset;
 
+
+    public ParticleSystem slashVFX;
+    
     // Attack
     private int _remainingAttackCharge;
     private int _maxAttackCharge;
@@ -556,5 +559,14 @@ public class CardController : MonoBehaviour, ITargetable
     public bool HasFreeMovement()
     {
         return _movementThisTurnCount < _cardScriptable.MovementDescriptionScriptable.FreeMovementCount;
+    }
+
+    public void PlaySlashVFX()
+    {
+        if (Owner == EPlayerType.CPU)
+        {
+            slashVFX.transform.localScale = slashVFX.transform.localScale.x * new Vector3(-1, 1, 1);
+        }
+        slashVFX.Play();
     }
 }

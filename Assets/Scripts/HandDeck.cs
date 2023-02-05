@@ -50,6 +50,9 @@ public class HandDeck : MonoBehaviour
 
     public void CalcAlign(int index, int cardCount)
     {
+        if (cardCount == 1)
+            cardCount = 2;
+        
         float alignResult = index / (cardCount - 1.0f);
         float rotZ = Mathf.Lerp(cardCount * zRot, cardCount * -zRot, alignResult);
         float xPos = Mathf.Lerp(cardCount * -xOffset, cardCount * xOffset, alignResult);
