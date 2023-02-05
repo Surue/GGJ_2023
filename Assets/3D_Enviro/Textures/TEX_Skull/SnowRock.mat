@@ -36,8 +36,9 @@ Material:
     - _NormalStrenght: 0.0386
     - _SnowIntensity: 0.65
     m_Colors:
-    - _SnowColor: {r: 1, g: 1, b: 1, a: 0}
-    - _SnowDirection: {r: 0, g: 0.3, b: 1.03, a: 0}
+    - _Basecolor: {r: 0.43894625, g: 0.5571082, b: 0.6792453, a: 0}
+    - _SnowColor: {r: 0.45545566, g: 0.63887763, b: 0.8396226, a: 0}
+    - _SnowDirection: {r: 0, g: 0.3, b: 1.79, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &9193681467501047309
 MonoBehaviour:

@@ -362,6 +362,7 @@ public class CardController : MonoBehaviour, ITargetable
     {
         var jumpHeight = (slot == previousSlotController) || (previousSlotController == null) ? 0 : 1.2f;
         DOTween.Kill(transform);
+        transform.DORotate(slot.transform.rotation.eulerAngles, 0.25f);
         transform.DOLocalJump(slot.transform.position, jumpHeight, 1, 0.4f).SetEase(Ease.InOutSine).OnComplete(() =>
         {
             RefreshInteractionCheck();
