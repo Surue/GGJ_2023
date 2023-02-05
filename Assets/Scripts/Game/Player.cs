@@ -19,6 +19,8 @@ public class Player : MonoBehaviour
     [SerializeField] protected DeckScriptable _deckScriptable;
     [SerializeField] protected GameRulesScriptables _gameRules;
     [SerializeField] protected EPlayerType _playerType;
+    public DeckScriptable DeckScriptable => _deckScriptable;
+    public GameRulesScriptables GameRulesScriptables => _gameRules;
     
     // Board objects
     [Header("Object on board")]
@@ -54,6 +56,7 @@ public class Player : MonoBehaviour
     
     // Mana
     private int _previousManaGain;
+    public int PreviousMana => _previousManaGain;
     protected int _currentMana;
     public int CurrentMana => _currentMana;
 
@@ -289,6 +292,7 @@ public class Player : MonoBehaviour
 
         foreach (var effect in cardToMove.CardScriptable.EffectsOnInvoke)
         {
+            effect.Owner = cardToMove;
             effect.Execute();
         }
     }

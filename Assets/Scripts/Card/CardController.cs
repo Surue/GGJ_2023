@@ -13,6 +13,7 @@ public class CardController : MonoBehaviour, ITargetable
     // --- PUBLIC ---
     // ScriptableObject
     public GameObject card;
+    public SpriteRenderer cardBalayage;
     [SerializeField] private CardScriptable _cardScriptable;
     public CardScriptable CardScriptable => _cardScriptable;
 
@@ -375,7 +376,8 @@ public class CardController : MonoBehaviour, ITargetable
                     .OnComplete(() =>
                 {
                     GameObject.Find("CAMERA").transform.DOShakePosition(0.4f, 0.1f, 10);
-                    
+                    cardBalayage.material.DOFloat(-0.2f, "_ShineLocation", 0.8f).From(1).SetDelay(0.2f);
+                            
                     slotController.PlayRandomSmokeParticle();
                 });
             });
