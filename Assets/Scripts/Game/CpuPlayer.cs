@@ -331,7 +331,6 @@ public class CpuPlayer : Player
         public List<SimulatedCard> cardsInHand = new ();
         public Queue<SimulatedCard> cardsInDeck = new();
         public List<SimulatedCard> cardsOnBoard = new();
-        public List<SimulatedCard> cardsDiscarded = new();
 
         public List<SimulatedSlot> simulatedSlots = new();
 
@@ -365,11 +364,6 @@ public class CpuPlayer : Player
                 simulatedSlots[cardController.slotController.slotID].simulatedCard = newCard;
                 newCard.simulatedSlot = simulatedSlots[cardController.slotController.slotID];
             }
-            
-            foreach (var cardController in player.CardsDiscarded)
-            {
-                cardsDiscarded.Add(new SimulatedCard(cardController));   
-            }
 
             gameRulesScriptable = player.GameRulesScriptables;
             minimumCardInHand = gameRulesScriptable.MaxCardInHand;
@@ -392,7 +386,6 @@ public class CpuPlayer : Player
             cardsInHand = player.cardsInHand.ToList();
             cardsInDeck = new Queue<SimulatedCard>(player.cardsInDeck);
             cardsOnBoard = new List<SimulatedCard>(player.cardsOnBoard);
-            cardsDiscarded = player.cardsDiscarded.ToList();
 
             simulatedSlots = player.simulatedSlots; 
 
@@ -404,7 +397,10 @@ public class CpuPlayer : Player
             // Fill hand
             if (cardsInHand.Count < minimumCardInHand)
             {
-                cardsInHand.Add(cardsInDeck.Dequeue());
+                for(int i = 0; i < minimumCardInHand - cardsInHand.Count; i++)
+                {
+                    cardsInHand.Add(cardsInDeck.Dequeue());
+                }
             }
 
             // Increase mana
@@ -764,14 +760,16 @@ public class CpuPlayer : Player
 
             if (defendingCard.IsDead())
             {
+                defendingCard.simulatedSlot.simulatedCard = null;
                 defendingPlayer.cardsOnBoard.Remove(defendingCard);
-                defendingPlayer.cardsDiscarded.Add(defendingCard);
+                defendingPlayer.cardsInDeck.Enqueue(defendingCard);
             }
             
             if (attackingCard.IsDead())
             {
+                attackingCard.simulatedSlot.simulatedCard = null;
                 attackingPlayer.cardsOnBoard.Remove(attackingCard);
-                attackingPlayer.cardsDiscarded.Add(attackingCard);
+                attackingPlayer.cardsInDeck.Enqueue(attackingCard);
             }
                 
             return 0;
@@ -837,7 +835,6 @@ public class CpuPlayer : Player
         // Simulation
         public SimulatedTurn SimulateFullTurn()
         {
-            // Debug.Log("Start simulating turns");
             // CPU turn
             actions = new List<PlayerAction>(SimulateTurnOfPlayer(simulatedCpu, simulatedHuman, out var simulatedCpuNextTurn, out var simulatedHumanNextTurn));
 
@@ -932,7 +929,6 @@ public class CpuPlayer : Player
         _endSimulationTurn.Clear();
         while (timer < _maxTComputationTime)
         {
-            Debug.Log("New simulation");
             var initialTurn = new SimulatedTurn(humanPlayer, this);
             initialTurn.simulatedCpu.manaNextTurn -= 2;
             initialTurn.simulatedHuman.manaNextTurn -= 2;

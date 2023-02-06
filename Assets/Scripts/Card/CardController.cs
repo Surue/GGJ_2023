@@ -68,7 +68,7 @@ public class CardController : MonoBehaviour, ITargetable
 
     // --- PRIVATE ---
     //Save Postion
-    private Vector3 _deckPosition;
+    private Transform _deckTransform;
     private Transform _handSlotTransform;
     //Controllers 
     public GUI_CardDisplay _cardDisplay;
@@ -147,8 +147,8 @@ public class CardController : MonoBehaviour, ITargetable
     public void Setup(Transform deckTransform, Transform discardTransform, Transform selectionTransform)
     {
         // --- SETUP STATE ---
-        _deckPosition = deckTransform.position;
-        transform.position = _deckPosition;
+        _deckTransform = deckTransform;
+        transform.position = _deckTransform.position;
         transform.rotation = deckTransform.rotation;
         SetCardState(CardState.inDeck);
         
@@ -277,7 +277,7 @@ public class CardController : MonoBehaviour, ITargetable
     #region STATES
     private void OnInDeck()
     {
-        
+        TweenMoveCard(_deckTransform.position, _deckTransform.rotation, moveToAreaDuration, MoveType.toSelectionArea);
     }
     
     private void OnInHandState()
@@ -483,7 +483,7 @@ public class CardController : MonoBehaviour, ITargetable
         //Passe la carte en état "dead" si sa vie passe a 0 ou moins
         if(cardHealth <= 0)
         {
-            SetCardState(CardState.isDead);
+            SetCardState(CardState.inDeck);
         }
     }
 
