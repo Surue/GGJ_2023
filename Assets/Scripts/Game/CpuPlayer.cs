@@ -844,7 +844,6 @@ public class CpuPlayer : Player
             simulatedCpuNextTurn.manaNextTurn--;
             if (simulatedHumanNextTurn.IsDead())
             {
-                // Debug.Log("Human is dead");
                 var finalTurn = new SimulatedTurn(simulatedHumanNextTurn, simulatedCpuNextTurn, this);
                 return finalTurn;
             }
@@ -855,7 +854,6 @@ public class CpuPlayer : Player
             
             if (simulatedCpuNextTurn.IsDead())
             {
-                // Debug.Log("CPU is dead");
                 var finalTurn = new SimulatedTurn(simulatedHumanNextTurn, simulatedCpuNextTurn, this);
                 return finalTurn;
             }
@@ -914,7 +912,7 @@ public class CpuPlayer : Player
         
         public float GetScore()
         {
-            return simulatedCpu.health * scoreCpuHealthFactor + (1 / turnCount) * scoreTurnCountFactor;
+            return simulatedCpu.health * scoreCpuHealthFactor + (1.0f / turnCount) * scoreTurnCountFactor;
         }
     }
 
@@ -934,9 +932,10 @@ public class CpuPlayer : Player
         _endSimulationTurn.Clear();
         while (timer < _maxTComputationTime)
         {
+            Debug.Log("New simulation");
             var initialTurn = new SimulatedTurn(humanPlayer, this);
-            initialTurn.simulatedCpu.manaNextTurn -= 1;
-            initialTurn.simulatedHuman.manaNextTurn -= 1;
+            initialTurn.simulatedCpu.manaNextTurn -= 2;
+            initialTurn.simulatedHuman.manaNextTurn -= 2;
             _endSimulationTurn.Add(initialTurn.SimulateFullTurn());
             timer += Time.deltaTime;
             yield return null;
