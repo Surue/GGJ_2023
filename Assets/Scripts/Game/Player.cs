@@ -31,6 +31,7 @@ public class Player : MonoBehaviour
     [SerializeField] protected GameObject _cardParent;
     [SerializeField] protected GameObject _lifeIcon;
     [SerializeField] protected SpriteRenderer _playerCharacterIllu;
+    [SerializeField] protected SpriteRenderer _healthTransform;
     [SerializeField] protected List<GameObject> _handSlots;
     [SerializeField] protected List<SlotController> _boardSlots;
     public List<SlotController> BoardSlots => _boardSlots;
@@ -350,7 +351,7 @@ public class Player : MonoBehaviour
             .SetEase(Ease.OutBack)
             .OnComplete(() =>
             {
-                var playerCardPosition = GameManager.Instance.GetPlayer(this is CpuPlayer ? EPlayerType.Human : EPlayerType.CPU)._playerCharacterIllu.transform.position;
+                var playerCardPosition = GameManager.Instance.GetPlayer(this is CpuPlayer ? EPlayerType.Human : EPlayerType.CPU)._healthTransform.transform.position;
                 
                 var direction = playerCardPosition - attackingCard.transform.position;
                 var endpos = attackingCard.transform.position + (direction * 0.2f);

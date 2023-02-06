@@ -18,11 +18,14 @@ public class HumanPlayer : Player
     [SerializeField] private Color _lineColorDeplacement;
     [SerializeField] private Color _lineColorAttack;
     [SerializeField] private Color _lineColorNeutral;
-    [SerializeField] private Transform _CPUCardTransform;
     [SerializeField] private SpriteRenderer _lineCrossHair;
+    [Space]
+    [Header("CPU INFOS")]
+    [SerializeField] private Transform _CPUTransform;
+    [SerializeField] private Collider _CPUHitCollider;
 
-    // Raycast
-    private RaycastHit _hit;
+// Raycast
+private RaycastHit _hit;
     private Transform _cardTransform;
     
     // Board
@@ -377,24 +380,31 @@ public class HumanPlayer : Player
                     _lineColorNeutral, -1);
             }
         }
-        else if (layerHitName == "AttackZone" && _slotCardController.CanAttackOtherPlayer() && !TryGetCardInFront(_slotCardController, out var _)) // Attack player
+        else if (_slotCardController.CanAttackOtherPlayer() && !TryGetCardInFront(_slotCardController, out var _)) // Attack player
         {
-            DrawMovementLine(_cardTransform.position, _CPUCardTransform.position, _offsetYCurve, _lineColorAttack, _slotCardController.cardAttack);
-            
-            // TODO Check line of attack
-            if (Input.GetMouseButtonDown(0)) 
+            Debug.Log("Hit");
+            _CPUHitCollider.enabled = true;
+            CheckRaycastHit();
+            if (layerHitName == "AttackZone")
             {
-                currentHandState = HandState.Free;
-                    
-                StartCoroutine(AttackOtherPlayer(_slotCardController));
-                    
-                _lineRenderer.enabled = false;
-                _lineIconRenderer.gameObject.SetActive(false);
-                _lineCrossHair.gameObject.SetActive(false);
+                DrawMovementLine(_cardTransform.position, _CPUTransform.position, _offsetYCurve, _lineColorAttack, _slotCardController.cardAttack);
+
+                // TODO Check line of attack
+                if (Input.GetMouseButtonDown(0))
+                {
+                    currentHandState = HandState.Free;
+
+                    StartCoroutine(AttackOtherPlayer(_slotCardController));
+
+                    _lineRenderer.enabled = false;
+                    _lineIconRenderer.gameObject.SetActive(false);
+                    _lineCrossHair.gameObject.SetActive(false);
+                }
             }
         }
         else
         {
+            _CPUHitCollider.enabled = false;
             //Si il d�tecte un autre collider il renvoie rien (donc il faut un collider pour le plateau)
             _boardSlot = null;
             _slotController = null;
