@@ -14,8 +14,7 @@ public class CpuPlayer : Player
         InvokeCard,
         InvokingCard,
         Attack,
-        Attacking
-        ,
+        Attacking,
         End
     }
 
@@ -66,8 +65,6 @@ public class CpuPlayer : Player
             if (action is InvokeCardPlayerAction invokeCardPlayerAction)
             {
                 var cardController = invokeCardPlayerAction.cardToInvoke.cardController;
-                
-                if(_currentMana - cardController.cardManaCost < 0) continue;
 
                 SetCardWaiting(cardController);
 
@@ -101,8 +98,6 @@ public class CpuPlayer : Player
                 var cardController = movePlayerAction.cardToMove.cardController;
                 var slot = movePlayerAction.newSlot.slotController;
                 
-                if(_currentMana - 1 < 0) continue;
-                
                 MoveCardOnBoard(cardController, slot);
 
                 yield return null;
@@ -117,8 +112,6 @@ public class CpuPlayer : Player
             {
                 var cardToMove = swapCardsPlayerAction.cardToMove.cardController;
                 var cardToSwap = swapCardsPlayerAction.cardToSwap.cardController;
-                
-                if(_currentMana - 1 < 0) continue;
                 
                 SwapCardOnBoard(cardToMove, cardToSwap);
 
@@ -265,7 +258,7 @@ public class CpuPlayer : Player
         public int health;
         public int damage;
         public int manaCost;
-        public int remainingAttackCount = 1; // TODO Incorrect simulation
+        public int remainingAttackCount;
 
         public SimulatedSlot simulatedSlot;
 
@@ -278,6 +271,7 @@ public class CpuPlayer : Player
             manaCost = card.cardManaCost;
 
             cardController = card;
+            remainingAttackCount = card.CardScriptable.AttackScriptable.AttackCharge;
         }
 
         public void TakeDamage(SimulatedCard attackingCard)
@@ -396,10 +390,6 @@ public class CpuPlayer : Player
             minimumCardInHand = player.minimumCardInHand;
         
             cardsInHand = player.cardsInHand.ToList();
-            if (player.cardsInDeck.Count <= 0)
-            {
-                Debug.Log(player.cardsInDeck.Count);   
-            }
             cardsInDeck = new Queue<SimulatedCard>(player.cardsInDeck);
             cardsOnBoard = new List<SimulatedCard>(player.cardsOnBoard);
             cardsDiscarded = player.cardsDiscarded.ToList();
@@ -427,14 +417,14 @@ public class CpuPlayer : Player
             // Reset remaining attack
             foreach (var simulatedCard in cardsOnBoard)
             {
-                simulatedCard.remainingAttackCount = 1; // TODO take initial attack charge
+                simulatedCard.remainingAttackCount = simulatedCard.cardController.CardScriptable.AttackScriptable.AttackCharge;
             }
         }
         
         public List<PlayerAction> GetInvokeCardAction()
         {
             var possibleCardToInvoke = new List<SimulatedCard>();
-        
+            
             foreach (var cardController in cardsInHand)
             {
                 if (CanDropCardOnBoard(cardController))
@@ -519,7 +509,8 @@ public class CpuPlayer : Player
             
             foreach (var card in cardsOnBoard)
             {
-                if(!CanAttack(card)) continue;
+                // card cannot move if it has used all its attack
+                if(card.remainingAttackCount <= 0) continue;
 
                 var possibleSlots = GetPossibleSlot(card);
                 foreach (var slot in possibleSlots)
@@ -583,82 +574,81 @@ public class CpuPlayer : Player
         {
             bool hasTarget = false;
             cardToAttack = new List<SimulatedCard>();
-            foreach (var defendingCard in otherPlayer.cardsOnBoard)
+            bool TryGetCardFacing(SimulatedCard cardController, out SimulatedCard result)
             {
-                // TODO Correctly find cards to attack
-                if (defendingCard.simulatedSlot != null && defendingCard.IsFacing(attackingCard))
+                if (cardController.simulatedSlot.isFront)
                 {
-                    hasTarget = true;
-                    cardToAttack.Add(defendingCard);   
+                    var slot = otherPlayer.simulatedSlots[3 - cardController.simulatedSlot.columnID];
+                    result = slot.simulatedCard;
+                    return slot.HasCard();
                 }
-                
-                bool TryGetCardFacing(SimulatedCard cardController, out SimulatedCard result)
-                {
-                    if (cardController.simulatedSlot.isFront)
-                    {
-                        var slot = otherPlayer.simulatedSlots[3 - cardController.simulatedSlot.columnID];
-                        result = slot.simulatedCard;
-                        return slot.HasCard();
-                    }
-                
-                    result = null;
-                    return false;
-                }
+            
+                result = null;
+                return false;
+            }
 
-                List<SimulatedCard> TryGetFrontAndBack(SimulatedCard cardController)
+            List<SimulatedCard> TryGetFrontAndBack(SimulatedCard cardController)
+            {
+                var result = new List<SimulatedCard>();
+                
+                var frontSlot = otherPlayer.simulatedSlots[3 - cardController.simulatedSlot.columnID];
+                if (frontSlot.HasCard())
                 {
-                    var result = new List<SimulatedCard>();
-                    
-                    var frontSlot = otherPlayer.simulatedSlots[3 - cardController.simulatedSlot.columnID];
-                    if (frontSlot.HasCard())
-                    {
-                        result.Add(frontSlot.simulatedCard);
-                    }
-                    
-                    var backSlot = otherPlayer.simulatedSlots[3 - cardController.simulatedSlot.columnID + 4];
-                    if (backSlot.HasCard())
-                    {
-                        result.Add(backSlot.simulatedCard);
-                    }
-                    
-                    return result;
+                    result.Add(frontSlot.simulatedCard);
                 }
                 
-                List<SimulatedCard> TryGetFrontLine(SimulatedCard cardController)
+                var backSlot = otherPlayer.simulatedSlots[3 - cardController.simulatedSlot.columnID + 4];
+                if (backSlot.HasCard())
                 {
-                    var result = new List<SimulatedCard>();
+                    result.Add(backSlot.simulatedCard);
+                }
+                
+                return result;
+            }
+            
+            List<SimulatedCard> TryGetFrontLine(SimulatedCard cardController)
+            {
+                var result = new List<SimulatedCard>();
 
-                    for (int i = 0; i < 4; i++)
+                for (int i = 0; i < 4; i++)
+                {
+                    var slot = otherPlayer.simulatedSlots[i];
+                    if (slot.HasCard())
                     {
-                        var slot = otherPlayer.simulatedSlots[i];
-                        if (slot.HasCard())
-                        {
-                            result.Add(slot.simulatedCard);
-                        }
+                        result.Add(slot.simulatedCard);
                     }
-                    
-                    return result;
                 }
                 
-                switch (attackingCard.cardController.CardScriptable.AttackScriptable.AttackType)
-                {
-                    case EAttackType.Front:
-                        if (TryGetCardFacing(attackingCard, out var card))
-                        {
-                            cardToAttack.Add(card);
-                        }
-                        break;
-                    case EAttackType.FrontAndBack:
-                        cardToAttack.AddRange(TryGetFrontAndBack(attackingCard));
-                        break;
-                    case EAttackType.FrontLine:
-                        cardToAttack.AddRange(TryGetFrontLine(attackingCard));
-                        break;
-                    case EAttackType.NoAttack:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                return result;
+            }
+            
+            switch (attackingCard.cardController.CardScriptable.AttackScriptable.AttackType)
+            {
+                case EAttackType.Front:
+                    if (TryGetCardFacing(attackingCard, out var card))
+                    {
+                        cardToAttack.Add(card);
+                        hasTarget = true;
+                    }
+                    break;
+                case EAttackType.FrontAndBack:
+                    cardToAttack.AddRange(TryGetFrontAndBack(attackingCard));
+                    if (cardToAttack.Count > 0)
+                    {
+                        hasTarget = true;
+                    }
+                    break;
+                case EAttackType.FrontLine:
+                    cardToAttack.AddRange(TryGetFrontLine(attackingCard));
+                    if (cardToAttack.Count > 0)
+                    {
+                        hasTarget = true;
+                    }
+                    break;
+                case EAttackType.NoAttack:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             return hasTarget;
@@ -681,22 +671,17 @@ public class CpuPlayer : Player
         
         public bool CanMoveCard()
         {
-            return mana > 0; // TODO Use correct cost of moving card
+            return mana >= gameRulesScriptable.CardMoveManaCost;
         }
         
         public bool CanSwapCard()
         {
-            return mana > 0; // TODO Use correct cost of swaping card
+            return mana > gameRulesScriptable.CardSwapManaCost;
         }
 
         public bool CanAttack(SimulatedCard simulatedCard)
         {
             return simulatedCard.remainingAttackCount > 0 && simulatedCard.simulatedSlot.isFront && simulatedCard.cardController.CardScriptable.AttackScriptable.AttackType != EAttackType.NoAttack;
-        }
-
-        public void Attack(SimulatedCard simulatedCard)
-        {
-            simulatedCard.remainingAttackCount--;
         }
     }
 
@@ -719,8 +704,6 @@ public class CpuPlayer : Player
             player.cardsInHand.Remove(cardToInvoke);
             player.cardsOnBoard.Add(cardToInvoke);
             
-            // Debug.Log("Invoke card");
-
             return cardToInvoke.manaCost;
         }
     }
@@ -736,8 +719,6 @@ public class CpuPlayer : Player
 
             cardToMove.simulatedSlot = newSlot;
             newSlot.simulatedCard = cardToMove;
-
-            // Debug.Log("Move card");
             
             // TODO use correct cost
             return 1;
@@ -758,8 +739,6 @@ public class CpuPlayer : Player
 
             cardToSwap.simulatedSlot = tmpSlot;
             tmpSlot.simulatedCard = cardToSwap;
-            
-            // Debug.Log("Swap card");
 
             // TODO use correct cost
             return 1;
@@ -783,22 +762,17 @@ public class CpuPlayer : Player
                 attackingCard.TakeDamage(defendingCard);
             }
 
-            var message = "Attack card";
-
             if (defendingCard.IsDead())
             {
-                message += ", defending card is dead";
                 defendingPlayer.cardsOnBoard.Remove(defendingCard);
                 defendingPlayer.cardsDiscarded.Add(defendingCard);
             }
             
             if (attackingCard.IsDead())
             {
-                message += ", attacking card is dead";
                 attackingPlayer.cardsOnBoard.Remove(attackingCard);
                 attackingPlayer.cardsDiscarded.Add(attackingCard);
             }
-            // Debug.Log(message);
                 
             return 0;
         }
@@ -813,7 +787,6 @@ public class CpuPlayer : Player
         {
             attackingCard.remainingAttackCount--;
             defendingPlayer.TakeDamage(attackingCard);
-            // Debug.Log("Attack other player HP(" + defendingPlayer.health + ")");
             return 0;
         }
     }
@@ -830,10 +803,7 @@ public class CpuPlayer : Player
         // Values
         public SimulatedPlayer simulatedHuman;
         public SimulatedPlayer simulatedCpu;
-        
-        // Result
-        public bool cpuWin;
-        
+
         // Selected action
         public List<PlayerAction> actions = new();
         
@@ -875,10 +845,7 @@ public class CpuPlayer : Player
             if (simulatedHumanNextTurn.IsDead())
             {
                 // Debug.Log("Human is dead");
-                var finalTurn = new SimulatedTurn(simulatedHumanNextTurn, simulatedCpuNextTurn, this)
-                {
-                    cpuWin = true
-                };
+                var finalTurn = new SimulatedTurn(simulatedHumanNextTurn, simulatedCpuNextTurn, this);
                 return finalTurn;
             }
             
@@ -889,15 +856,13 @@ public class CpuPlayer : Player
             if (simulatedCpuNextTurn.IsDead())
             {
                 // Debug.Log("CPU is dead");
-                var finalTurn = new SimulatedTurn(simulatedHumanNextTurn, simulatedCpuNextTurn, this)
-                {
-                    cpuWin = false
-                };
+                var finalTurn = new SimulatedTurn(simulatedHumanNextTurn, simulatedCpuNextTurn, this);
                 return finalTurn;
             }
             
             if (turnCount > 199)
             {
+                Debug.Log("Use security");
                 return new SimulatedTurn(simulatedHumanNextTurn, simulatedCpuNextTurn, this);
             }
 
@@ -911,7 +876,6 @@ public class CpuPlayer : Player
             outNewPlayer = new SimulatedPlayer(player);
             outNewOtherPlayer = new SimulatedPlayer(otherPlayer);
             outNewPlayer.StartTurn();
-            // Debug.Log("Start turn");
             
             var playerActions = new List<PlayerAction>();
             playerActions.AddRange(outNewPlayer.GetInvokeCardAction());
@@ -927,7 +891,6 @@ public class CpuPlayer : Player
                 
                 var mana = action.ExecuteAndGetManaCost();
                 outNewPlayer.mana -= mana;
-                // Debug.Log("Remaining mana == " + outNewPlayer.mana);
                 
                 // Check for remaining action
                 playerActions.Clear();
@@ -935,8 +898,6 @@ public class CpuPlayer : Player
                 playerActions.AddRange(outNewPlayer.GetMoveAndSwapAction()); // TODO Optional
                 playerActions.AddRange(outNewPlayer.GetAttackAction(outNewOtherPlayer));
             }
-            
-            // Debug.Log("End turn");
 
             return actionDone;
         }
@@ -983,6 +944,8 @@ public class CpuPlayer : Player
 
         _endSimulationTurn = _endSimulationTurn.OrderBy(x => x.GetScore()).ToList();
         _turnToPlay = _endSimulationTurn[0];
+        
+        Debug.Log("Computed simulation = " + _endSimulationTurn.Count);
         
         _hasFinishSimulating = true;
     }
