@@ -516,7 +516,8 @@ public class CpuPlayer : Player
                         playerActions.Add(new SwapCardsPlayerAction()
                         {
                             cardToMove = card,
-                            cardToSwap = slot.simulatedCard
+                            cardToSwap = slot.simulatedCard,
+                            gameRulesScriptable = gameRulesScriptable
                         });
                     }
                     else if (!slot.HasCard() && CanMoveCard()) // Move
@@ -524,7 +525,8 @@ public class CpuPlayer : Player
                         playerActions.Add(new MovePlayerAction()
                         {
                             cardToMove = card,
-                            newSlot = slot
+                            newSlot = slot,
+                            gameRulesScriptable = gameRulesScriptable
                         });
                     }
                 }
@@ -708,6 +710,7 @@ public class CpuPlayer : Player
     {
         public SimulatedCard cardToMove;
         public SimulatedSlot newSlot;
+        public GameRulesScriptables gameRulesScriptable;
         
         public override int ExecuteAndGetManaCost()
         {
@@ -716,8 +719,7 @@ public class CpuPlayer : Player
             cardToMove.simulatedSlot = newSlot;
             newSlot.simulatedCard = cardToMove;
             
-            // TODO use correct cost
-            return 1;
+            return gameRulesScriptable.CardMoveManaCost;
         }
     }
 
@@ -725,6 +727,7 @@ public class CpuPlayer : Player
     {
         public SimulatedCard cardToMove;
         public SimulatedCard cardToSwap;
+        public GameRulesScriptables gameRulesScriptable;
         
         public override int ExecuteAndGetManaCost()
         {
@@ -737,7 +740,7 @@ public class CpuPlayer : Player
             tmpSlot.simulatedCard = cardToSwap;
 
             // TODO use correct cost
-            return 1;
+            return gameRulesScriptable.CardSwapManaCost;
         }
     }
     
