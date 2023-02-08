@@ -450,7 +450,7 @@ public class Player : MonoBehaviour
             attackingCard.slotController = null;
         
             _cardsOnBoard.Remove(attackingCard);
-            _cardsDiscarded.Add(attackingCard);
+            _cardsInDeck.Enqueue(attackingCard);
         }
     
         if (defendingCard.cardHealth <= 0)
@@ -461,7 +461,7 @@ public class Player : MonoBehaviour
             defendingCard.slotController = null;
         
             _otherPlayer._cardsOnBoard.Remove(defendingCard);
-            _otherPlayer._cardsDiscarded.Add(defendingCard);
+            _otherPlayer._cardsInDeck.Enqueue(defendingCard);
         }
     }
     
