@@ -251,7 +251,7 @@ public class CpuPlayer : Player
     
     #region Game Simulation
 
-    private float _maxTComputationTime = 5.0f;
+    private float _maxTComputationTime = 120.0f;
 
     public class SimulatedCard
     {
@@ -739,7 +739,6 @@ public class CpuPlayer : Player
             cardToSwap.simulatedSlot = tmpSlot;
             tmpSlot.simulatedCard = cardToSwap;
 
-            // TODO use correct cost
             return gameRulesScriptable.CardSwapManaCost;
         }
     }
@@ -815,8 +814,7 @@ public class CpuPlayer : Player
             simulatedDeck = humanPlayer.DeckScriptable;
             simulatedDeck = humanPlayer.DeckScriptable;
             
-            // TODO Cheat by knowing all player cards ahead of time
-            simulatedHuman = new SimulatedPlayer(humanPlayer);
+            simulatedHuman = new SimulatedPlayer(humanPlayer); // TODO Cheat by knowing all player cards ahead of time
             simulatedCpu = new SimulatedPlayer(cpuPlayer);
 
             parentSimulatedTurn = this;
@@ -908,11 +906,11 @@ public class CpuPlayer : Player
 
         public int turnCount;
         private float scoreCpuHealthFactor = 1.0f;
-        private float scoreTurnCountFactor = 5.0f;
+        private float scoreTurnCountFactor = 40.0f;
         
         public float GetScore()
         {
-            return simulatedCpu.health * scoreCpuHealthFactor + (1.0f / turnCount) * scoreTurnCountFactor;
+            return simulatedCpu.health <= 0 ? 0 : simulatedCpu.health * scoreCpuHealthFactor + (1.0f / turnCount) * scoreTurnCountFactor;
         }
     }
 
@@ -941,8 +939,19 @@ public class CpuPlayer : Player
         }
 
         _endSimulationTurn = _endSimulationTurn.OrderBy(x => x.GetScore()).ToList();
-        _turnToPlay = _endSimulationTurn[0];
+        _turnToPlay = _endSimulationTurn[^1];
+
+        var bestScore = _endSimulationTurn[^1].GetScore();
+        _endSimulationTurn = _endSimulationTurn.OrderBy(x => x.turnCount).ToList();
+        var lowestTurn = _endSimulationTurn[0].turnCount;
         
+        Debug.Log("Best score " + bestScore);
+        Debug.Log("Lowest turn " + lowestTurn);
+
+        // foreach (var simulatedTurn in _endSimulationTurn)
+        // {
+        //     Debug.Log(simulatedTurn.GetScore() + " in " + simulatedTurn.turnCount);
+        // }
         Debug.Log("Computed simulation = " + _endSimulationTurn.Count);
         
         _hasFinishSimulating = true;
