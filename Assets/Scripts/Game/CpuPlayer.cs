@@ -257,6 +257,10 @@ public class CpuPlayer : Player
 
         public GameRulesScriptables gameRulesScriptable;
         
+        
+        public int cardLostCount = 0;
+        public int cardDestroyedCount = 0;
+        
         public SimulatedPlayer(Player player)
         {
             // Simulated slots
@@ -311,6 +315,9 @@ public class CpuPlayer : Player
             simulatedSlots = player.simulatedSlots; 
 
             gameRulesScriptable = player.gameRulesScriptable;
+            
+            cardLostCount = player.cardLostCount;
+            cardDestroyedCount = player.cardDestroyedCount;
         }
 
         public void StartTurn()
@@ -706,8 +713,10 @@ public class CpuPlayer : Player
                     simulatedCard.simulatedSlot.simulatedCard = null;
                     defendingPlayer.cardsOnBoard.Remove(simulatedCard);
                     defendingPlayer.cardsInDeck.Enqueue(simulatedCard);
+                    
+                    defendingPlayer.cardLostCount++;
+                    attackingPlayer.cardDestroyedCount++;
                 }
-                
             }
             
             if (attackingCard.IsDead())
@@ -715,6 +724,9 @@ public class CpuPlayer : Player
                 attackingCard.simulatedSlot.simulatedCard = null;
                 attackingPlayer.cardsOnBoard.Remove(attackingCard);
                 attackingPlayer.cardsInDeck.Enqueue(attackingCard);
+
+                attackingPlayer.cardLostCount++;
+                defendingPlayer.cardDestroyedCount++;
             }
                 
             return 0;
@@ -749,6 +761,14 @@ public class CpuPlayer : Player
 
         // Selected action
         public List<PlayerAction> actions = new();
+        
+        // Scoring
+        public int turnCount;
+        
+        private float scoreCpuHealthFactor = 1.0f;
+        private float scoreTurnCountFactor = 40.0f;
+        private float scoreCardLostCountFactor = -5.0f;
+        private float scoreCardDestroyedFactor = 5.0f;
         
         // Constructors
         public SimulatedTurn(Player humanPlayer, Player cpuPlayer)
@@ -798,7 +818,7 @@ public class CpuPlayer : Player
                 var finalTurn = new SimulatedTurn(simulatedHumanNextTurn, simulatedCpuNextTurn, this);
                 return finalTurn;
             }
-            
+
             if (turnCount > 199)
             {
                 Debug.Log("Use security");
@@ -846,14 +866,13 @@ public class CpuPlayer : Player
         {
             return simulatedHuman.health < 0;
         }
-
-        public int turnCount;
-        private float scoreCpuHealthFactor = 1.0f;
-        private float scoreTurnCountFactor = 40.0f;
         
         public float GetScore()
         {
-            return simulatedCpu.health <= 0 ? 0 : simulatedCpu.health * scoreCpuHealthFactor + (1.0f / turnCount) * scoreTurnCountFactor;
+            return (simulatedCpu.health <= 0 ? 0 : simulatedCpu.health * scoreCpuHealthFactor) +
+                   ((1.0f / turnCount) * scoreTurnCountFactor) +
+                   (simulatedCpu.cardLostCount * scoreCardLostCountFactor) +
+                   (simulatedCpu.cardDestroyedCount + scoreCardDestroyedFactor);
         }
     }
 
