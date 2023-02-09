@@ -126,8 +126,12 @@ public class CpuPlayer : Player
             if (action is AttackOtherAction attackOtherCardAction)
             {
                 var cardController = attackOtherCardAction.attackingCard.cardController;
-                var cardToAttack = attackOtherCardAction.defendingCard.cardController;
-                yield return StartCoroutine(DuelOtherCard(cardController, cardToAttack));
+                var cards = new List<CardController>();
+                foreach (var simulatedCard in attackOtherCardAction.cardsToAttack)
+                {
+                    cards.Add(simulatedCard.cardController);
+                }
+                yield return StartCoroutine(DuelOtherCards(cardController, cards));
             }
             
             if (action is AttackOtherPlayerAction attackOtherPlayerAction)
@@ -153,93 +157,6 @@ public class CpuPlayer : Player
         GameManager.Instance.HasFinishedStartingTurn();
 
         StartCoroutine(SimulateGames());
-    }
-
-    private IEnumerator InvokeCardsCoroutine()
-    {
-        _phase = ECpuPhase.InvokingCard;
-        
-        var freeSlots = GetFreeSlots();
-        var cardsToInvoke = GetCardsToInvoke(freeSlots.Count);
-
-        foreach (var cardController in cardsToInvoke)
-        {
-            SetCardWaiting(cardController);
-
-            yield return null;
-            
-            while (cardController.isTweening)
-            {
-                yield return null;
-            }
-            
-            // random wait time
-            float timer = Random.Range(0.5f, 1.5f);
-            while (timer > 0)
-            {
-                timer -= Time.deltaTime;
-                yield return null;
-            }
-
-            var freeSlot = freeSlots[Random.Range(0, freeSlots.Count)];
-            freeSlots.Remove(freeSlot);
-            
-            InvokeCardOnBoard(cardController, freeSlot);
-            
-            yield return null;
-            
-            while (cardController.isTweening)
-            {
-                yield return null;
-            }
-        }
-
-        _phase = ECpuPhase.Attack;
-    }
-
-    private IEnumerator AttackCoroutine()
-    {
-        _phase = ECpuPhase.Attacking;
-        for (var i = _cardsOnBoard.Count - 1; i >= 0; i--)
-        {
-            var cardController = _cardsOnBoard[i];
-            var cardsToAttack = GetPossibleCardToAttack(cardController);
-
-            if (cardsToAttack.Count > 0)
-            {
-                if (cardsToAttack.Count == 1)
-                {
-                    StartCoroutine(DuelOtherCard(cardController, cardsToAttack[0]));
-                }
-                else
-                {
-                    if (cardController.AttackSingleTarget())
-                    {
-                        StartCoroutine(DuelOtherCard(cardController, cardsToAttack[Random.Range(0, cardsToAttack.Count)]));
-                    }
-                    else
-                    {
-                        foreach (var controller in cardsToAttack)
-                        {
-                            StartCoroutine(DuelOtherCard(cardController, controller));
-                        }
-                    }
-                }
-            }
-            else if(cardsToAttack.Count == 0 && cardController.slotController.boardLineType == EBoardLineType.Front)
-            {
-                StartCoroutine(AttackOtherPlayer(cardController));
-            }
-
-            yield return null;
-            
-            while (cardController.isTweening)
-            {
-                yield return null;
-            }
-        }
-
-        _phase = ECpuPhase.End;
     }
     
     private void EndTurn()
@@ -276,6 +193,10 @@ public class CpuPlayer : Player
 
         public void TakeDamage(SimulatedCard attackingCard)
         {
+            if (attackingCard == null)
+            {
+                return;
+            }
             health -= attackingCard.damage;
         }
 
@@ -542,19 +463,16 @@ public class CpuPlayer : Player
             {
                 if (!CanAttack(attackingCard)) continue;
                     
-                if (CardHasTarget(attackingCard, otherPlayer, out var cardToAttack))
+                if (CardHasTarget(attackingCard, otherPlayer, out var cardsToAttack))
                 {
-                    foreach (var defendingCard in cardToAttack)
+                    
+                    playerActions.Add(new AttackOtherAction()
                     {
-                        playerActions.Add(new AttackOtherAction()
-                        {
-                            attackingCard = attackingCard,
-                            defendingCard = defendingCard,
-                            attackingPlayer = this,
-                            defendingPlayer = otherPlayer,
-                            canDefend = defendingCard.IsFacing(attackingCard)
-                        });
-                    }
+                        attackingCard = attackingCard,
+                        cardsToAttack = cardsToAttack,
+                        attackingPlayer = this,
+                        defendingPlayer = otherPlayer
+                    });
                 }else if (attackingCard.simulatedSlot.isFront)
                 {
                     playerActions.Add(new AttackOtherPlayerAction()
@@ -637,10 +555,17 @@ public class CpuPlayer : Player
                     }
                     break;
                 case EAttackType.FrontLine:
-                    cardToAttack.AddRange(TryGetFrontLine(attackingCard));
-                    if (cardToAttack.Count > 0)
+                    if (!TryGetCardFacing(attackingCard, out var _))
                     {
-                        hasTarget = true;
+                        hasTarget = false;
+                    }
+                    else
+                    {
+                        cardToAttack.AddRange(TryGetFrontLine(attackingCard));
+                        if (cardToAttack.Count > 0)
+                        {
+                            hasTarget = true;
+                        }
                     }
                     break;
                 case EAttackType.NoAttack:
@@ -746,25 +671,43 @@ public class CpuPlayer : Player
     public class AttackOtherAction : PlayerAction
     {
         public SimulatedCard attackingCard;
-        public SimulatedCard defendingCard;
-        public bool canDefend;
+        public List<SimulatedCard> cardsToAttack;
         public SimulatedPlayer attackingPlayer;
         public SimulatedPlayer defendingPlayer;
         
         public override int ExecuteAndGetManaCost()
         {
             attackingCard.remainingAttackCount--;
-            defendingCard.TakeDamage(attackingCard);
-            if (canDefend)
+
+            SimulatedCard defendingCard = null;
+            if (cardsToAttack.Count > 1)
             {
-                attackingCard.TakeDamage(defendingCard);
+                foreach (var simulatedCard in cardsToAttack)
+                {
+                    if (simulatedCard.IsFacing(attackingCard))
+                    {
+                        defendingCard = simulatedCard;
+                    }
+                }
+            }
+            else
+            {
+                defendingCard = cardsToAttack[0];
             }
 
-            if (defendingCard.IsDead())
+            attackingCard.TakeDamage(defendingCard);
+
+            foreach (var simulatedCard in cardsToAttack)
             {
-                defendingCard.simulatedSlot.simulatedCard = null;
-                defendingPlayer.cardsOnBoard.Remove(defendingCard);
-                defendingPlayer.cardsInDeck.Enqueue(defendingCard);
+                simulatedCard.TakeDamage(attackingCard);
+                
+                if (simulatedCard.IsDead())
+                {
+                    simulatedCard.simulatedSlot.simulatedCard = null;
+                    defendingPlayer.cardsOnBoard.Remove(simulatedCard);
+                    defendingPlayer.cardsInDeck.Enqueue(simulatedCard);
+                }
+                
             }
             
             if (attackingCard.IsDead())
