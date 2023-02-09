@@ -345,7 +345,7 @@ private RaycastHit _hit;
                     {
                         currentHandState = HandState.Free;
                 
-                        StartCoroutine(AttackOtherCard(_slotCardController, _targetCardController));
+                        StartCoroutine(DuelOtherCard(_slotCardController, _targetCardController));
                 
                         _lineRenderer.enabled = false;
                         _lineIconRenderer.gameObject.SetActive(false);
@@ -359,10 +359,8 @@ private RaycastHit _hit;
                     {
                         currentHandState = HandState.Free;
 
-                        foreach (var cardController in GetPossibleCardToAttack(_slotCardController))
-                        {
-                            StartCoroutine(AttackOtherCard(_slotCardController, cardController));
-                        }
+                        StartCoroutine(DuelOtherCards(_slotCardController, GetPossibleCardToAttack(_slotCardController)));
+                        
                 
                         _lineRenderer.enabled = false;
                         _lineIconRenderer.gameObject.SetActive(false);

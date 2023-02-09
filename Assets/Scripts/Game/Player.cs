@@ -40,6 +40,8 @@ public class Player : MonoBehaviour
 
     private int _cardInHands;
     
+    public AnimationCurve attackCurve;
+    
     // Deck
     protected Queue<CardController> _cardsInDeck;
     protected List<CardController> _cardsInHand;
@@ -169,7 +171,6 @@ public class Player : MonoBehaviour
         }
     }
 
-
     protected virtual void TakeDamage(CardController attackingCard)
     {
         _currentHealth -= attackingCard.cardAttack;
@@ -295,12 +296,6 @@ public class Player : MonoBehaviour
         _cardsOnBoard.Add(cardToMove);
 
         UseMana(cardToMove.cardManaCost);
-        //
-        // foreach (var effect in cardToMove.CardScriptable.EffectsOnInvoke)
-        // {
-        //     effect.Owner = cardToMove;
-        //     effect.Execute();
-        // }
     }
 
     protected void SwapCardOnBoard(CardController cardToMove, CardController cardSwapped)
@@ -331,7 +326,7 @@ public class Player : MonoBehaviour
         cardController.sortingGroup.sortingOrder = 999;
     }
 
-    protected void UseMana(int manaCost)
+    private void UseMana(int manaCost)
     {
         _currentMana -= manaCost;
         OnManaChanged(_currentMana, _gameRules.MaxMana);
@@ -375,11 +370,9 @@ public class Player : MonoBehaviour
         _otherPlayer.TakeDamage(attackingCard);
     }
 
-
-    public AnimationCurve attackCurve;
-
-    protected IEnumerator AttackOtherCard(CardController attackingCard, CardController defendingCard)
+    protected IEnumerator DuelOtherCard(CardController attackingCard, CardController defendingCard)
     {
+        // Animations
         attackingCard.Attack();
         attackingCard.SetCardState(CardController.CardState.onDesk);
 
@@ -438,7 +431,7 @@ public class Player : MonoBehaviour
         attackingCard.PlaySlashVFX();
         defendingCard.PlaySlashVFX();
 
-        
+        // Logic
         attackingCard.CardTakeDamage(defendingCard.cardAttack);
         defendingCard.CardTakeDamage(attackingCard.cardAttack);
 
@@ -465,6 +458,110 @@ public class Player : MonoBehaviour
         }
     }
     
+    protected IEnumerator DuelOtherCards(CardController attackingCard, List<CardController> defendingCards)
+    {
+        // Animations
+        attackingCard.Attack();
+        attackingCard.SetCardState(CardController.CardState.onDesk);
+
+        foreach (var boardSlot in _boardSlots)
+        {
+            boardSlot.SetHighlighted(false);
+        }
+        
+        attackingCard.transform.DOMove(attackingCard.transform.position + Vector3.up, 0.4f)
+            .SetEase(Ease.OutBack)
+            .OnComplete(() =>
+            {
+                var direction = this is CpuPlayer ? -attackingCard.transform.up : attackingCard.transform.up;
+                var endpos = attackingCard.transform.position + (direction * 0.6f);
+                
+                attackingCard.transform.DOLocalMove(endpos, 0.5f)
+                    .SetEase(attackCurve)
+                    .SetDelay(0.3f)
+                    .OnComplete((() =>
+                    {
+                        DOVirtual.DelayedCall(UnityEngine.Random.Range(0.4f,0.6f), (() =>
+                        {
+                            attackingCard.TweenMoveCardOnBoard(attackingCard.slotController, attackingCard.UpdateFade);
+                        }));
+                    }));
+            });
+
+
+        CardController defendingCard = null;
+        bool cardExists = false;
+        foreach (var cardController in defendingCards)
+        {
+            if (_otherPlayer.TryGetCardInFront(cardController, out var frontCard))
+            {
+                if (frontCard == attackingCard)
+                {
+                    defendingCard = cardController;
+                    cardExists = true;
+                    break;
+                }
+            }
+        }
+        if (cardExists && defendingCard.slotController.boardLineType == EBoardLineType.Front)
+        {
+            defendingCard.transform.DOMove(defendingCard.transform.position + Vector3.up, 0.4f)
+                .SetEase(Ease.OutBack)
+                .OnComplete(() =>
+                {
+                    var direction = this is CpuPlayer ? defendingCard.transform.up : -defendingCard.transform.up;
+                    var endpos = defendingCard.transform.position + (direction * 0.6f);
+                
+                    defendingCard.transform.DOLocalMove(endpos, 0.5f)
+                        .SetEase(attackCurve)
+                        .SetDelay(0.3f)
+                        .OnComplete((() =>
+                        {
+                            DOVirtual.DelayedCall(UnityEngine.Random.Range(0.4f,0.6f), (() =>
+                            {
+                                defendingCard.TweenMoveCardOnBoard(defendingCard.slotController);
+                            }));
+                        }));
+                });
+            
+        }
+        
+        yield return new WaitForSeconds(0.8f);
+        GameObject.Find("CAMERA").transform.DOShakePosition(0.4f, 0.05f, 10);
+        attackingCard.PlaySlashVFX();
+        foreach (var cardController in defendingCards)
+        {
+            cardController.PlaySlashVFX();
+            cardController.CardTakeDamage(attackingCard.cardAttack);
+            
+            if (cardController.cardHealth <= 0)
+            {
+                cardController.slotController.containCard = false;
+                cardController.slotController.cardController = null;
+
+                cardController.slotController = null;
+        
+                _otherPlayer._cardsOnBoard.Remove(cardController);
+                _otherPlayer._cardsInDeck.Enqueue(cardController);
+            }
+            
+        }
+
+        // Logic
+        attackingCard.CardTakeDamage(defendingCard.cardAttack);
+
+        if (attackingCard.cardHealth <= 0)
+        {
+            attackingCard.slotController.containCard = false;
+            attackingCard.slotController.cardController = null;
+
+            attackingCard.slotController = null;
+        
+            _cardsOnBoard.Remove(attackingCard);
+            _cardsInDeck.Enqueue(attackingCard);
+        }
+    }
+
     protected List<CardController> GetPossibleCardToAttack(CardController attackingCard)
     {
         var result = new List<CardController>();

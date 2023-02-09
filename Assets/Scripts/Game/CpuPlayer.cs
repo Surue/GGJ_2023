@@ -127,7 +127,7 @@ public class CpuPlayer : Player
             {
                 var cardController = attackOtherCardAction.attackingCard.cardController;
                 var cardToAttack = attackOtherCardAction.defendingCard.cardController;
-                yield return StartCoroutine(AttackOtherCard(cardController, cardToAttack));
+                yield return StartCoroutine(DuelOtherCard(cardController, cardToAttack));
             }
             
             if (action is AttackOtherPlayerAction attackOtherPlayerAction)
@@ -209,19 +209,19 @@ public class CpuPlayer : Player
             {
                 if (cardsToAttack.Count == 1)
                 {
-                    StartCoroutine(AttackOtherCard(cardController, cardsToAttack[0]));
+                    StartCoroutine(DuelOtherCard(cardController, cardsToAttack[0]));
                 }
                 else
                 {
                     if (cardController.AttackSingleTarget())
                     {
-                        StartCoroutine(AttackOtherCard(cardController, cardsToAttack[Random.Range(0, cardsToAttack.Count)]));
+                        StartCoroutine(DuelOtherCard(cardController, cardsToAttack[Random.Range(0, cardsToAttack.Count)]));
                     }
                     else
                     {
                         foreach (var controller in cardsToAttack)
                         {
-                            StartCoroutine(AttackOtherCard(cardController, controller));
+                            StartCoroutine(DuelOtherCard(cardController, controller));
                         }
                     }
                 }
@@ -251,7 +251,7 @@ public class CpuPlayer : Player
     
     #region Game Simulation
 
-    private float _maxTComputationTime = 120.0f;
+    private float _maxTComputationTime = 5.0f;
 
     public class SimulatedCard
     {
