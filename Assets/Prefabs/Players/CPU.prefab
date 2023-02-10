@@ -1746,10 +1746,6 @@ MonoBehaviour:
   - {fileID: 1873260651404088789}
   - {fileID: 1873260651284623422}
   - {fileID: 1873260651118300641}
-  bloodVFXs:
-  - {fileID: 7920286469004260526}
-  - {fileID: 6943553984435408075}
-  currentHandState: 0
   attackCurve:
     serializedVersion: 2
     m_Curve:
@@ -1783,6 +1779,11 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  bloodVFXs:
+  - {fileID: 7920286469004260526}
+  - {fileID: 6943553984435408075}
+  currentHandState: 0
+  _aiDescriptionScriptable: {fileID: 11400000, guid: 4512059e48e7d6241ac7bd64af70d148, type: 2}
 --- !u!1 &4737758271968293173
 GameObject:
   m_ObjectHideFlags: 0

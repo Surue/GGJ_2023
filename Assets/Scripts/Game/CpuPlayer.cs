@@ -9,16 +9,22 @@ public class CpuPlayer : Player
 {
     protected override EPlayerType GetPlayerType() => EPlayerType.CPU;
     
+    public List<SimulatedTurn> _endSimulationTurn = new();
+
+    private bool _hasFinishSimulating = false;
+    private SimulatedTurn _turnToPlay;
+
+    [SerializeField] private AiDescriptionScriptable _aiDescriptionScriptable;
+
     private enum ECpuPhase
     {
-        InvokeCard,
-        InvokingCard,
-        Attack,
-        Attacking,
+        WaitEndSimulation,
+        PlayAllActions,
+        WaitEndAllAction,
         End
     }
 
-    private ECpuPhase _phase;
+    private ECpuPhase _phase = ECpuPhase.WaitEndSimulation;
 
     private void Start()
     {
@@ -32,19 +38,19 @@ public class CpuPlayer : Player
     {
         if(!_isPlaying) return;
 
-        if (!_hasFinishSimulating) return;
-
         switch (_phase)
         {
-            case ECpuPhase.InvokeCard:
-                _phase = ECpuPhase.InvokingCard;
+            case ECpuPhase.WaitEndSimulation:
+                if (_hasFinishSimulating)
+                {
+                    _phase = ECpuPhase.PlayAllActions;
+                }
+                break;
+            case ECpuPhase.PlayAllActions:
+                _phase = ECpuPhase.WaitEndAllAction;
                 StartCoroutine(PlayAllAction());
                 break;
-            case ECpuPhase.InvokingCard:
-                break;
-            case ECpuPhase.Attack:
-                break;
-            case ECpuPhase.Attacking:
+            case ECpuPhase.WaitEndAllAction:
                 break;
             case ECpuPhase.End:
                 EndTurn();
@@ -152,7 +158,7 @@ public class CpuPlayer : Player
         
         _isPlaying = true;
 
-        _phase = ECpuPhase.InvokeCard;
+        _phase = ECpuPhase.WaitEndSimulation;
         
         GameManager.Instance.HasFinishedStartingTurn();
 
@@ -167,8 +173,6 @@ public class CpuPlayer : Player
     }
     
     #region Game Simulation
-
-    private float _maxTComputationTime = 5.0f;
 
     public class SimulatedCard
     {
@@ -764,14 +768,10 @@ public class CpuPlayer : Player
         
         // Scoring
         public int turnCount;
-        
-        private float scoreCpuHealthFactor = 1.0f;
-        private float scoreTurnCountFactor = 40.0f;
-        private float scoreCardLostCountFactor = -5.0f;
-        private float scoreCardDestroyedFactor = 5.0f;
-        
+        private AiDescriptionScriptable _aiDescriptionScriptable;
+
         // Constructors
-        public SimulatedTurn(Player humanPlayer, Player cpuPlayer)
+        public SimulatedTurn(Player humanPlayer, Player cpuPlayer, AiDescriptionScriptable aiDescriptionScriptable)
         {
             gameRulesScriptables = humanPlayer.GameRulesScriptables;
             simulatedDeck = humanPlayer.DeckScriptable;
@@ -782,9 +782,11 @@ public class CpuPlayer : Player
 
             parentSimulatedTurn = this;
             turnCount = 0;
+
+            _aiDescriptionScriptable = aiDescriptionScriptable;
         }
         
-        public SimulatedTurn(SimulatedPlayer humanPlayer, SimulatedPlayer cpuPlayer, SimulatedTurn parentTurn)
+        public SimulatedTurn(SimulatedPlayer humanPlayer, SimulatedPlayer cpuPlayer, SimulatedTurn parentTurn, AiDescriptionScriptable aiDescriptionScriptable)
         {
             simulatedHuman = humanPlayer;
             simulatedCpu = cpuPlayer;
@@ -794,6 +796,8 @@ public class CpuPlayer : Player
 
             parentSimulatedTurn = parentTurn.parentSimulatedTurn;
             turnCount = parentTurn.turnCount + 1;
+
+            _aiDescriptionScriptable = aiDescriptionScriptable;
         }
         
         // Simulation
@@ -805,7 +809,7 @@ public class CpuPlayer : Player
             simulatedCpuNextTurn.manaNextTurn--;
             if (simulatedHumanNextTurn.IsDead())
             {
-                var finalTurn = new SimulatedTurn(simulatedHumanNextTurn, simulatedCpuNextTurn, this);
+                var finalTurn = new SimulatedTurn(simulatedHumanNextTurn, simulatedCpuNextTurn, this, _aiDescriptionScriptable);
                 return finalTurn;
             }
             
@@ -815,18 +819,11 @@ public class CpuPlayer : Player
             
             if (simulatedCpuNextTurn.IsDead())
             {
-                var finalTurn = new SimulatedTurn(simulatedHumanNextTurn, simulatedCpuNextTurn, this);
+                var finalTurn = new SimulatedTurn(simulatedHumanNextTurn, simulatedCpuNextTurn, this, _aiDescriptionScriptable);
                 return finalTurn;
             }
 
-            if (turnCount > 199)
-            {
-                Debug.Log("Use security");
-                return new SimulatedTurn(simulatedHumanNextTurn, simulatedCpuNextTurn, this);
-            }
-
-            // Debug.Log("Simulate new turns");
-            return new SimulatedTurn(simulatedHumanNextTurn, simulatedCpuNextTurn, this).SimulateFullTurn();
+            return new SimulatedTurn(simulatedHumanNextTurn, simulatedCpuNextTurn, this, _aiDescriptionScriptable).SimulateFullTurn();
         }
 
         public List<PlayerAction> SimulateTurnOfPlayer(SimulatedPlayer player, SimulatedPlayer otherPlayer, out SimulatedPlayer outNewPlayer, out SimulatedPlayer outNewOtherPlayer)
@@ -869,17 +866,12 @@ public class CpuPlayer : Player
         
         public float GetScore()
         {
-            return (simulatedCpu.health <= 0 ? 0 : simulatedCpu.health * scoreCpuHealthFactor) +
-                   ((1.0f / turnCount) * scoreTurnCountFactor) +
-                   (simulatedCpu.cardLostCount * scoreCardLostCountFactor) +
-                   (simulatedCpu.cardDestroyedCount + scoreCardDestroyedFactor);
+            return (simulatedCpu.health <= 0 ? 0 : simulatedCpu.health * _aiDescriptionScriptable.ScoreCpuHealthFactor) +
+                   ((1.0f / turnCount) * _aiDescriptionScriptable.ScoreTurnCountFactor) +
+                   (simulatedCpu.cardLostCount * _aiDescriptionScriptable.ScoreCardLostCountFactor) +
+                   (simulatedCpu.cardDestroyedCount + _aiDescriptionScriptable.ScoreCardDestroyedFactor);
         }
     }
-
-    public List<SimulatedTurn> _endSimulationTurn = new();
-
-    private bool _hasFinishSimulating;
-    private SimulatedTurn _turnToPlay;
     
     private IEnumerator SimulateGames()
     {
@@ -890,9 +882,9 @@ public class CpuPlayer : Player
         float timer = 0.0f;
 
         _endSimulationTurn.Clear();
-        while (timer < _maxTComputationTime)
+        while (timer < _aiDescriptionScriptable.MaxTComputationTime)
         {
-            var initialTurn = new SimulatedTurn(humanPlayer, this);
+            var initialTurn = new SimulatedTurn(humanPlayer, this, _aiDescriptionScriptable);
             initialTurn.simulatedCpu.manaNextTurn -= 2;
             initialTurn.simulatedHuman.manaNextTurn -= 2;
             _endSimulationTurn.Add(initialTurn.SimulateFullTurn());
