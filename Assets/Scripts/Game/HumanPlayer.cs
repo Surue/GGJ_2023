@@ -146,8 +146,9 @@ private RaycastHit _hit;
 
             // Check if player click on a slot
             if ((CanDropCardOnBoard(_slotCardController) 
-                 || _currentMana >= _gameRules.CardMoveManaCost 
-                 || _currentMana >= _gameRules.CardSwapManaCost
+                 || _currentMana >= _gameRules.CardMoveManaCost  // Movement cost
+                 || _currentMana >= _gameRules.CardSwapManaCost // Swap cost
+                 || _slotCardController.HasFreeMovement()
                  || _slotCardController.CanAttackOtherPlayer()) 
                  && Input.GetMouseButtonDown(0) 
                  && _slotCardController.isInteractible 
@@ -230,7 +231,6 @@ private RaycastHit _hit;
         var layerHitName = CheckRaycastHit();
 
         var possibleSlotToMoveTo = GetSlotPossibleToMoveTo(_slotCardController);
-        // var possibleCardToAcctack = GetPossibleCardToAttack(_slotCardController);
         
         foreach (var boardSlot in _boardSlots)
         {
@@ -240,11 +240,6 @@ private RaycastHit _hit;
         {
             boardSlot.SetHighlighted(true);
         }
-        
-        // foreach (var cardToAttack in possibleCardToAcctack)
-        // {
-            // cardToAttack.slotController.SetHighlighted(true);
-        // }
 
         
         if (Input.GetMouseButtonDown(1))
