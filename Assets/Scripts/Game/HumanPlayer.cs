@@ -59,7 +59,7 @@ private RaycastHit _hit;
 
     private void Start()
     {
-        Cursor.SetCursor(cursorTexture, hotSpot, CursorMode.Auto);
+        Cursor.SetCursor(cursorTexture, hotSpot, CursorMode.Auto); 
 
         GameManager.Instance.onHumanTurnStarted += StartTurn;
         GameManager.Instance.onHumanTurnStarted += FillHand;
