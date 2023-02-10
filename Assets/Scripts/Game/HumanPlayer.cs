@@ -7,6 +7,10 @@ public class HumanPlayer : Player
     // Active card
     private CardController activeCardController;
 
+    [Header("CURSOR")]
+    [SerializeField] private Texture2D cursorTexture;
+    [SerializeField] private Vector2 hotSpot = Vector2.zero;
+
     // Drawing
     [Header("LINE PARAMETERS")]
     [SerializeField] private SpriteRenderer _lineIconRenderer;
@@ -55,6 +59,8 @@ private RaycastHit _hit;
 
     private void Start()
     {
+        Cursor.SetCursor(cursorTexture, hotSpot, CursorMode.Auto);
+
         GameManager.Instance.onHumanTurnStarted += StartTurn;
         GameManager.Instance.onHumanTurnStarted += FillHand;
         GameManager.Instance.onHumanTurnStarted += ResetCardStartTurn;
