@@ -522,7 +522,7 @@ public class CardController : MonoBehaviour, ITargetable
     }
     public void UnHighlightCard(float duration)
     {
-        if (!glowed)
+        if (glowed)
             return;
 
         glowed = false;

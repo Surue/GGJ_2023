@@ -8039,6 +8039,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2088033584}
     m_Modifications:
+    - target: {fileID: 4737758270311498517, guid: 6c4e05a5d2a1df348a8a2e96b2dbb947, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.6339998
+      objectReference: {fileID: 0}
+    - target: {fileID: 4737758270311498517, guid: 6c4e05a5d2a1df348a8a2e96b2dbb947, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 7.8759913
+      objectReference: {fileID: 0}
     - target: {fileID: 4737758271955670824, guid: 6c4e05a5d2a1df348a8a2e96b2dbb947, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -8154,6 +8162,14 @@ PrefabInstance:
       propertyPath: cardInfoTransform
       value: 
       objectReference: {fileID: 1239035675}
+    - target: {fileID: 6252410725271488164, guid: c1de8bbcf491dec4488c8f1edccba256, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -5.697
+      objectReference: {fileID: 0}
+    - target: {fileID: 6252410725271488164, guid: c1de8bbcf491dec4488c8f1edccba256, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.6920084
+      objectReference: {fileID: 0}
     - target: {fileID: 6252410725442598792, guid: c1de8bbcf491dec4488c8f1edccba256, type: 3}
       propertyPath: m_Mesh
       value: 
