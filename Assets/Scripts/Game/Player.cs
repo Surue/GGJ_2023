@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
-using OSG.Core;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public enum EBoardLineType
 {
@@ -178,7 +178,7 @@ public class Player : MonoBehaviour
 
         _lifeIcon.transform.DOScale(transform.localScale * 1.35f, 0.25f).SetEase(EaseExtensions.FadeInFadeOutCurve);
         _playerCharacterIllu.DOColor(Color.red, 0.25f).SetEase(EaseExtensions.FadeInFadeOutCurve).From(Color.white);
-        bloodVFXs.GetElementAtRandomIndex().Play();
+        bloodVFXs[Random.Range(0, bloodVFXs.Count)].Play();
 
         if (_currentHealth <= 0)
         {

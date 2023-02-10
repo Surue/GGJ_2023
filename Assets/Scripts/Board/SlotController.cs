@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 using MiniTools.BetterGizmos;
-using OSG.Core;
 
 public class SlotController : MonoBehaviour
 {
@@ -99,6 +98,6 @@ public class SlotController : MonoBehaviour
 
     public void PlayRandomSmokeParticle()
     {
-        particles.GetElementAtRandomIndex().Play();
+        particles[Random.Range(0, particles.Count)].Play();
     }
 }
