@@ -254,7 +254,7 @@ public class Player : MonoBehaviour
 
     protected bool CanSwapCards(CardController cardToMove, SlotController slotController)
     {
-        return _currentMana >= _gameRules.CardSwapManaCost && GetSlotPossibleToMoveTo(cardToMove).Contains(slotController);
+        return (_currentMana >= _gameRules.CardSwapManaCost || cardToMove.HasFreeMovement()) && GetSlotPossibleToMoveTo(cardToMove).Contains(slotController);
     }
     
     protected bool CanDropCardOnBoard(CardController cardToDrop)
@@ -264,7 +264,7 @@ public class Player : MonoBehaviour
 
     protected bool CanMoveCardOnBoard(CardController cardToMove, SlotController slotController)
     {
-        return _currentMana >= _gameRules.CardMoveManaCost && GetSlotPossibleToMoveTo(cardToMove).Contains(slotController);
+        return (_currentMana >= _gameRules.CardMoveManaCost || cardToMove.HasFreeMovement()) && GetSlotPossibleToMoveTo(cardToMove).Contains(slotController);
     }
     
     protected void MoveCardOnBoard(CardController cardToMove, SlotController slot)
