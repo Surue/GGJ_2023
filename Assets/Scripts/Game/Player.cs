@@ -20,6 +20,9 @@ public class Player : MonoBehaviour
     [SerializeField] protected DeckScriptable _deckScriptable;
     [SerializeField] protected GameRulesScriptables _gameRules;
     [SerializeField] protected EPlayerType _playerType;
+
+    public EPlayerType PlayerType => _playerType;
+
     public DeckScriptable DeckScriptable => _deckScriptable;
     public GameRulesScriptables GameRulesScriptables => _gameRules;
     
@@ -54,8 +57,7 @@ public class Player : MonoBehaviour
     public List<CardController> CardsDiscarded => _cardsDiscarded;
     
     // Health
-    private int _currentHealth;
-    public int CurrentHealth => _currentHealth;
+    public int CurrentHealth => _gameManager.gameState.GetPlayerHealth(_playerType);
 
     public Action<int, int> OnHealthChanged;
     
@@ -72,6 +74,8 @@ public class Player : MonoBehaviour
     
     public List<ParticleSystem> bloodVFXs = new List<ParticleSystem>();
 
+    private GameManager _gameManager;
+
     public enum HandState
     {
         Free, 
@@ -83,13 +87,12 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        GameManager.Instance.onGameInit += Init;
+        _gameManager = GameManager.Instance;
+        _gameManager.onGameInit += Init;
 
         _cardsInHand = new List<CardController>();
         _cardsOnBoard = new List<CardController>();
         _cardsDiscarded = new List<CardController>();
-
-        _currentHealth = _gameRules.MaxHealth;
 
         _currentMana = _gameRules.InitialMana;
         _previousManaGain = _currentMana;
@@ -122,7 +125,7 @@ public class Player : MonoBehaviour
         
         FillHand();
 
-        OnHealthChanged(_currentHealth, _gameRules.MaxHealth);
+        OnHealthChanged(CurrentHealth, _gameRules.MaxHealth);
         OnManaChanged(_currentMana, _gameRules.MaxMana);
     }
 
@@ -173,14 +176,14 @@ public class Player : MonoBehaviour
 
     protected virtual void TakeDamage(CardController attackingCard)
     {
-        _currentHealth -= attackingCard.cardAttack;
-        OnHealthChanged(_currentHealth, _gameRules.MaxHealth);
+        _gameManager.gameState.PlayerTakeDamage(_playerType, attackingCard.cardAttack);
+        OnHealthChanged(_gameManager.gameState.GetPlayerHealth(_playerType), _gameRules.MaxHealth);
 
         _lifeIcon.transform.DOScale(transform.localScale * 1.35f, 0.25f).SetEase(EaseExtensions.FadeInFadeOutCurve);
         _playerCharacterIllu.DOColor(Color.red, 0.25f).SetEase(EaseExtensions.FadeInFadeOutCurve).From(Color.white);
         bloodVFXs[Random.Range(0, bloodVFXs.Count)].Play();
 
-        if (_currentHealth <= 0)
+        if (_gameManager.gameState.GetPlayerHealth(_playerType) <= 0)
         {
             GameManager.Instance.PlayerDeath(_playerType);
             _isPlaying = false;

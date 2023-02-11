@@ -247,7 +247,6 @@ public class CpuPlayer : Player
     
     public class SimulatedPlayer 
     {
-        public int health;
         public int mana;
 
         public int minimumCardInHand;
@@ -260,8 +259,9 @@ public class CpuPlayer : Player
         public List<SimulatedSlot> simulatedSlots = new();
 
         public GameRulesScriptables gameRulesScriptable;
-        
-        
+
+        public EPlayerType type;
+
         public int cardLostCount = 0;
         public int cardDestroyedCount = 0;
         
@@ -299,14 +299,14 @@ public class CpuPlayer : Player
             manaNextTurn = player.PreviousMana;
             
             
-            health = player.CurrentHealth;
             mana = player.CurrentMana;
             manaNextTurn = player.PreviousMana;
+
+            type = player.PlayerType;
         }
         
         public SimulatedPlayer(SimulatedPlayer player)
         {
-            health = player.health;
             mana = player.mana;
             manaNextTurn = player.manaNextTurn + 1;
 
@@ -322,6 +322,8 @@ public class CpuPlayer : Player
             
             cardLostCount = player.cardLostCount;
             cardDestroyedCount = player.cardDestroyedCount;
+
+            type = player.type;
         }
 
         public void StartTurn()
@@ -467,7 +469,7 @@ public class CpuPlayer : Player
             return playerActions;
         }
         
-        public List<PlayerAction> GetAttackAction(SimulatedPlayer otherPlayer)
+        public List<PlayerAction> GetAttackAction(SimulatedPlayer otherPlayer, GameState gameState)
         {
             var playerActions = new List<PlayerAction>();
             foreach (var attackingCard in cardsOnBoard)
@@ -489,7 +491,8 @@ public class CpuPlayer : Player
                     playerActions.Add(new AttackOtherPlayerAction()
                     {
                         attackingCard = attackingCard,
-                        defendingPlayer = otherPlayer
+                        gameState = gameState,
+                        defendingPlayerType = otherPlayer.type
                     });
                 }
             }
@@ -588,16 +591,6 @@ public class CpuPlayer : Player
             return hasTarget;
         }
 
-        public bool IsDead()
-        {
-            return health <= 0;
-        }
-
-        public void TakeDamage(SimulatedCard attackingCard)
-        {
-            health -= attackingCard.damage;
-        }
-        
         public bool CanDropCardOnBoard(SimulatedCard cardToDrop)
         {
             return mana >= cardToDrop.manaCost;
@@ -740,17 +733,18 @@ public class CpuPlayer : Player
     public class AttackOtherPlayerAction : PlayerAction
     {
         public SimulatedCard attackingCard;
-        public SimulatedPlayer defendingPlayer;
+        public EPlayerType defendingPlayerType;
+        public GameState gameState;
         
         public override int ExecuteAndGetManaCost()
         {
             attackingCard.remainingAttackCount--;
-            defendingPlayer.TakeDamage(attackingCard);
+            gameState.PlayerTakeDamage(defendingPlayerType, attackingCard.damage);
             return 0;
         }
     }
     
-    public class SimulatedTurn
+    public class SimulatedTurn : GameState
     {
         // Tree
         public SimulatedTurn parentSimulatedTurn;
@@ -769,6 +763,9 @@ public class CpuPlayer : Player
         // Scoring
         public int turnCount;
         private AiDescriptionScriptable _aiDescriptionScriptable;
+        
+        // In progress
+        public GameState nextTurnGameState;
 
         // Constructors
         public SimulatedTurn(Player humanPlayer, Player cpuPlayer, AiDescriptionScriptable aiDescriptionScriptable)
@@ -784,9 +781,58 @@ public class CpuPlayer : Player
             turnCount = 0;
 
             _aiDescriptionScriptable = aiDescriptionScriptable;
+
+            var rules = humanPlayer.GameRulesScriptables;
+            base.humanPlayer = new PlayerState()
+            {
+                boardState = new BoardState()
+                {
+
+                },
+                cardMoveCost = rules.CardMoveManaCost,
+                cardSwapCost = rules.CardSwapManaCost,
+                deckState = new DeckState()
+                {
+
+                },
+                health = humanPlayer.CurrentHealth,
+                mana = humanPlayer.CurrentMana,
+                manaNextTurn = humanPlayer.CurrentMana,
+                maximumMana = rules.MaxMana,
+                minimumCardInHand = rules.MaxCardInHand,
+                turn = 0,
+                type = EPlayerType.Human
+            };
+            
+            base.cpuPlayer = new PlayerState()
+            {
+                boardState = new BoardState()
+                {
+
+                },
+                cardMoveCost = rules.CardMoveManaCost,
+                cardSwapCost = rules.CardSwapManaCost,
+                deckState = new DeckState()
+                {
+
+                },
+                health = cpuPlayer.CurrentHealth,
+                mana = cpuPlayer.CurrentMana,
+                manaNextTurn = cpuPlayer.CurrentMana,
+                maximumMana = rules.MaxMana,
+                minimumCardInHand = rules.MaxCardInHand,
+                turn = 0,
+                type = EPlayerType.Human
+            };
+
+            nextTurnGameState = new GameState()
+            {
+                humanPlayer = base.humanPlayer,
+                cpuPlayer = base.cpuPlayer
+            };
         }
         
-        public SimulatedTurn(SimulatedPlayer humanPlayer, SimulatedPlayer cpuPlayer, SimulatedTurn parentTurn, AiDescriptionScriptable aiDescriptionScriptable)
+        public SimulatedTurn(SimulatedPlayer humanPlayer, SimulatedPlayer cpuPlayer, SimulatedTurn parentTurn, AiDescriptionScriptable aiDescriptionScriptable, GameState newGameState)
         {
             simulatedHuman = humanPlayer;
             simulatedCpu = cpuPlayer;
@@ -798,6 +844,17 @@ public class CpuPlayer : Player
             turnCount = parentTurn.turnCount + 1;
 
             _aiDescriptionScriptable = aiDescriptionScriptable;
+            
+            var rules = gameRulesScriptables;
+            base.humanPlayer = newGameState.humanPlayer;
+
+            base.cpuPlayer = newGameState.cpuPlayer;
+            
+            nextTurnGameState = new GameState()
+            {
+                humanPlayer = base.humanPlayer,
+                cpuPlayer = base.cpuPlayer
+            };
         }
         
         // Simulation
@@ -805,25 +862,19 @@ public class CpuPlayer : Player
         {
             // CPU turn
             actions = new List<PlayerAction>(SimulateTurnOfPlayer(simulatedCpu, simulatedHuman, out var simulatedCpuNextTurn, out var simulatedHumanNextTurn));
-
             simulatedCpuNextTurn.manaNextTurn--;
-            if (simulatedHumanNextTurn.IsDead())
-            {
-                var finalTurn = new SimulatedTurn(simulatedHumanNextTurn, simulatedCpuNextTurn, this, _aiDescriptionScriptable);
-                return finalTurn;
-            }
-            
+
             // Human turn
             SimulateTurnOfPlayer(simulatedHumanNextTurn, simulatedCpuNextTurn, out simulatedHumanNextTurn, out simulatedCpuNextTurn);
             simulatedHumanNextTurn.manaNextTurn--;
             
-            if (simulatedCpuNextTurn.IsDead())
+            if (nextTurnGameState.IsPlayerDead(EPlayerType.CPU) || nextTurnGameState.IsPlayerDead(EPlayerType.Human))
             {
-                var finalTurn = new SimulatedTurn(simulatedHumanNextTurn, simulatedCpuNextTurn, this, _aiDescriptionScriptable);
+                var finalTurn = new SimulatedTurn(simulatedHumanNextTurn, simulatedCpuNextTurn, this, _aiDescriptionScriptable, nextTurnGameState);
                 return finalTurn;
             }
 
-            return new SimulatedTurn(simulatedHumanNextTurn, simulatedCpuNextTurn, this, _aiDescriptionScriptable).SimulateFullTurn();
+            return new SimulatedTurn(simulatedHumanNextTurn, simulatedCpuNextTurn, this, _aiDescriptionScriptable, nextTurnGameState).SimulateFullTurn();
         }
 
         public List<PlayerAction> SimulateTurnOfPlayer(SimulatedPlayer player, SimulatedPlayer otherPlayer, out SimulatedPlayer outNewPlayer, out SimulatedPlayer outNewOtherPlayer)
@@ -836,7 +887,7 @@ public class CpuPlayer : Player
             var playerActions = new List<PlayerAction>();
             playerActions.AddRange(outNewPlayer.GetInvokeCardAction());
             playerActions.AddRange(outNewPlayer.GetMoveAndSwapAction());
-            playerActions.AddRange(outNewPlayer.GetAttackAction(outNewOtherPlayer));
+            playerActions.AddRange(outNewPlayer.GetAttackAction(outNewOtherPlayer, nextTurnGameState));
 
             var actionDone = new List<PlayerAction>();
             while (playerActions.Count > 0)
@@ -852,22 +903,16 @@ public class CpuPlayer : Player
                 playerActions.Clear();
                 playerActions.AddRange(outNewPlayer.GetInvokeCardAction());
                 playerActions.AddRange(outNewPlayer.GetMoveAndSwapAction()); // TODO Optional
-                playerActions.AddRange(outNewPlayer.GetAttackAction(outNewOtherPlayer));
+                playerActions.AddRange(outNewPlayer.GetAttackAction(outNewOtherPlayer, nextTurnGameState));
             }
 
             return actionDone;
         }
-
-        // Utilities
-        public bool IsWinner()
-        {
-            return simulatedHuman.health < 0;
-        }
         
         public float GetScore()
         {
-            return (simulatedCpu.health <= 0 ? 0 : simulatedCpu.health * _aiDescriptionScriptable.ScoreCpuHealthFactor) +
-                   ((1.0f / turnCount) * _aiDescriptionScriptable.ScoreTurnCountFactor) +
+            return (GetPlayerHealth(EPlayerType.CPU) <= 0 ? 0 : GetPlayerHealth(EPlayerType.CPU) * _aiDescriptionScriptable.ScoreCpuHealthFactor) +
+                   (GetPlayerHealth(EPlayerType.CPU) <= 0 ? 0 : (1.0f / turnCount) * _aiDescriptionScriptable.ScoreTurnCountFactor) +
                    (simulatedCpu.cardLostCount * _aiDescriptionScriptable.ScoreCardLostCountFactor) +
                    (simulatedCpu.cardDestroyedCount + _aiDescriptionScriptable.ScoreCardDestroyedFactor);
         }
@@ -911,63 +956,5 @@ public class CpuPlayer : Player
         _hasFinishSimulating = true;
     }
     
-    #endregion
-
-    #region AI Utilities
-
-    private List<CardController> GetCardsToInvoke(int freeSlotCount)
-    {
-        var possibleCardToInvoke = new List<CardController>();
-        if (freeSlotCount == 0) return possibleCardToInvoke;
-        
-        foreach (var cardController in _cardsInHand)
-        {
-            if (CanDropCardOnBoard(cardController))
-            {
-                possibleCardToInvoke.Add(cardController);
-            }
-        }
-
-        possibleCardToInvoke = possibleCardToInvoke.OrderBy(x => x.cardAttack).Reverse().ToList();
-
-        var cardToInvoke = new List<CardController>();
-        
-        var mana = _currentMana;
-
-        foreach (var card in possibleCardToInvoke)
-        {
-            if (mana >= card.cardManaCost)
-            {
-                cardToInvoke.Add(card);
-                mana -= card.cardManaCost;
-
-                if (cardToInvoke.Count >= freeSlotCount)
-                {
-                    break;
-                }
-            }
-            else
-            {
-                break;
-            }
-        }
-
-        return cardToInvoke;
-    }
-
-    private List<SlotController> GetFreeSlots()
-    {
-        var result = new List<SlotController>();
-        foreach (var boardSlot in _boardSlots)
-        {
-            if (!boardSlot.containCard)
-            {
-                result.Add(boardSlot);
-            }
-        }
-
-        return result;
-    }
-
     #endregion
 }

@@ -23,6 +23,9 @@ public enum EPlayerType
 
 public class GameManager : MonoBehaviour
 {
+    [Header("Settings")] 
+    [SerializeField] private GameRulesScriptables _gameRulesScriptable;
+    
     private EGameState _gameState = EGameState.Init;
 
     public Action onGameInit;
@@ -58,6 +61,8 @@ public class GameManager : MonoBehaviour
     // Players
     private HumanPlayer _humanPlayer => FindObjectOfType<HumanPlayer>();
     private CpuPlayer _cpuPlayer => FindObjectOfType<CpuPlayer>();
+
+    public GameState gameState;
 
     public Player GetPlayer(EPlayerType playerType)
     {
@@ -210,6 +215,50 @@ public class GameManager : MonoBehaviour
 
     private void InitGame()
     {
+        gameState = new GameState()
+        {
+            cpuPlayer = new PlayerState()
+            {
+                boardState = new BoardState()
+                {
+
+                },
+                cardMoveCost = _gameRulesScriptable.CardMoveManaCost,
+                cardSwapCost = _gameRulesScriptable.CardSwapManaCost,
+                deckState = new DeckState()
+                {
+
+                },
+                health = _gameRulesScriptable.MaxHealth,
+                mana = _gameRulesScriptable.InitialMana,
+                manaNextTurn = _gameRulesScriptable.InitialMana,
+                maximumMana = _gameRulesScriptable.MaxMana,
+                minimumCardInHand = _gameRulesScriptable.MaxCardInHand,
+                turn = 0,
+                type = EPlayerType.CPU
+            },
+            humanPlayer = new PlayerState()
+            {
+                boardState = new BoardState()
+                {
+
+                },
+                cardMoveCost = _gameRulesScriptable.CardMoveManaCost,
+                cardSwapCost = _gameRulesScriptable.CardSwapManaCost,
+                deckState = new DeckState()
+                {
+
+                },
+                health = _gameRulesScriptable.MaxHealth,
+                mana = _gameRulesScriptable.InitialMana,
+                manaNextTurn = _gameRulesScriptable.InitialMana,
+                maximumMana = _gameRulesScriptable.MaxMana,
+                minimumCardInHand = _gameRulesScriptable.MaxCardInHand,
+                turn = 0,
+                type = EPlayerType.Human
+            }   
+        };
+        
         onGameInit?.Invoke();
 
         _hasFinishedInit = true;
@@ -228,6 +277,8 @@ public class GameManager : MonoBehaviour
             default:
                 throw new ArgumentOutOfRangeException(nameof(playerType), playerType, null);
         }
+        
+        gameState.StartPlayerTurn(playerType);
     }
 
     private void WaitTurnEnd(EPlayerType playerType)
