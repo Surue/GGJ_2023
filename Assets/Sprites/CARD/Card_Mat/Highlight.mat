@@ -40,12 +40,12 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FadeBurnTex:
-        m_Texture: {fileID: 2800000, guid: ba9ee0c22b6bc4f42866c494a981fe20, type: 3}
-        m_Scale: {x: 1, y: 1}
+        m_Texture: {fileID: 2800000, guid: 806e236bc12668e4da974bb8f536d28f, type: 3}
+        m_Scale: {x: 0.5, y: 0.5}
         m_Offset: {x: 0, y: 0}
     - _FadeTex:
-        m_Texture: {fileID: 2800000, guid: ba9ee0c22b6bc4f42866c494a981fe20, type: 3}
-        m_Scale: {x: 0.7, y: 0.7}
+        m_Texture: {fileID: 2800000, guid: 806e236bc12668e4da974bb8f536d28f, type: 3}
+        m_Scale: {x: 0.3, y: 0.3}
         m_Offset: {x: 0.19, y: 0.97}
     - _GlowTex:
         m_Texture: {fileID: 0}
@@ -107,7 +107,7 @@ Material:
     - _DistortTexXSpeed: -9.1
     - _DistortTexYSpeed: 5
     - _EditorDrawers: 6
-    - _FadeAmount: 0.76
+    - _FadeAmount: 0.425
     - _FadeBurnGlow: 1
     - _FadeBurnTransition: 0.01
     - _FadeBurnWidth: 0

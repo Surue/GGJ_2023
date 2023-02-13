@@ -55,55 +55,6 @@ public class DisplayCardInfo : MonoBehaviour
         {
             DestroyCardInfo();
         }
-
-
-
-        //if (layerHitName == "Slot")
-        //{
-        //    slotController = hit.transform.GetComponent<SlotController>();
-        //    if (slotController.containCard)
-        //    {
-        //        _cardController = slotController.cardController;
-        //    }
-        //    else
-        //    {
-        //        if (Input.GetMouseButtonDown(1) && currentDisplayedCard)
-        //        {
-        //            DestroyCardInfo();
-        //        }
-        //    }
-        //}
-        //else if (layerHitName == "Card")
-        //{
-        //    _cardController = hit.transform.GetComponent<CardController>();
-        //}
-        //else
-        //{
-        //    _cardController = null;
-        //    if (Input.GetMouseButtonDown(1) && currentDisplayedCard)
-        //    {
-        //        DestroyCardInfo();
-        //    }
-        //}
-        //if (_cardController)
-        //{
-        //    if (_cardController.currentCardState == CardController.CardState.onDesk || _humanPlayer.CardsInHand.Contains(_cardController))
-        //    {
-        //        if (Input.GetMouseButtonDown(1))
-        //        {
-        //            InstantiateCardInfo(_cardController);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        if (Input.GetMouseButtonDown(1) && currentDisplayedCard)
-        //        {
-        //            DestroyCardInfo();
-        //        }
-        //    }
-        //}
-
-
     }
 
     private void InstantiateCardInfo(CardController cardController)
@@ -114,13 +65,15 @@ public class DisplayCardInfo : MonoBehaviour
             Destroy(currentDisplayedCard);
         }
         currentDisplayedCard = Instantiate(cardController.gameObject, cardInfoTransform.position, cardInfoTransform.rotation, cardInfoTransform);
+        currentCardControler = currentDisplayedCard.GetComponent<CardController>();
+        currentCardControler.PlayAnimationCard("ActiveAnim");
+
+        currentCardControler.HighlightCard(Color.red);
+        currentCardControler.UnHighlightCard();
         if (!DOTween.IsTweening(cardInfoTransform))
         {
             cardInfoTransform.DOScale(_InitCardInfoScale * 1.10f, 0.25f).SetEase(EaseExtensions.FadeInFadeOutCurve);
         }
-        currentCardControler = currentDisplayedCard.GetComponent<CardController>();
-        currentCardControler.UnHighlightCard(0f);
-        currentCardControler.PlayAnimationCard("ActiveAnim");
         Collider cardCollider = currentDisplayedCard.GetComponent<Collider>();
         cardCollider.enabled = false;
 
