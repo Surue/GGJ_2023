@@ -266,6 +266,8 @@ public class GameManager : MonoBehaviour
 
     private void StartTurn(EPlayerType playerType)
     {
+        gameState.StartPlayerTurn(playerType);
+        
         switch (playerType)
         {
             case EPlayerType.Human:
@@ -277,8 +279,6 @@ public class GameManager : MonoBehaviour
             default:
                 throw new ArgumentOutOfRangeException(nameof(playerType), playerType, null);
         }
-        
-        gameState.StartPlayerTurn(playerType);
     }
 
     private void WaitTurnEnd(EPlayerType playerType)

@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
     public EPlayerType PlayerType => _playerType;
 
     public DeckScriptable DeckScriptable => _deckScriptable;
-    public GameRulesScriptables GameRulesScriptables => _gameRules;
+    public GameRulesScriptables GameRulesScriptable => _gameRules;
     
     // Board objects
     [Header("Object on board")]
@@ -41,8 +41,6 @@ public class Player : MonoBehaviour
     
     protected bool _isPlaying;
 
-    private int _cardInHands;
-    
     public AnimationCurve attackCurve;
     
     // Deck
@@ -58,15 +56,10 @@ public class Player : MonoBehaviour
     
     // Health
     public int CurrentHealth => _gameManager.gameState.GetPlayerHealth(_playerType);
-
     public Action<int, int> OnHealthChanged;
     
     // Mana
-    private int _previousManaGain;
-    public int PreviousMana => _previousManaGain;
-    protected int _currentMana;
-    public int CurrentMana => _currentMana;
-
+    public int CurrentMana => _gameManager.gameState.GetPlayerMana(_playerType);
     public Action<int, int> OnManaChanged;
     
     // Other player
@@ -94,9 +87,6 @@ public class Player : MonoBehaviour
         _cardsOnBoard = new List<CardController>();
         _cardsDiscarded = new List<CardController>();
 
-        _currentMana = _gameRules.InitialMana;
-        _previousManaGain = _currentMana;
-
         foreach (var player in FindObjectsOfType<Player>())
         {
             if(player == this) continue;
@@ -108,8 +98,6 @@ public class Player : MonoBehaviour
         {
             _boardSlots[i].Setup(i);
         }
-
-        _cardInHands = _gameRules.MaxCardInHand;
     }
 
     private void Init()
@@ -126,7 +114,7 @@ public class Player : MonoBehaviour
         FillHand();
 
         OnHealthChanged(CurrentHealth, _gameRules.MaxHealth);
-        OnManaChanged(_currentMana, _gameRules.MaxMana);
+        OnManaChanged(CurrentMana, _gameRules.MaxMana);
     }
 
     protected void ResetCardStartTurn()
@@ -144,18 +132,8 @@ public class Player : MonoBehaviour
                 effect.Execute();
             }
         }
-    }
 
-    protected void AddManaStartTurn()
-    {
-        _currentMana = _previousManaGain;
-        
-        OnManaChanged(_currentMana, _gameRules.MaxMana);
-        
-        if (_previousManaGain < _gameRules.MaxMana)
-        {
-            _previousManaGain++;
-        }
+        OnManaChanged(CurrentMana, _gameRules.MaxMana);
     }
 
     protected void FillHand()
@@ -257,17 +235,17 @@ public class Player : MonoBehaviour
 
     protected bool CanSwapCards(CardController cardToMove, SlotController slotController)
     {
-        return (_currentMana >= _gameRules.CardSwapManaCost || cardToMove.HasFreeMovement()) && GetSlotPossibleToMoveTo(cardToMove).Contains(slotController);
+        return (CurrentMana >= _gameRules.CardSwapManaCost || cardToMove.HasFreeMovement()) && GetSlotPossibleToMoveTo(cardToMove).Contains(slotController);
     }
     
     protected bool CanDropCardOnBoard(CardController cardToDrop)
     {
-        return _currentMana >= cardToDrop.cardManaCost;
+        return CurrentMana >= cardToDrop.cardManaCost;
     }
 
     protected bool CanMoveCardOnBoard(CardController cardToMove, SlotController slotController)
     {
-        return (_currentMana >= _gameRules.CardMoveManaCost || cardToMove.HasFreeMovement()) && GetSlotPossibleToMoveTo(cardToMove).Contains(slotController);
+        return (CurrentMana >= _gameRules.CardMoveManaCost || cardToMove.HasFreeMovement()) && GetSlotPossibleToMoveTo(cardToMove).Contains(slotController);
     }
     
     protected void MoveCardOnBoard(CardController cardToMove, SlotController slot)
@@ -331,8 +309,8 @@ public class Player : MonoBehaviour
 
     private void UseMana(int manaCost)
     {
-        _currentMana -= manaCost;
-        OnManaChanged(_currentMana, _gameRules.MaxMana);
+        _gameManager.gameState.PlayerUseMana(_playerType, manaCost);
+        OnManaChanged(CurrentMana, _gameRules.MaxMana);
     }
 
     protected IEnumerator AttackOtherPlayer(CardController attackingCard)
@@ -834,7 +812,7 @@ public class Player : MonoBehaviour
 
     public void ReduceMaxDrawnCard(int amount)
     {
-        _cardInHands -= amount;
+        throw new NotImplementedException();
     }
 
     public void DrawCard()

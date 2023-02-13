@@ -152,7 +152,6 @@ public class CpuPlayer : Player
 
     private void StartTurn()
     {
-        AddManaStartTurn();
         FillHand();
         ResetCardStartTurn();
         
@@ -247,10 +246,7 @@ public class CpuPlayer : Player
     
     public class SimulatedPlayer 
     {
-        public int mana;
-
         public int minimumCardInHand;
-        public int manaNextTurn;
         
         public List<SimulatedCard> cardsInHand = new ();
         public Queue<SimulatedCard> cardsInDeck = new();
@@ -260,7 +256,7 @@ public class CpuPlayer : Player
 
         public GameRulesScriptables gameRulesScriptable;
 
-        public EPlayerType type;
+        public EPlayerType playerType;
 
         public int cardLostCount = 0;
         public int cardDestroyedCount = 0;
@@ -294,22 +290,14 @@ public class CpuPlayer : Player
                 newCard.simulatedSlot = simulatedSlots[cardController.slotController.slotID];
             }
 
-            gameRulesScriptable = player.GameRulesScriptables;
+            gameRulesScriptable = player.GameRulesScriptable;
             minimumCardInHand = gameRulesScriptable.MaxCardInHand;
-            manaNextTurn = player.PreviousMana;
             
-            
-            mana = player.CurrentMana;
-            manaNextTurn = player.PreviousMana;
-
-            type = player.PlayerType;
+            playerType = player.PlayerType;
         }
         
         public SimulatedPlayer(SimulatedPlayer player)
         {
-            mana = player.mana;
-            manaNextTurn = player.manaNextTurn + 1;
-
             minimumCardInHand = player.minimumCardInHand;
         
             cardsInHand = player.cardsInHand.ToList();
@@ -323,7 +311,7 @@ public class CpuPlayer : Player
             cardLostCount = player.cardLostCount;
             cardDestroyedCount = player.cardDestroyedCount;
 
-            type = player.type;
+            playerType = player.playerType;
         }
 
         public void StartTurn()
@@ -337,13 +325,6 @@ public class CpuPlayer : Player
                 }
             }
 
-            // Increase mana
-            mana = manaNextTurn;
-            if (mana > gameRulesScriptable.MaxMana)
-            {
-                mana = gameRulesScriptable.MaxMana;
-            }
-            
             // Reset remaining attack
             foreach (var simulatedCard in cardsOnBoard)
             {
@@ -351,13 +332,13 @@ public class CpuPlayer : Player
             }
         }
         
-        public List<PlayerAction> GetInvokeCardAction()
+        public List<PlayerAction> GetInvokeCardAction(GameState gameState)
         {
             var possibleCardToInvoke = new List<SimulatedCard>();
             
             foreach (var cardController in cardsInHand)
             {
-                if (CanDropCardOnBoard(cardController))
+                if (gameState.CanPlayerDropCardOnBoard(playerType, cardController.manaCost))
                 {
                     possibleCardToInvoke.Add(cardController);
                 }
@@ -433,7 +414,7 @@ public class CpuPlayer : Player
             return result;
         }
         
-        public List<PlayerAction> GetMoveAndSwapAction()
+        public List<PlayerAction> GetMoveAndSwapAction(GameState gameState)
         {
             var playerActions = new List<PlayerAction>();
             
@@ -445,7 +426,7 @@ public class CpuPlayer : Player
                 var possibleSlots = GetPossibleSlot(card);
                 foreach (var slot in possibleSlots)
                 {
-                    if (slot.HasCard() && CanSwapCard()) // Swap
+                    if (slot.HasCard() && gameState.CanPlayerSwapCard(playerType)) // Swap
                     {
                         playerActions.Add(new SwapCardsPlayerAction()
                         {
@@ -454,7 +435,7 @@ public class CpuPlayer : Player
                             gameRulesScriptable = gameRulesScriptable
                         });
                     }
-                    else if (!slot.HasCard() && CanMoveCard()) // Move
+                    else if (!slot.HasCard() && gameState.CanPlayerMoveCard(playerType)) // Move
                     {
                         playerActions.Add(new MovePlayerAction()
                         {
@@ -492,7 +473,7 @@ public class CpuPlayer : Player
                     {
                         attackingCard = attackingCard,
                         gameState = gameState,
-                        defendingPlayerType = otherPlayer.type
+                        defendingPlayerType = otherPlayer.playerType
                     });
                 }
             }
@@ -589,21 +570,6 @@ public class CpuPlayer : Player
             }
 
             return hasTarget;
-        }
-
-        public bool CanDropCardOnBoard(SimulatedCard cardToDrop)
-        {
-            return mana >= cardToDrop.manaCost;
-        }
-        
-        public bool CanMoveCard()
-        {
-            return mana >= gameRulesScriptable.CardMoveManaCost;
-        }
-        
-        public bool CanSwapCard()
-        {
-            return mana > gameRulesScriptable.CardSwapManaCost;
         }
 
         public bool CanAttack(SimulatedCard simulatedCard)
@@ -770,7 +736,7 @@ public class CpuPlayer : Player
         // Constructors
         public SimulatedTurn(Player humanPlayer, Player cpuPlayer, AiDescriptionScriptable aiDescriptionScriptable)
         {
-            gameRulesScriptables = humanPlayer.GameRulesScriptables;
+            gameRulesScriptables = humanPlayer.GameRulesScriptable;
             simulatedDeck = humanPlayer.DeckScriptable;
             simulatedDeck = humanPlayer.DeckScriptable;
             
@@ -782,7 +748,7 @@ public class CpuPlayer : Player
 
             _aiDescriptionScriptable = aiDescriptionScriptable;
 
-            var rules = humanPlayer.GameRulesScriptables;
+            var rules = humanPlayer.GameRulesScriptable;
             base.humanPlayer = new PlayerState()
             {
                 boardState = new BoardState()
@@ -797,7 +763,7 @@ public class CpuPlayer : Player
                 },
                 health = humanPlayer.CurrentHealth,
                 mana = humanPlayer.CurrentMana,
-                manaNextTurn = humanPlayer.CurrentMana,
+                manaNextTurn = humanPlayer.CurrentMana + 1, // Human has already played
                 maximumMana = rules.MaxMana,
                 minimumCardInHand = rules.MaxCardInHand,
                 turn = 0,
@@ -861,12 +827,14 @@ public class CpuPlayer : Player
         public SimulatedTurn SimulateFullTurn()
         {
             // CPU turn
+            cpuPlayer.StartTurn();
+            nextTurnGameState.cpuPlayer.StartTurn();
             actions = new List<PlayerAction>(SimulateTurnOfPlayer(simulatedCpu, simulatedHuman, out var simulatedCpuNextTurn, out var simulatedHumanNextTurn));
-            simulatedCpuNextTurn.manaNextTurn--;
 
             // Human turn
+            humanPlayer.StartTurn();
+            nextTurnGameState.humanPlayer.StartTurn();
             SimulateTurnOfPlayer(simulatedHumanNextTurn, simulatedCpuNextTurn, out simulatedHumanNextTurn, out simulatedCpuNextTurn);
-            simulatedHumanNextTurn.manaNextTurn--;
             
             if (nextTurnGameState.IsPlayerDead(EPlayerType.CPU) || nextTurnGameState.IsPlayerDead(EPlayerType.Human))
             {
@@ -885,8 +853,8 @@ public class CpuPlayer : Player
             outNewPlayer.StartTurn();
             
             var playerActions = new List<PlayerAction>();
-            playerActions.AddRange(outNewPlayer.GetInvokeCardAction());
-            playerActions.AddRange(outNewPlayer.GetMoveAndSwapAction());
+            playerActions.AddRange(outNewPlayer.GetInvokeCardAction(this));
+            playerActions.AddRange(outNewPlayer.GetMoveAndSwapAction(this));
             playerActions.AddRange(outNewPlayer.GetAttackAction(outNewOtherPlayer, nextTurnGameState));
 
             var actionDone = new List<PlayerAction>();
@@ -897,12 +865,12 @@ public class CpuPlayer : Player
                 actionDone.Add(action);
                 
                 var mana = action.ExecuteAndGetManaCost();
-                outNewPlayer.mana -= mana;
+                PlayerUseMana(outNewPlayer.playerType, mana);
                 
                 // Check for remaining action
                 playerActions.Clear();
-                playerActions.AddRange(outNewPlayer.GetInvokeCardAction());
-                playerActions.AddRange(outNewPlayer.GetMoveAndSwapAction()); // TODO Optional
+                playerActions.AddRange(outNewPlayer.GetInvokeCardAction(this));
+                playerActions.AddRange(outNewPlayer.GetMoveAndSwapAction(this)); // TODO Optional
                 playerActions.AddRange(outNewPlayer.GetAttackAction(outNewOtherPlayer, nextTurnGameState));
             }
 
@@ -930,8 +898,6 @@ public class CpuPlayer : Player
         while (timer < _aiDescriptionScriptable.MaxTComputationTime)
         {
             var initialTurn = new SimulatedTurn(humanPlayer, this, _aiDescriptionScriptable);
-            initialTurn.simulatedCpu.manaNextTurn -= 2;
-            initialTurn.simulatedHuman.manaNextTurn -= 2;
             _endSimulationTurn.Add(initialTurn.SimulateFullTurn());
             timer += Time.deltaTime;
             yield return null;

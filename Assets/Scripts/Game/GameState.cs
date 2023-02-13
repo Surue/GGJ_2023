@@ -71,14 +71,14 @@ public struct PlayerState
     // Mana
     public int mana;
     public int manaNextTurn;
-    public int maximumMana;
+    public int maximumMana; // TODO Const
     public int health;
 
-    public int minimumCardInHand;
+    public int minimumCardInHand; // TODO Const
     public int turn;
 
-    public int cardMoveCost;
-    public int cardSwapCost;
+    public int cardMoveCost; // TODO Const
+    public int cardSwapCost; // TODO Const
 
     public EPlayerType type;
 
@@ -92,6 +92,21 @@ public struct PlayerState
     public void TakeDamage(int damage)
     {
         health -= damage;
+    }
+    
+    public bool CanDropCardOnBoard(int cardToDropManaCost)
+    {
+        return mana >= cardToDropManaCost;
+    }
+        
+    public bool CanMoveCard()
+    {
+        return mana >= cardMoveCost;
+    }
+        
+    public bool CanSwapCard()
+    {
+        return mana > cardSwapCost;
     }
 }
 
@@ -128,6 +143,34 @@ public class GameState
                 throw new ArgumentOutOfRangeException(nameof(type), type, null);
         }
     }
+    
+    public int GetPlayerMana(EPlayerType type)
+    {
+        switch (type)
+        {
+            case EPlayerType.Human:
+                return humanPlayer.mana;
+            case EPlayerType.CPU:
+                return cpuPlayer.mana;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(type), type, null);
+        }
+    }
+
+    public void PlayerUseMana(EPlayerType type, int manaUsed)
+    {
+        switch (type)
+        {
+            case EPlayerType.Human:
+                humanPlayer.mana -= manaUsed;
+                break;
+            case EPlayerType.CPU: 
+                cpuPlayer.mana -= manaUsed;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(type), type, null);
+        }
+    }
 
     public void PlayerTakeDamage(EPlayerType type, int damage)
     {
@@ -152,6 +195,45 @@ public class GameState
                 return humanPlayer.health <= 0;
             case EPlayerType.CPU:
                 return cpuPlayer.health <= 0;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(type), type, null);
+        }
+    }
+    
+    public bool CanPlayerDropCardOnBoard(EPlayerType type, int cardToDropManaCost)
+    {
+        switch (type)
+        {
+            case EPlayerType.Human:
+                return humanPlayer.CanDropCardOnBoard(cardToDropManaCost);
+            case EPlayerType.CPU:
+                return cpuPlayer.CanDropCardOnBoard(cardToDropManaCost);
+            default:
+                throw new ArgumentOutOfRangeException(nameof(type), type, null);
+        }
+    }
+        
+    public bool CanPlayerMoveCard(EPlayerType type)
+    {
+        switch (type)
+        {
+            case EPlayerType.Human:
+                return humanPlayer.CanMoveCard();
+            case EPlayerType.CPU:
+                return cpuPlayer.CanMoveCard();
+            default:
+                throw new ArgumentOutOfRangeException(nameof(type), type, null);
+        }
+    }
+        
+    public bool CanPlayerSwapCard(EPlayerType type)
+    {
+        switch (type)
+        {
+            case EPlayerType.Human:
+                return humanPlayer.CanSwapCard();
+            case EPlayerType.CPU:
+                return cpuPlayer.CanSwapCard();
             default:
                 throw new ArgumentOutOfRangeException(nameof(type), type, null);
         }

@@ -64,7 +64,6 @@ private RaycastHit _hit;
         GameManager.Instance.onHumanTurnStarted += StartTurn;
         GameManager.Instance.onHumanTurnStarted += FillHand;
         GameManager.Instance.onHumanTurnStarted += ResetCardStartTurn;
-        GameManager.Instance.onHumanTurnStarted += AddManaStartTurn;
         GameManager.Instance.onHumanTurnFinished += EndTurn;
         _isPlaying = false;
     }
@@ -152,8 +151,8 @@ private RaycastHit _hit;
 
             // Check if player click on a slot
             if ((CanDropCardOnBoard(_slotCardController) 
-                 || _currentMana >= _gameRules.CardMoveManaCost  // Movement cost
-                 || _currentMana >= _gameRules.CardSwapManaCost // Swap cost
+                 || CurrentMana >= _gameRules.CardMoveManaCost  // Movement cost
+                 || CurrentMana >= _gameRules.CardSwapManaCost // Swap cost
                  || _slotCardController.HasFreeMovement()
                  || _slotCardController.CanAttackOtherPlayer()) 
                  && Input.GetMouseButtonDown(0) 
