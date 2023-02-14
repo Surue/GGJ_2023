@@ -29,39 +29,46 @@ public class MainUI : MonoBehaviour
     
     void Start()
     {
+        var gameManager = GameManager.Instance;
+        gameManager.onGameInit += OnGameInit;
+    }
+
+    private void OnGameInit()
+    {
+        var gameManager = GameManager.Instance;
+        gameManager.onCpuTurnStarted += OnCpuStartTurn;
+        gameManager.onHumanTurnStarted += OnHumanStartTurn;
+        gameManager.onGameEnded += EndGame;
+        
         _humanPlayer = FindObjectOfType<HumanPlayer>();
         
-        _humanPlayer.OnHealthChanged += UpdateHealthHuman;
-        _humanPlayer.OnManaChanged += UpdateManaHuman;
+        gameManager.gameState.humanPlayer.OnHealthChanged += UpdateHealthHuman;
+        gameManager.gameState.RegisterCallbackOnManaChange(EPlayerType.Human, UpdateManaHuman);
         
         _nextTurn.onClick.AddListener(_humanPlayer.NextTurn);
 
         _cpuPlayer = FindObjectOfType<CpuPlayer>();
 
-        _cpuPlayer.OnHealthChanged += UpdateHealthCpu;
-        _cpuPlayer.OnManaChanged += UpdateManaCpu;
-
-        GameManager.Instance.onCpuTurnStarted += OnCpuStartTurn;
-        GameManager.Instance.onHumanTurnStarted += OnHumanStartTurn;
-        GameManager.Instance.onGameEnded += EndGame;
+        gameManager.gameState.cpuPlayer.OnHealthChanged += UpdateHealthCpu;
+        gameManager.gameState.RegisterCallbackOnManaChange(EPlayerType.CPU, UpdateManaCpu);
     }
 
-    private void UpdateHealthHuman(int newHealth, int maxHealth)
+    private void UpdateHealthHuman(int newHealth)
     {
         _healthTextPlayer.SetText($"{newHealth}");  
     }
 
-    private void UpdateManaHuman(int newMana, int maxMana)
+    private void UpdateManaHuman(int newMana)
     {
         _manaTextPlayer.SetText($"{newMana}");  
     }
 
-    private void UpdateHealthCpu(int newHealth, int maxHealth)
+    private void UpdateHealthCpu(int newHealth)
     {
         _healthTextCpu.SetText($"{newHealth}");
     }
 
-    private void UpdateManaCpu(int newMana, int maxMana)
+    private void UpdateManaCpu(int newMana)
     {
         _manaTextCpu.SetText($"{newMana}");
     }

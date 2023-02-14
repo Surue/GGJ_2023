@@ -47,20 +47,16 @@ public class Player : MonoBehaviour
     protected Queue<CardController> _cardsInDeck;
     protected List<CardController> _cardsInHand;
     protected List<CardController> _cardsOnBoard;
-    protected List<CardController> _cardsDiscarded;
     
     public Queue<CardController> CardsInDeck => _cardsInDeck;
     public List<CardController> CardsInHand => _cardsInHand;
     public List<CardController> CardsOnBoard => _cardsOnBoard;
-    public List<CardController> CardsDiscarded => _cardsDiscarded;
     
     // Health
     public int CurrentHealth => _gameManager.gameState.GetPlayerHealth(_playerType);
-    public Action<int, int> OnHealthChanged;
     
     // Mana
     public int CurrentMana => _gameManager.gameState.GetPlayerMana(_playerType);
-    public Action<int, int> OnManaChanged;
     
     // Other player
     private Player _otherPlayer;
@@ -85,7 +81,6 @@ public class Player : MonoBehaviour
 
         _cardsInHand = new List<CardController>();
         _cardsOnBoard = new List<CardController>();
-        _cardsDiscarded = new List<CardController>();
 
         foreach (var player in FindObjectsOfType<Player>())
         {
@@ -112,9 +107,6 @@ public class Player : MonoBehaviour
         }
         
         FillHand();
-
-        OnHealthChanged(CurrentHealth, _gameRules.MaxHealth);
-        OnManaChanged(CurrentMana, _gameRules.MaxMana);
     }
 
     protected void ResetCardStartTurn()
@@ -132,8 +124,6 @@ public class Player : MonoBehaviour
                 effect.Execute();
             }
         }
-
-        OnManaChanged(CurrentMana, _gameRules.MaxMana);
     }
 
     protected void FillHand()
@@ -155,7 +145,6 @@ public class Player : MonoBehaviour
     protected virtual void TakeDamage(CardController attackingCard)
     {
         _gameManager.gameState.PlayerTakeDamage(_playerType, attackingCard.cardAttack);
-        OnHealthChanged(_gameManager.gameState.GetPlayerHealth(_playerType), _gameRules.MaxHealth);
 
         _lifeIcon.transform.DOScale(transform.localScale * 1.35f, 0.25f).SetEase(EaseExtensions.FadeInFadeOutCurve);
         _playerCharacterIllu.DOColor(Color.red, 0.25f).SetEase(EaseExtensions.FadeInFadeOutCurve).From(Color.white);
@@ -237,11 +226,6 @@ public class Player : MonoBehaviour
     {
         return (CurrentMana >= _gameRules.CardSwapManaCost || cardToMove.HasFreeMovement()) && GetSlotPossibleToMoveTo(cardToMove).Contains(slotController);
     }
-    
-    protected bool CanDropCardOnBoard(CardController cardToDrop)
-    {
-        return CurrentMana >= cardToDrop.cardManaCost;
-    }
 
     protected bool CanMoveCardOnBoard(CardController cardToMove, SlotController slotController)
     {
@@ -310,7 +294,6 @@ public class Player : MonoBehaviour
     private void UseMana(int manaCost)
     {
         _gameManager.gameState.PlayerUseMana(_playerType, manaCost);
-        OnManaChanged(CurrentMana, _gameRules.MaxMana);
     }
 
     protected IEnumerator AttackOtherPlayer(CardController attackingCard)
@@ -620,16 +603,6 @@ public class Player : MonoBehaviour
     private List<CardController> GetColumnInFront(CardController cardController)
     {
         return _otherPlayer.GetColumn(GetColumnIdOfOtherPlayer(cardController.slotController.columnID));
-    }
-    
-    protected bool IsInFront(CardController cardController)
-    {
-        return cardController.slotController.boardLineType == EBoardLineType.Front;
-    }
-    
-    protected bool IsInBack(CardController cardController)
-    {
-        return cardController.slotController.boardLineType == EBoardLineType.Back;
     }
 
     protected bool TryGetCardInFront(CardController cardController, out CardController result)

@@ -259,8 +259,10 @@ public class GameManager : MonoBehaviour
             }   
         };
         
+        
         onGameInit?.Invoke();
 
+        gameState.Init();
         _hasFinishedInit = true;
     }
 
