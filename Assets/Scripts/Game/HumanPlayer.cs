@@ -236,6 +236,8 @@ private RaycastHit _hit;
         var layerHitName = CheckRaycastHit();
 
         var possibleSlotToMoveTo = GetSlotPossibleToMoveTo(_slotCardController);
+
+        var possibleSlotToAttackTo = GetPossibleCardToAttack(_slotCardController);
         
         foreach (var boardSlot in _boardSlots)
         {
@@ -244,6 +246,10 @@ private RaycastHit _hit;
         foreach (var boardSlot in possibleSlotToMoveTo)
         {
             boardSlot.SetHighlighted(true);
+        }
+        foreach (var boardSlot in possibleSlotToAttackTo)
+        {
+            boardSlot.slotController.SetHighlighted(true, boardSlot.slotController.attackColor);
         }
 
         
@@ -258,7 +264,11 @@ private RaycastHit _hit;
             {
                 boardSlot.SetHighlighted(false);
             }
-            
+            foreach (var boardSlot in possibleSlotToAttackTo)
+            {
+                boardSlot.slotController.SetHighlighted(false);
+            }
+
             ResetLine();
             return;
         }
@@ -293,6 +303,10 @@ private RaycastHit _hit;
                         foreach (var boardSlot in _boardSlots)
                         {
                             boardSlot.SetHighlighted(false);
+                        }
+                        foreach (var boardSlot in possibleSlotToAttackTo)
+                        {
+                            boardSlot.slotController.SetHighlighted(false);
                         }
                     }
                 }
@@ -350,6 +364,10 @@ private RaycastHit _hit;
                         _lineRenderer.enabled = false;
                         _lineIconRenderer.gameObject.SetActive(false);
                         _lineCrossHair.gameObject.SetActive(false);
+                        foreach (var boardSlot in possibleSlotToAttackTo)
+                        {
+                            boardSlot.slotController.SetHighlighted(false);
+                        }
                     }
                 }
                 else if(!_slotCardController.AttackSingleTarget()) // Target multiple cards
@@ -397,6 +415,10 @@ private RaycastHit _hit;
                     _lineRenderer.enabled = false;
                     _lineIconRenderer.gameObject.SetActive(false);
                     _lineCrossHair.gameObject.SetActive(false);
+                    foreach (var boardSlot in possibleSlotToAttackTo)
+                    {
+                        boardSlot.slotController.SetHighlighted(false);
+                    }
                 }
             }
         }

@@ -8,6 +8,8 @@ public class SlotController : MonoBehaviour
     [Header("PARAMETERS")]
     public bool containCard = false;
     public GameObject highlight;
+    public Color attackColor;
+    public Color movementColor;
     public SpriteRenderer spriteRenderer;
     [SerializeField] private EPlayerType playerType;
     public EPlayerType PlayerType => playerType;
@@ -53,7 +55,18 @@ public class SlotController : MonoBehaviour
             highlight.GetComponent<MeshRenderer>().material.SetFloat("_GlobalAlpha", containCard ? 1f : 0.39f);
         }
     }
-    
+    public void SetHighlighted(bool enabled, Color highlightColor)
+    {
+        spriteRenderer.DOFade(enabled ? 0.8f : 0.1f, 0.4f);
+        highlight.SetActive(enabled);
+
+        if (enabled)
+        {
+            highlight.GetComponent<MeshRenderer>().material.SetFloat("_GlobalAlpha", containCard ? 1f : 0.39f);
+            highlight.GetComponent<MeshRenderer>().material.SetColor("_Color", containCard ? highlightColor : highlightColor);
+        }
+    }
+
 #if UNITY_EDITOR
     void OnDrawGizmosSelected()
     {

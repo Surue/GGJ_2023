@@ -497,6 +497,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   containCard: 0
   highlight: {fileID: 1939839579}
+  attackColor: {r: 1, g: 0.6745098, b: 0, a: 0}
+  movementColor: {r: 1, g: 1, b: 1, a: 0}
   spriteRenderer: {fileID: 6359309897681464500}
   playerType: 0
   arrowSize: 0.5
