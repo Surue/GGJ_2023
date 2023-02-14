@@ -256,7 +256,7 @@ public class CardController : MonoBehaviour, ITargetable
     
     public bool CanAttackOtherPlayer()
     {
-        return _remainingAttackCharge > 0 && slotController.boardLineType == EBoardLineType.Front;
+        return _remainingAttackCharge > 0 && (slotController.boardLineType == EBoardLineType.Front || CardScriptable.AttackScriptable.AttackType == EAttackType.FrontAndBack);
     }
 
     public bool HasAttacked()
