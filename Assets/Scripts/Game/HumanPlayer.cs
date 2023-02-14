@@ -27,9 +27,10 @@ public class HumanPlayer : Player
     [Header("CPU INFOS")]
     [SerializeField] private Transform _CPUTransform;
     [SerializeField] private Collider _CPUHitCollider;
+    [SerializeField] private GameObject _CPUHitHighlight;
 
-// Raycast
-private RaycastHit _hit;
+    // Raycast
+    private RaycastHit _hit;
     private Transform _cardTransform;
     
     // Board
@@ -100,6 +101,8 @@ private RaycastHit _hit;
 
     private void OnFreeState()
     {
+        _CPUHitCollider.enabled = false;
+        _CPUHitHighlight.SetActive(false);
         // Check if player hover card in hands
         if (CheckRaycastHit() == "Card")
         {
@@ -340,6 +343,10 @@ private RaycastHit _hit;
                         _lineRenderer.enabled = false;
                         _lineIconRenderer.gameObject.SetActive(false);
                         _lineCrossHair.gameObject.SetActive(false);
+                        foreach (var boardSlot in possibleSlotToAttackTo)
+                        {
+                            boardSlot.slotController.SetHighlighted(false);
+                        }
                     }
                 }
                 else
@@ -399,6 +406,8 @@ private RaycastHit _hit;
         else if (_slotCardController.CanAttackOtherPlayer() && GetPossibleCardToAttack(_slotCardController).Count == 0) // Attack player
         {
             _CPUHitCollider.enabled = true;
+            _CPUHitHighlight.SetActive(true);
+
             CheckRaycastHit();
             if (layerHitName == "AttackZone")
             {
