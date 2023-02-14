@@ -15,8 +15,7 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 0}
+    ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -38,8 +37,8 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: Owner
-      Entry: 10
-      Data: 0
+      Entry: 6
+      Data: 
     - Name: OverrideDescription
       Entry: 5
       Data: false
@@ -85,8 +84,8 @@ MonoBehaviour:
   cardName: "J\xF6rmungand"
   cardDescription: Deal <b><color=#FFAC00>2 Damage</color> to all enemies</b> when
     invoked.
-  initialManaCost: 9
-  _attackScriptable: {fileID: 11400000, guid: bffcf0f6a28f8354caa5ebd156c5f66f, type: 2}
+  initialManaCost: 7
+  _attackScriptable: {fileID: 11400000, guid: dcfa1d123f968a54d92838d70e28a79f, type: 2}
   _movementDescriptionScriptable: {fileID: 11400000, guid: 0084bb0bef187704b84009fc533dffec, type: 2}
   IsBig: 1
   initialHealth: 11

@@ -15,8 +15,7 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 0}
+    ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -38,11 +37,11 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: Owner
-      Entry: 10
-      Data: 0
+      Entry: 6
+      Data: 
     - Name: Amount
       Entry: 3
-      Data: 2
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
@@ -68,11 +67,11 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: Owner
-      Entry: 10
-      Data: 0
+      Entry: 6
+      Data: 
     - Name: Amount
       Entry: 3
-      Data: 2
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
@@ -98,7 +97,7 @@ MonoBehaviour:
   cardDescription: Each turn, gives  <b><color=#F01D22>+2 HP</color></b> to adjacents
     allies.
   initialManaCost: 5
-  _attackScriptable: {fileID: 11400000, guid: 3f0891cbd694dfa45b6eadad08385c55, type: 2}
+  _attackScriptable: {fileID: 11400000, guid: 9b4ddbaa6e21e1e40beb7ce740fad394, type: 2}
   _movementDescriptionScriptable: {fileID: 11400000, guid: 0084bb0bef187704b84009fc533dffec, type: 2}
   IsBig: 0
-  initialHealth: 9
+  initialHealth: 4

@@ -28,7 +28,7 @@ MonoBehaviour:
   - cardPrefab: {fileID: 4818621042777980020, guid: 3798aa3d7c6dd84439c8bc709f6d2828, type: 3}
     cardQuantity: 2
   - cardPrefab: {fileID: 4818621042777980020, guid: 5b0fabb2c8be6014ba1f97e7bac960a4, type: 3}
-    cardQuantity: 1
+    cardQuantity: 2
   - cardPrefab: {fileID: 4818621042777980020, guid: 8a9d49a904a07164a9171f3e313f2751, type: 3}
     cardQuantity: 2
   - cardPrefab: {fileID: 4818621042777980020, guid: 17fae7297b7501844bc8e19b48f3a56d, type: 3}
@@ -36,6 +36,6 @@ MonoBehaviour:
   - cardPrefab: {fileID: 4818621042777980020, guid: c73ea21a314fc7142993544a4ca99c78, type: 3}
     cardQuantity: 2
   - cardPrefab: {fileID: 4818621042777980020, guid: 12389b3f90700c54fbe6db1ac559b309, type: 3}
-    cardQuantity: 3
+    cardQuantity: 2
   - cardPrefab: {fileID: 4818621042777980020, guid: 2d6f5f3764f16dc42a50e2286efc0f9a, type: 3}
-    cardQuantity: 1
+    cardQuantity: 2
