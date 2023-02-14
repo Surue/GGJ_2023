@@ -24,11 +24,7 @@ public class GUI_CardDisplay : MonoBehaviour
 
         if (gameManager != null)
         {
-            var player = gameManager.GetPlayer(cardController.Owner);
-            if (player != null)
-            {
-                player.OnManaChanged -= OnManaChanged;
-            }
+            gameManager.gameState.RemoveCallbackOnManaChange(cardController.Owner, OnManaChanged);
         }
     }
 
@@ -36,7 +32,8 @@ public class GUI_CardDisplay : MonoBehaviour
     {
         // Setup Infos
         nameText.text = cardController.CardScriptable.cardName;
-        GameManager.Instance.GetPlayer(cardController.Owner).OnManaChanged += OnManaChanged;
+        var gameManager = GameManager.Instance;
+        gameManager.gameState.RegisterCallbackOnManaChange(cardController.Owner, OnManaChanged);
 
             
         descriptionText.text = cardController.CardScriptable.cardDescription;
@@ -60,7 +57,7 @@ public class GUI_CardDisplay : MonoBehaviour
         }
     }
 
-    private void OnManaChanged(int currentMana, int maxMana)
+    private void OnManaChanged(int currentMana)
     {
         if (cardController.currentCardState == CardController.CardState.inHand)
             manaText.color = Color.white;

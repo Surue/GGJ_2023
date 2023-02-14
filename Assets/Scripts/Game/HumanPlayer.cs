@@ -128,7 +128,7 @@ private RaycastHit _hit;
         // Check if player select card in hands
         if (Input.GetMouseButtonDown(0))
         {
-            if (activeCardController != null && CanDropCardOnBoard(activeCardController) &&
+            if (activeCardController != null && GameManager.Instance.gameState.CanPlayerDropCardOnBoard(_playerType, activeCardController.cardManaCost) &&
                 activeCardController.isInteractible)
             {
                 SetCardWaiting(activeCardController);
@@ -150,7 +150,7 @@ private RaycastHit _hit;
             _slotCardController = _slotController.cardController;
 
             // Check if player click on a slot
-            if ((CanDropCardOnBoard(_slotCardController) 
+            if ((GameManager.Instance.gameState.CanPlayerDropCardOnBoard(_playerType, _slotCardController.cardManaCost) 
                  || CurrentMana >= _gameRules.CardMoveManaCost  // Movement cost
                  || CurrentMana >= _gameRules.CardSwapManaCost // Swap cost
                  || _slotCardController.HasFreeMovement()
@@ -198,7 +198,7 @@ private RaycastHit _hit;
             _boardSlot = _hit.transform.gameObject;
             _slotController = _hit.transform.GetComponent<SlotController>();
 
-            if (CanDropCardOnBoard(activeCardController) && !_slotController.containCard && _slotController.PlayerType == EPlayerType.Human)
+            if (GameManager.Instance.gameState.CanPlayerDropCardOnBoard(_playerType, activeCardController.cardManaCost) && !_slotController.containCard && _slotController.PlayerType == EPlayerType.Human)
             {
                 _slotController.SetHovered(true);
                 DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorDeplacement, activeCardController.cardManaCost);

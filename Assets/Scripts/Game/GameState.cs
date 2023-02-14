@@ -81,18 +81,23 @@ public struct PlayerState
     public int cardSwapCost; // TODO Const
 
     public EPlayerType type;
+    
+    public Action<int> OnManaChanged;
+    public Action<int> OnHealthChanged;
 
     public void StartTurn()
     {
         // Increase mana
         mana = manaNextTurn;
         manaNextTurn = Mathf.Min(maximumMana, manaNextTurn + 1);
+        OnManaChanged?.Invoke(mana);
     }
 
     public void TakeDamage(int damage)
     {
         health -= damage;
-    }
+        OnHealthChanged?.Invoke(health);
+    } 
     
     public bool CanDropCardOnBoard(int cardToDropManaCost)
     {
@@ -116,6 +121,15 @@ public class GameState
     public PlayerState humanPlayer;
     public PlayerState cpuPlayer;
 
+    public void Init()
+    {
+        humanPlayer.OnHealthChanged?.Invoke(humanPlayer.health);
+        cpuPlayer.OnHealthChanged?.Invoke(cpuPlayer.health);
+        
+        humanPlayer.OnManaChanged?.Invoke(humanPlayer.mana);
+        cpuPlayer.OnManaChanged?.Invoke(cpuPlayer.mana);
+    }
+    
     public void StartPlayerTurn(EPlayerType type)
     {
         switch (type)
@@ -163,9 +177,11 @@ public class GameState
         {
             case EPlayerType.Human:
                 humanPlayer.mana -= manaUsed;
+                humanPlayer.OnManaChanged?.Invoke(humanPlayer.mana);
                 break;
             case EPlayerType.CPU: 
                 cpuPlayer.mana -= manaUsed;
+                cpuPlayer.OnManaChanged?.Invoke(cpuPlayer.mana);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(type), type, null);
@@ -234,6 +250,49 @@ public class GameState
                 return humanPlayer.CanSwapCard();
             case EPlayerType.CPU:
                 return cpuPlayer.CanSwapCard();
+            default:
+                throw new ArgumentOutOfRangeException(nameof(type), type, null);
+        }
+    }
+
+    public PlayerState GetPlayer(EPlayerType type)
+    {
+        switch (type)
+        {
+            case EPlayerType.Human:
+                return humanPlayer;
+            case EPlayerType.CPU:
+                return cpuPlayer;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(type), type, null);
+        }
+    }
+
+    public void RegisterCallbackOnManaChange(EPlayerType type, Action<int> action)
+    {
+        switch (type)
+        {
+            case EPlayerType.Human:
+                humanPlayer.OnManaChanged += action;
+                break;
+            case EPlayerType.CPU:
+                cpuPlayer.OnManaChanged += action;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(type), type, null);
+        }
+    }
+    
+    public void RemoveCallbackOnManaChange(EPlayerType type, Action<int> action)
+    {
+        switch (type)
+        {
+            case EPlayerType.Human:
+                humanPlayer.OnManaChanged += action;
+                break;
+            case EPlayerType.CPU:
+                cpuPlayer.OnManaChanged += action;
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(type), type, null);
         }
