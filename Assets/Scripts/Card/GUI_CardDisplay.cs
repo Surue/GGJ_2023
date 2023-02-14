@@ -44,17 +44,6 @@ public class GUI_CardDisplay : MonoBehaviour
         // Setup Chara Stats
         attackText.text = cardController.cardAttack.ToString();
         healthText.text = cardController.cardHealth.ToString();
-        switch (cardController.CardScriptable.AttackScriptable.AttackType)
-        {
-            case EAttackType.Front:
-                break;
-            case EAttackType.FrontAndBack:
-                break;
-            case EAttackType.FrontLine:
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
     }
 
     private void OnManaChanged(int currentMana)

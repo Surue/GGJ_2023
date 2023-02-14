@@ -455,18 +455,29 @@ public class Player : MonoBehaviour
 
         CardController defendingCard = null;
         bool cardExists = false;
-        foreach (var cardController in defendingCards)
+
+        if (defendingCards.Count == 1)
         {
-            if (_otherPlayer.TryGetCardInFront(cardController, out var frontCard))
+            cardExists = true;
+            defendingCard = defendingCards[0];
+        }
+        
+        if (!cardExists)
+        {
+            foreach (var cardController in defendingCards)
             {
-                if (frontCard == attackingCard)
+                if (_otherPlayer.TryGetCardInFront(cardController, out var frontCard))
                 {
-                    defendingCard = cardController;
-                    cardExists = true;
-                    break;
+                    if (frontCard == attackingCard)
+                    {
+                        defendingCard = cardController;
+                        cardExists = true;
+                        break;
+                    }
                 }
             }
         }
+
         if (cardExists && defendingCard.slotController.boardLineType == EBoardLineType.Front)
         {
             defendingCard.transform.DOMove(defendingCard.transform.position + Vector3.up, 0.4f)
@@ -530,7 +541,7 @@ public class Player : MonoBehaviour
     {
         var result = new List<CardController>();
 
-        if (attackingCard.slotController.boardLineType == EBoardLineType.Back) return result;
+        if (attackingCard.slotController.boardLineType == EBoardLineType.Back && attackingCard.CardScriptable.AttackScriptable.AttackType != EAttackType.FrontAndBack) return result;
         
         switch (attackingCard.CardScriptable.AttackScriptable.AttackType)
         {
@@ -635,6 +646,11 @@ public class Player : MonoBehaviour
     private bool TryGetCardInBack(CardController cardController, out CardController result)
     {
         if (cardController.slotController.boardLineType == EBoardLineType.Front)
+        {
+            result = _boardSlots[cardController.slotController.columnID + 4].cardController;
+            return _boardSlots[cardController.slotController.columnID + 4].containCard;
+        }
+        else if(cardController.slotController.boardLineType == EBoardLineType.Back)
         {
             result = _boardSlots[cardController.slotController.columnID + 4].cardController;
             return _boardSlots[cardController.slotController.columnID + 4].containCard;

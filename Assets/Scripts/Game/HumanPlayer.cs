@@ -396,9 +396,8 @@ private RaycastHit _hit;
                     _lineColorNeutral, -1);
             }
         }
-        else if (_slotCardController.CanAttackOtherPlayer() && !TryGetCardInFront(_slotCardController, out var _)) // Attack player
+        else if (_slotCardController.CanAttackOtherPlayer() && GetPossibleCardToAttack(_slotCardController).Count == 0) // Attack player
         {
-            Debug.Log("Hit");
             _CPUHitCollider.enabled = true;
             CheckRaycastHit();
             if (layerHitName == "AttackZone")

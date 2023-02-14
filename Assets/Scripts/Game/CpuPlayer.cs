@@ -574,7 +574,9 @@ public class CpuPlayer : Player
 
         public bool CanAttack(SimulatedCard simulatedCard)
         {
-            return simulatedCard.remainingAttackCount > 0 && simulatedCard.simulatedSlot.isFront && simulatedCard.cardController.CardScriptable.AttackScriptable.AttackType != EAttackType.NoAttack;
+            return simulatedCard.remainingAttackCount > 0 &&
+                   (simulatedCard.simulatedSlot.isFront || simulatedCard.cardController.CardScriptable.AttackScriptable.AttackType == EAttackType.FrontAndBack) && 
+                   simulatedCard.cardController.CardScriptable.AttackScriptable.AttackType != EAttackType.NoAttack;
         }
     }
 
