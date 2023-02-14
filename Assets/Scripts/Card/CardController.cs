@@ -249,7 +249,9 @@ public class CardController : MonoBehaviour, ITargetable
     
     public bool CanAttack(List<CardController> possibleCardsToAttack)
     {
-        return _remainingAttackCharge > 0 && slotController.boardLineType == EBoardLineType.Front && possibleCardsToAttack.Count > 0;
+        return _remainingAttackCharge > 0 &&
+               (slotController.boardLineType == EBoardLineType.Front || CardScriptable.AttackScriptable.AttackType == EAttackType.FrontAndBack) && 
+               possibleCardsToAttack.Count > 0;
     }
     
     public bool CanAttackOtherPlayer()

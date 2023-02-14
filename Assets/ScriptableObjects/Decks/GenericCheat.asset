@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebe44e8955786474cb2d55f7a95311bf, type: 3}
+  m_Name: GenericCheat
+  m_EditorClassIdentifier: 
+  _cards:
+  - cardPrefab: {fileID: 4818621042777980020, guid: 12389b3f90700c54fbe6db1ac559b309, type: 3}
+    cardQuantity: 30
