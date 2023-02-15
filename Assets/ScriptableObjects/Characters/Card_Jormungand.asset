@@ -82,7 +82,7 @@ MonoBehaviour:
       Entry: 8
       Data: 
   cardName: "J\xF6rmungand"
-  cardDescription: Deal <b><color=#FFAC00>2 Damage</color> to all enemies</b> when
+  cardDescription: Deal <b><color=#FFAC00>1 Damage</color> to all enemies</b> when
     invoked.
   initialManaCost: 7
   _attackScriptable: {fileID: 11400000, guid: dcfa1d123f968a54d92838d70e28a79f, type: 2}

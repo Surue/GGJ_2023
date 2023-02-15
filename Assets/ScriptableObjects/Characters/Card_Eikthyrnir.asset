@@ -94,7 +94,7 @@ MonoBehaviour:
       Entry: 8
       Data: 
   cardName: Eikthyrnir
-  cardDescription: Each turn, gives  <b><color=#F01D22>+2 HP</color></b> to adjacents
+  cardDescription: Each turn, gives  <b><color=#F01D22>+1 HP</color></b> to adjacents
     allies.
   initialManaCost: 5
   _attackScriptable: {fileID: 11400000, guid: 9b4ddbaa6e21e1e40beb7ce740fad394, type: 2}
