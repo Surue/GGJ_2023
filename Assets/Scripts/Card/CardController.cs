@@ -43,8 +43,11 @@ public class CardController : MonoBehaviour, ITargetable
     //HIGHLIGHT PARAMETERS
     [Header("Highlight Parameters")]
     public GameObject highlight;
-    public float highlightAlphaMax = 0.7f;
+    public float highlightAlphaMax = 1f;
     public Vector2 highlightAnimSpeed;
+    public Color highlightAttack;
+    public Color highlightDeplacement;
+    public Color lockColor;
     [Space]
     [Space]
     [Header("DEBUG")]
@@ -77,6 +80,7 @@ public class CardController : MonoBehaviour, ITargetable
     //Highlight
     private Renderer _highlightRenderer;
     private Vector2 _highlightOffset;
+    private GUI_CardDisplay GUI_Card;
 
 
     public bool isInteractible;
@@ -119,6 +123,7 @@ public class CardController : MonoBehaviour, ITargetable
         _cardDisplay = GetComponent<GUI_CardDisplay>();
         _highlightRenderer = highlight.GetComponent<SpriteRenderer>();
         AnimComponent = card.GetComponent<Animation>();
+        GUI_Card = GetComponent<GUI_CardDisplay>();
 
         // Play default animation
         PlayAnimationCard("IdleAnim");
@@ -138,9 +143,10 @@ public class CardController : MonoBehaviour, ITargetable
         
         isTweening = DOTween.IsTweening(transform);
         //Anim la texture de highlight
-        _highlightOffset = _highlightRenderer.material.GetTextureOffset("_FadeTex");
-        _highlightOffset += highlightAnimSpeed * Time.deltaTime;
-        _highlightRenderer.material.SetTextureOffset("_FadeTex", _highlightOffset);
+
+        //_highlightOffset = _highlightRenderer.material.GetTextureOffset("_FadeTex");
+        //_highlightOffset += highlightAnimSpeed * Time.deltaTime;
+        //_highlightRenderer.material.SetTextureOffset("_FadeTex", _highlightOffset);
     }
 
     
@@ -284,27 +290,47 @@ public class CardController : MonoBehaviour, ITargetable
     
     private void OnInHandState()
     {
+        //UnHighlightCard();
         UpdateGlow();
-        //Remet la carte a sa place
-        //TweenMoveCard(_handSlotTransform.position, _handSlotTransform.rotation, 0.18f, MoveType.simpleMoveRotate);
     }
 
     public void UpdateGlow()
     {
-        if (currentCardState == CardState.inDeck || _remainingAttackCharge == 0 || Owner == EPlayerType.CPU)
+        if (currentCardState == CardState.inDeck || Owner == EPlayerType.CPU)
         {
             UnHighlightCard();
             return;
-        }   
-
-        //Highlight la carte de base
-        if (OwnerPlayer.CurrentMana >= _cardScriptable.initialManaCost)
-        {
-            HighlightCard(Color.white);
         }
-        else
+
+        if (currentCardState == CardState.onDesk)
         {
-            UnHighlightCard();
+            List<CardController> possibleCardsToAttack = OwnerPlayer.GetPossibleCardToAttack(this);
+            if (CanAttack(possibleCardsToAttack) || CanAttackOtherPlayer())
+            {
+                HighlightCard(highlightAttack);
+                return;
+            }
+            else if (OwnerPlayer.CurrentMana >= 1 && _remainingAttackCharge > 0)
+            {
+                HighlightCard(highlightDeplacement);
+            }
+            else
+            {
+                UnHighlightCard();
+            }
+        }
+
+        //Highlight des cartes en main
+        if (currentCardState == CardState.inHand)
+        {
+            if (OwnerPlayer.CurrentMana >= _cardScriptable.initialManaCost)
+            {
+                HighlightCard(highlightDeplacement);
+            }
+            else
+            {
+                UnHighlightCard(lockColor);
+            }
         }
     }
 
@@ -348,7 +374,7 @@ public class CardController : MonoBehaviour, ITargetable
 
         //MoveCard(moveToPositon, boardController.transform.localRotation, offsetYCurve, 0);
         TweenMoveCard(moveToPositon, slotController.transform.localRotation, moveToDeskDuration, MoveType.simpleMove);
-        HighlightCard(Color.white);
+        //HighlightCard(Color.white);
     }
 
     private void DeadState()
@@ -510,25 +536,33 @@ public class CardController : MonoBehaviour, ITargetable
         
         glowed = true;
         _highlightRenderer.material.SetColor("_Color", highlitghtColor);
-        _highlightRenderer.material.DOFloat(highlightAlphaMax, "_Alpha", 0.3f);
+        _highlightRenderer.material.DOFloat(highlightAlphaMax, "_Intensity", 0.3f);
+        foreach (var sprite in GUI_Card.visualParent.GetComponentsInChildren<SpriteRenderer>())
+        {
+            sprite.material.SetColor("_Color", Color.white);
+        }
     }
 
     // Fonction qui enlève le highlight de la carte
-    public void UnHighlightCard()
+    public void UnHighlightCard(Color color)
     {
         if (!glowed)
             return;
         
         glowed = false;
-        _highlightRenderer.material.DOFloat(0, "_Alpha", 0.3f);
+        _highlightRenderer.material.DOFloat(0, "_Intensity", 0.3f);
+        foreach (var sprite in GUI_Card.visualParent.GetComponentsInChildren<SpriteRenderer>())
+        {
+            sprite.material.SetColor("_Color", color);
+        }
     }
-    public void UnHighlightCard(float duration)
+    public void UnHighlightCard()
     {
-        if (glowed)
+        if (!glowed)
             return;
 
         glowed = false;
-        _highlightRenderer.material.DOFloat(0, "_Alpha", duration);
+        _highlightRenderer.material.DOFloat(0, "_Intensity", 0.3f);
     }
     #endregion
 

@@ -385,11 +385,14 @@ public class HumanPlayer : Player
                         currentHandState = HandState.Free;
 
                         StartCoroutine(DuelOtherCards(_slotCardController, GetPossibleCardToAttack(_slotCardController)));
-                        
-                
+                                        
                         _lineRenderer.enabled = false;
                         _lineIconRenderer.gameObject.SetActive(false);
                         _lineCrossHair.gameObject.SetActive(false);
+                        foreach (var boardSlot in possibleSlotToAttackTo)
+                        {
+                            boardSlot.slotController.SetHighlighted(false);
+                        }
                     }
                 }
                 else

@@ -10,7 +10,6 @@ Material:
   m_Name: Highlight
   m_Shader: {fileID: 4800000, guid: a36b7719ff0465b42ab1407d67672c5f, type: 3}
   m_ValidKeywords:
-  - FADE_ON
   - ONLYOUTLINE_ON
   - OUTBASE8DIR_ON
   m_InvalidKeywords: []
@@ -73,7 +72,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Alpha: 0
+    - _Alpha: 1
     - _AlphaCutoffValue: 0.191
     - _AlphaOutlineBlend: 0.634
     - _AlphaOutlineGlow: 3.5

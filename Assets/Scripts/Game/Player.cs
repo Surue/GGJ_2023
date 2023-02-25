@@ -537,7 +537,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    protected List<CardController> GetPossibleCardToAttack(CardController attackingCard)
+    public List<CardController> GetPossibleCardToAttack(CardController attackingCard)
     {
         var result = new List<CardController>();
 

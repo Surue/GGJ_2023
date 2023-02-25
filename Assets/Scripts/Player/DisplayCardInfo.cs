@@ -68,8 +68,6 @@ public class DisplayCardInfo : MonoBehaviour
         currentCardControler = currentDisplayedCard.GetComponent<CardController>();
         currentCardControler.PlayAnimationCard("ActiveAnim");
 
-        currentCardControler.HighlightCard(Color.red);
-        currentCardControler.UnHighlightCard();
         if (!DOTween.IsTweening(cardInfoTransform))
         {
             cardInfoTransform.DOScale(_InitCardInfoScale * 1.10f, 0.25f).SetEase(EaseExtensions.FadeInFadeOutCurve);

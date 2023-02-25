@@ -1733,10 +1733,11 @@ MonoBehaviour:
   moveOnDeskDuration: 0.5
   moveToDefausseDuration: 0.3
   highlight: {fileID: 8821135305354788789}
-  highlightAlphaMax: 0.7
+  highlightAlphaMax: 0.8
   highlightAnimSpeed: {x: -0.1, y: -0.1}
-  isInteractible: 1
-  isOverride: 0
+  highlightAttack: {r: 0.99607843, g: 0.67058825, b: 0, a: 1}
+  highlightDeplacement: {r: 0.3066038, g: 0.761303, b: 1, a: 1}
+  lockColor: {r: 0.49056602, g: 0.49056602, b: 0.49056602, a: 1}
   isTweening: 0
   startMoveTime: 0
   moveJumpHeight: 1.6
@@ -1749,6 +1750,7 @@ MonoBehaviour:
   _cardDisplay: {fileID: 0}
   slotController: {fileID: 0}
   previousSlotController: {fileID: 0}
+  isInteractible: 1
   slashVFX: {fileID: 8761250233284137801}
   currentCardState: 0
   lastMoveType: 0
@@ -1949,8 +1951,8 @@ Transform:
   m_GameObject: {fileID: 8821135305354788789}
   m_LocalRotation: {x: -0, y: -8.881783e-16, z: 8.881783e-16, w: 1}
   m_LocalPosition: {x: 0, y: 0.07720004, z: 0}
-  m_LocalScale: {x: 0.10686868, y: 0.10360185, z: 0.10177}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.12064744, y: 0.11695942, z: 0.11489138}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 8821135303853838803}
   m_RootOrder: 1
@@ -1975,7 +1977,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 00571878e950d5c40ae28300403a8a17, type: 2}
+  - {fileID: 2100000, guid: 90667401f1e1c554585b38ad58b54fd1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1996,7 +1998,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -50
-  m_Sprite: {fileID: 21300000, guid: 2b06b043c88e89745ae67fb394ae4129, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1f872e62efa84324fb905ee4451c9edc, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GenericGameRules
   m_EditorClassIdentifier: 
   _maxHealth: 40
-  _maxMana: 10
+  _maxMana: 9
   _initialMana: 3
   _maxCardInHand: 5
   _cardSwapManaCost: 1
