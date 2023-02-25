@@ -296,7 +296,7 @@ public class CardController : MonoBehaviour, ITargetable
     {
         if (currentCardState == CardState.inDeck || Owner == EPlayerType.CPU)
         {
-            UnHighlightCard();
+            UnHighlightCard(Color.white);
             //return;
         }
 
@@ -610,7 +610,7 @@ public class CardController : MonoBehaviour, ITargetable
     [HideInInspector]
     public List<ActiveBuff> ActiveBuffs = new List<ActiveBuff>();
 
-    private bool glowed;
+    public bool glowed;
 
     public void AddBuff(BuffEffect buffEffect, ITargetable owner, Action<CardController> action)
     {

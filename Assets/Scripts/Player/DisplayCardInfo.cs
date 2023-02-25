@@ -64,16 +64,27 @@ public class DisplayCardInfo : MonoBehaviour
         {
             Destroy(currentDisplayedCard);
         }
-        currentDisplayedCard = Instantiate(cardController.gameObject, cardInfoTransform.position, cardInfoTransform.rotation, cardInfoTransform);
-        currentCardControler = currentDisplayedCard.GetComponent<CardController>();
-        currentCardControler.PlayAnimationCard("ActiveAnim");
 
-        if (!DOTween.IsTweening(cardInfoTransform))
+        if (cardController != null)
         {
-            cardInfoTransform.DOScale(_InitCardInfoScale * 1.10f, 0.25f).SetEase(EaseExtensions.FadeInFadeOutCurve);
+            currentDisplayedCard = Instantiate(cardController.gameObject, cardInfoTransform.position, cardInfoTransform.rotation, cardInfoTransform);
+            currentCardControler = currentDisplayedCard.GetComponent<CardController>();
+            currentCardControler.glowed = true;
+            currentCardControler.UnHighlightCard(Color.white);
+            currentCardControler.PlayAnimationCard("ActiveAnim");
+
+            if (!DOTween.IsTweening(cardInfoTransform))
+            {
+                cardInfoTransform.DOScale(_InitCardInfoScale * 1.10f, 0.25f).SetEase(EaseExtensions.FadeInFadeOutCurve);
+            }
+            Collider cardCollider = currentDisplayedCard.GetComponent<Collider>();
+            cardCollider.enabled = false;
         }
-        Collider cardCollider = currentDisplayedCard.GetComponent<Collider>();
-        cardCollider.enabled = false;
+        else
+        {
+            return;
+        }
+
 
     }
     private void DestroyCardInfo()

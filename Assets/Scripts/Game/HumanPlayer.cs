@@ -343,6 +343,10 @@ public class HumanPlayer : Player
                         _lineRenderer.enabled = false;
                         _lineIconRenderer.gameObject.SetActive(false);
                         _lineCrossHair.gameObject.SetActive(false);
+                        foreach (var boardSlot in _boardSlots)
+                        {
+                            boardSlot.SetHighlighted(false);
+                        }
                         foreach (var boardSlot in possibleSlotToAttackTo)
                         {
                             boardSlot.slotController.SetHighlighted(false);
@@ -371,6 +375,10 @@ public class HumanPlayer : Player
                         _lineRenderer.enabled = false;
                         _lineIconRenderer.gameObject.SetActive(false);
                         _lineCrossHair.gameObject.SetActive(false);
+                        foreach (var boardSlot in _boardSlots)
+                        {
+                            boardSlot.SetHighlighted(false);
+                        }
                         foreach (var boardSlot in possibleSlotToAttackTo)
                         {
                             boardSlot.slotController.SetHighlighted(false);
@@ -389,6 +397,10 @@ public class HumanPlayer : Player
                         _lineRenderer.enabled = false;
                         _lineIconRenderer.gameObject.SetActive(false);
                         _lineCrossHair.gameObject.SetActive(false);
+                        foreach (var boardSlot in _boardSlots)
+                        {
+                            boardSlot.SetHighlighted(false);
+                        }
                         foreach (var boardSlot in possibleSlotToAttackTo)
                         {
                             boardSlot.slotController.SetHighlighted(false);
