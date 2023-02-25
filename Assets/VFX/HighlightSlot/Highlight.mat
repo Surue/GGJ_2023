@@ -37,7 +37,7 @@ Material:
     m_Floats:
     - _BUILTIN_QueueControl: 0
     - _BUILTIN_QueueOffset: 0
-    - _GlobalAlpha: 0.39
+    - _GlobalAlpha: 0.45
     - _HoloSpeed: 0.022
     - _HoloThickness: 100
     - _PulseSpeed: -0.108

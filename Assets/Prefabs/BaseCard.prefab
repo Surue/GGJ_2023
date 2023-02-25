@@ -1733,10 +1733,11 @@ MonoBehaviour:
   moveOnDeskDuration: 0.5
   moveToDefausseDuration: 0.3
   highlight: {fileID: 8821135305354788789}
-  highlightAlphaMax: 0.8
+  highlightAlphaBase: 0.8
+  highlightAlphaAttack: 0.7
   highlightAnimSpeed: {x: -0.1, y: -0.1}
   highlightAttack: {r: 0.99607843, g: 0.67058825, b: 0, a: 1}
-  highlightDeplacement: {r: 0.3066038, g: 0.761303, b: 1, a: 1}
+  highlightDeplacement: {r: 0, g: 0.7411765, b: 1, a: 1}
   lockColor: {r: 0.49056602, g: 0.49056602, b: 0.49056602, a: 1}
   isTweening: 0
   startMoveTime: 0

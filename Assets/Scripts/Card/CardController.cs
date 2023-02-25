@@ -43,7 +43,8 @@ public class CardController : MonoBehaviour, ITargetable
     //HIGHLIGHT PARAMETERS
     [Header("Highlight Parameters")]
     public GameObject highlight;
-    public float highlightAlphaMax = 1f;
+    public float highlightAlphaBase = 0.8f;
+    public float highlightAlphaAttack = 0.6f;
     public Vector2 highlightAnimSpeed;
     public Color highlightAttack;
     public Color highlightDeplacement;
@@ -135,6 +136,8 @@ public class CardController : MonoBehaviour, ITargetable
 
         _maxAttackCharge = CardScriptable.AttackScriptable.AttackCharge;
         _remainingAttackCharge = _maxAttackCharge;
+
+        UpdateGlow();
     }
 
     private void Update()
@@ -142,11 +145,6 @@ public class CardController : MonoBehaviour, ITargetable
         UpdateGlow();
         
         isTweening = DOTween.IsTweening(transform);
-        //Anim la texture de highlight
-
-        //_highlightOffset = _highlightRenderer.material.GetTextureOffset("_FadeTex");
-        //_highlightOffset += highlightAnimSpeed * Time.deltaTime;
-        //_highlightRenderer.material.SetTextureOffset("_FadeTex", _highlightOffset);
     }
 
     
@@ -299,20 +297,20 @@ public class CardController : MonoBehaviour, ITargetable
         if (currentCardState == CardState.inDeck || Owner == EPlayerType.CPU)
         {
             UnHighlightCard();
-            return;
+            //return;
         }
 
-        if (currentCardState == CardState.onDesk)
+        if (currentCardState == CardState.onDesk && Owner == EPlayerType.Human)
         {
             List<CardController> possibleCardsToAttack = OwnerPlayer.GetPossibleCardToAttack(this);
             if (CanAttack(possibleCardsToAttack) || CanAttackOtherPlayer())
             {
-                HighlightCard(highlightAttack);
-                return;
+                HighlightCard(highlightAttack, highlightAlphaAttack);
+                //return;
             }
             else if (OwnerPlayer.CurrentMana >= 1 && _remainingAttackCharge > 0)
             {
-                HighlightCard(highlightDeplacement);
+                HighlightCard(highlightDeplacement, highlightAlphaBase);
             }
             else
             {
@@ -321,14 +319,16 @@ public class CardController : MonoBehaviour, ITargetable
         }
 
         //Highlight des cartes en main
-        if (currentCardState == CardState.inHand)
+        if (currentCardState == CardState.inHand && Owner == EPlayerType.Human)
         {
             if (OwnerPlayer.CurrentMana >= _cardScriptable.initialManaCost)
             {
-                HighlightCard(highlightDeplacement);
+                glowed = false;
+                HighlightCard(highlightDeplacement, highlightAlphaBase);
             }
             else
             {
+                glowed = true;
                 UnHighlightCard(lockColor);
             }
         }
@@ -336,8 +336,6 @@ public class CardController : MonoBehaviour, ITargetable
 
     private void OnIsOverrideState()
     {
-        //Déplace la carte 
-        // TweenMoveCard(_initialPosition + Vector3.forward * 1f, _initialOrientation, 0.3f, MoveType.simpleMove);
     }
 
     private void OnIsWaitingState()
@@ -355,9 +353,6 @@ public class CardController : MonoBehaviour, ITargetable
         Collider cardCollider = this.GetComponent<Collider>();
         cardCollider.enabled = false;
 
-        //Déplace la carte sur l'emplacement du plateau
-        // TweenMoveCard(slotController.transform.localPosition, slotController.transform.localRotation, moveOnDeskDuration, MoveType.toDesk);
-
         //Enlève le highlight de la carte
         UnHighlightCard();
 
@@ -372,9 +367,7 @@ public class CardController : MonoBehaviour, ITargetable
     {
         PlayAnimationCard("ActiveAnim");
 
-        //MoveCard(moveToPositon, boardController.transform.localRotation, offsetYCurve, 0);
         TweenMoveCard(moveToPositon, slotController.transform.localRotation, moveToDeskDuration, MoveType.simpleMove);
-        //HighlightCard(Color.white);
     }
 
     private void DeadState()
@@ -407,10 +400,6 @@ public class CardController : MonoBehaviour, ITargetable
     public void TweenPlaceCard(SlotController slotController)
     {
         DOTween.Kill(transform);
-        // transform.DOLocalJump(slotController.transform.position, moveJumpHeight, 1, 0.4f).SetEase(Ease.InOutSine).OnComplete(() =>
-        // {
-        //     RefreshInteractionCheck();
-        // });
 
         transform.DOLocalMove(slotController.transform.position + (Vector3.up*0.8f), 0.6f)
             .SetEase(Ease.OutQuint)
@@ -529,17 +518,25 @@ public class CardController : MonoBehaviour, ITargetable
 
     #region HIGHLIGHT
     // Fonction qui Highlight la carte
-    public void HighlightCard(Color highlitghtColor)
+    public void HighlightCard(Color highlitghtColor, float alpha)
     {
         if (glowed)
             return;
         
         glowed = true;
+
+        //Change Glow Color and activate
         _highlightRenderer.material.SetColor("_Color", highlitghtColor);
-        _highlightRenderer.material.DOFloat(highlightAlphaMax, "_Intensity", 0.3f);
+        _highlightRenderer.material.DOFloat(alpha, "_Intensity", 0.3f);
+
+        //Change Card Color
+        foreach (var sprite in GUI_Card.sprites)
+        {
+            sprite.DOColor(Color.white, 0.3f);
+        }
         foreach (var sprite in GUI_Card.visualParent.GetComponentsInChildren<SpriteRenderer>())
         {
-            sprite.material.SetColor("_Color", Color.white);
+            sprite.DOColor(Color.white, 0.3f);
         }
     }
 
@@ -551,9 +548,14 @@ public class CardController : MonoBehaviour, ITargetable
         
         glowed = false;
         _highlightRenderer.material.DOFloat(0, "_Intensity", 0.3f);
+
+        foreach (var sprite in GUI_Card.sprites)
+        {
+            sprite.DOColor(color, 0.3f);
+        }
         foreach (var sprite in GUI_Card.visualParent.GetComponentsInChildren<SpriteRenderer>())
         {
-            sprite.material.SetColor("_Color", color);
+            sprite.DOColor(color, 0.3f);
         }
     }
     public void UnHighlightCard()

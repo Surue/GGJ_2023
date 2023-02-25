@@ -43,10 +43,10 @@ Material:
     - _BUILTIN_QueueOffset: 0
     - _Color: 0
     - _GlobalAlpha: 1
-    - _Intensity: 0
+    - _Intensity: 0.6
     - _NoiseMultiply: 1
     - _OffsetSpeed: 0.1
     m_Colors:
-    - _Color: {r: 0.24056602, g: 0.8050768, b: 1, a: 1}
+    - _Color: {r: 1, g: 0.11814067, b: 0, a: 1}
     - _Color_1: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []
