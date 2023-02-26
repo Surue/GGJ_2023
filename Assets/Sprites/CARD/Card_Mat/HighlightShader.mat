@@ -42,9 +42,9 @@ Material:
     - _BUILTIN_QueueControl: 0
     - _BUILTIN_QueueOffset: 0
     - _Color: 0
-    - _GlobalAlpha: 1
-    - _Intensity: 0.6
-    - _NoiseMultiply: 1
+    - _GlobalAlpha: 0.9
+    - _Intensity: 0.7
+    - _NoiseMultiply: 1.1
     - _OffsetSpeed: 0.1
     m_Colors:
     - _Color: {r: 1, g: 0.11814067, b: 0, a: 1}
