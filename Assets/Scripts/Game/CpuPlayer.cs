@@ -356,6 +356,7 @@ public class CpuPlayer : Player
             var playerActions = new List<PlayerAction>();
             foreach (var slot in freeSlots)
             {
+                if(slot.isFront) continue;
                 foreach (var card in possibleCardToInvoke)
                 {
                     playerActions.Add(new InvokeCardPlayerAction()

@@ -177,7 +177,7 @@ public class HumanPlayer : Player
     {
         foreach (var boardSlot in _boardSlots)
         {
-            boardSlot.SetHighlighted(!boardSlot.containCard);
+            boardSlot.SetHighlighted(!boardSlot.containCard && boardSlot.boardLineType == EBoardLineType.Back);
         }
         
         if (Input.GetMouseButtonDown(1))
@@ -201,7 +201,7 @@ public class HumanPlayer : Player
             _boardSlot = _hit.transform.gameObject;
             _slotController = _hit.transform.GetComponent<SlotController>();
 
-            if (GameManager.Instance.gameState.CanPlayerDropCardOnBoard(_playerType, activeCardController.cardManaCost) && !_slotController.containCard && _slotController.PlayerType == EPlayerType.Human)
+            if (GameManager.Instance.gameState.CanPlayerDropCardOnBoard(_playerType, activeCardController.cardManaCost) && !_slotController.containCard && _slotController.PlayerType == EPlayerType.Human && _slotController.boardLineType == EBoardLineType.Back)
             {
                 _slotController.SetHovered(true);
                 DrawMovementLine(_cardTransform.position, _boardSlot.transform.position, _offsetYCurve, _lineColorDeplacement, activeCardController.cardManaCost);
